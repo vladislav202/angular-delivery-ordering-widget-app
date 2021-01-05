@@ -1,0 +1,77 @@
+<ng-container *ngIf="page==0">
+  <div class="header">
+    <div *ngIf="!parentPath" class="nav-back nav-back--primary" [routerLink]="['/', slug, 'cart']" [queryParams]="sourceInfluencer?{utm_source:sourceInfluencer}:{}" queryParamsHandling="merge" style="background-color: #e1e1e1;"><i class="fas fa-chevron-left"></i>
+    </div>
+
+    <div *ngIf="parentPath" class="nav-back nav-back--primary" [routerLink]="['/', parentPath, slug, 'cart']" [queryParams]="sourceInfluencer?{utm_source:sourceInfluencer}:{}" queryParamsHandling="merge" style="background-color: #e1e1e1;"><i class="fas fa-chevron-left"></i>
+    </div>
+    <div class="item-title item-title--standalone mb-3">
+      {{'Phone verification'|translate}}
+    </div>
+  </div>
+  <label class="form-block__label--big pt-4">
+    <div class="title" style="font-size: 15px; line-height: 150%;">{{'Please insert here your phone number with the international prefix (For example +971591234567)'|translate}}</div>
+    <div class="input-group d-block">
+      <form [formGroup]="phoneForm">
+        <ngx-intl-tel-input
+          [cssClass]="'custom'"
+          [preferredCountries]="[CountryISO.UnitedStates, CountryISO.UnitedKingdom]"
+          [separateDialCode]="true"
+          [enableAutoCountrySelect]="false"
+          [enablePlaceholder]="true"
+          [searchCountryFlag]="true"
+          [searchCountryField]="[SearchCountryField.Iso2, SearchCountryField.Name]"
+          [selectFirstCountry]="false"
+          [selectedCountryISO]="selectedCountryISO"
+          [maxLength]="15"
+          [tooltipField]="TooltipLabel.Name"
+          [phoneValidation]="true"
+          name="phoneNumber"
+          formControlName="phoneNumber"
+          (keyup)="checkPhoneNumberValidation($event)"
+        ></ngx-intl-tel-input>
+      </form>
+      <p *ngIf="isErrorPhoneNumberVerification" class="text-danger mt-2" style="font-size: 13px; max-width: 100%;">
+        {{'This phone number is invalid'|translate}}
+      </p>
+    </div>
+  </label>
+
+  <div class="view-cart">
+    <button class="btn btn-primary btn-primary--focus view-cart__btn d-flex justify-content-center w-100" [disabled]="isTokenLoading || !phoneForm.valid || isErrorPhoneNumberVerification" (click)="continue()">
+      <span *ngIf="isTokenLoading" class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>
+      <span>{{'Send OTP'|translate}}</span>
+    </button>
+  </div>
+
+</ng-container>
+
+<ng-container *ngIf="page==1">
+  <div class="nav-back nav-backprimary" style="background-color: #e1e1e1;" (click)="page=0"><i class="fas fa-chevron-left"></i></div>
+  <div class="item-title item-title--standalone mb-3">
+    {{'Code verification'|translate}}
+  </div>
+  <label class="form-block__label--big pt-3 text-center">
+    <p class="text-center my-4" style="font-size: 19px; font-weight: 600;">{{'Enter the code sent to'|translate}} <strong>{{phoneForm.value.phoneNumber.number}}</strong></p>
+    <input class="form-control text-center mx-auto" style="width: 200px" type="text" [formControl]="otpCode" placeholder="">
+    <p *ngIf="isErrorCodeVerification" class="text-danger mt-2 text-center" style="font-size: 13px; max-width: 100%;">
+      {{'Code is not correct'|translate}}
+    </p>
+  </label>
+
+  <div *ngIf="isResendCode" class="default-padding text-center font-weight-bold">
+    <a [routerLink]="null" class="text-primary" (click)="page=0">{{'Resend Code?'|translate}}</a>
+  </div>
+
+  <div *ngIf="!isResendCode && startCountDown" class="default-padding text-center font-weight-bold" style="color: red;">
+    00:{{counter}} {{'seconds'|translate}}
+  </div>
+
+  <div class="view-cart">
+    <button class="btn btn-primary btn-primary--focus view-cart__btn d-flex justify-content-center w-100" (click)="verifyOTPCode()">
+      <span *ngIf="isTokenLoading" class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>
+      <span>{{'Verify'|translate}}</span>
+    </button>
+  </div>
+</ng-container>
+

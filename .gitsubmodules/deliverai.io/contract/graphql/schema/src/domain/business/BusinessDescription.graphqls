@@ -1,0 +1,29 @@
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Business description."""
+type BusinessDescription {
+    """Long content."""
+    longContent: String
+
+    """Short content."""
+    shortContent: String
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Set business description input."""
+input SetBusinessDescriptionInput {
+    """Long content."""
+    longContent: String
+
+    """Short content."""
+    shortContent: String
+}

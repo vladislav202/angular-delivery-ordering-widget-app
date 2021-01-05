@@ -1,0 +1,29 @@
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Order delivery."""
+interface OrderDelivery {
+    """ID."""
+    id: ID!
+
+    """Order."""
+    order: Order!
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Set order delivery input."""
+input SetOrderDelivery {
+    """Pickup delivery."""
+    pickup: SetOrderPickupDelivery
+
+    """Courier delivery."""
+    courier: SetOrderCourierDelivery
+}

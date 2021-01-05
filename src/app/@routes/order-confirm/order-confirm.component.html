@@ -1,0 +1,52 @@
+<div *ngIf="isLoadingOrderDetail" class="spinner-border text-primary" role="status" style="position: absolute;top: 50%;left: 49%;">
+  <span class="sr-only">{{'Loading...'|translate}}</span>
+</div>
+
+<div *ngIf="isShowErrorMessage" style="position: absolute; top: 50%;left: 50%; font-size: 18px; transform: translate(-50%, -50%);">This link is expired</div>
+
+<div *ngIf="!isLoadingOrderDetail && order">
+  <div class="header">
+    <div *ngIf="parentPath" class="nav-back nav-back--primary" [routerLink]="['/', parentPath, slug]" [queryParams]="sourceInfluencer?{utm_source:sourceInfluencer}:{}" queryParamsHandling="merge" style="background-color: #e1e1e1;"><i class="fas fa-chevron-left"></i></div>
+    <div *ngIf="!parentPath" class="nav-back nav-back--primary" [routerLink]="['/', slug]" [queryParams]="sourceInfluencer?{utm_source:sourceInfluencer}:{}" queryParamsHandling="merge" style="background-color: #e1e1e1;"><i class="fas fa-chevron-left"></i></div>
+  </div>
+
+  <div class="order-confirm-content">
+    <div class="text-center" style="padding-top: 70px;">
+      <img *ngIf="order.fulfillment.state !== 'CANCELLED'" src="assets/images/acceptIcon.svg" style="width: 140px;"/>
+      <img *ngIf="order.fulfillment.state === 'CANCELLED'" src="assets/images/rejectIcon.svg" style="width: 140px;"/>
+    </div>
+    <div class="item-title text-center" style="padding-top: 40px; padding-right: 20px; padding-left: 20px; font-size: 22px;">
+      <h1 *ngIf="order.fulfillment.state !== 'CANCELLED'" class="mb-2">{{'Thanks,'|translate }} {{order.customerName}}</h1>
+      <h1 *ngIf="order.fulfillment.state === 'CANCELLED'" class="mb-2">{{'Sorry,'|translate}} {{order.customerName}}</h1>
+      <h1 *ngIf="order.fulfillment.state === 'NEW'" class="mb-2">{{'Your order has been sent'|translate}}</h1>
+      <h1 *ngIf="order.fulfillment.state === 'PROCESSING'" class="mb-2">{{'Your order has been accepted'|translate}}</h1>
+      <h1 *ngIf="order.fulfillment.state === 'CANCELLED'" class="mb-2">{{'Your order has been rejected'|translate}}</h1>
+      <h1 *ngIf="order.fulfillment.state === 'COMPLETED'" class="mb-2">{{'Your order has been completed'|translate}}</h1>
+    </div>
+
+    <div class="view-cart shadow-lg bg-white rounded" style="padding-top: 30px;">
+      <div class="text-center">
+        <a *ngIf="parentPath" type="button" class="btn" [attr.href]="'https://wa.me/?text=' + externalBaseLink + parentPath + '/' + slug" data-action="share/whatsapp/share" target="_blank" style="padding: 10px 50px; border-color:#000000;">
+          <div class="d-flex justify-content-center align-items-center">
+            <img class="mr-1" src="assets/images/upload.svg" style="width: 20px;"/>
+            <span class="ml-1" style="font-weight: 700; color: #000000">{{'Share'|translate}}</span>
+          </div>
+        </a>
+        <a *ngIf="!parentPath" type="button" class="btn" [attr.href]="'https://wa.me/?text=' + externalBaseLink + slug" data-action="share/whatsapp/share" target="_blank" style="padding: 10px 50px; border-color:#000000;">
+          <div class="d-flex justify-content-center align-items-center">
+            <img class="mr-1" src="assets/images/upload.svg" style="width: 20px;"/>
+            <span class="ml-1" style="font-weight: 700; color: #000000">{{'Share'|translate}}</span>
+          </div>
+        </a>
+      </div>
+      <div class="mt-4 mb-4"><p class="text-center pl-5 pr-5" style="color: grey; font-weight: 600; line-height: 120%;">{{'Share with your friends and family'|translate}}</p></div>
+      <button *ngIf="order.fulfillment.state !== 'NEW' && order.fulfillment.state !== 'CANCELLED'" class="btn btn-primary btn-primary--focus view-cart__btn w-100 d-flex justify-content-center" style="padding-top: 13px; padding-bottom: 13px;" (click)="trackingOrder()">
+        {{'Track Order'|translate}}
+      </button>
+    </div>
+  </div>
+</div>
+
+
+
+

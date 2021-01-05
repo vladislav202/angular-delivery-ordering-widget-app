@@ -1,0 +1,29 @@
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Store description."""
+type StoreDescription {
+    """Long content."""
+    longContent: String
+
+    """Short content."""
+    shortContent: String
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Set store description input."""
+input SetStoreDescriptionInput {
+    """Long content."""
+    longContent: String
+
+    """Short content."""
+    shortContent: String
+}

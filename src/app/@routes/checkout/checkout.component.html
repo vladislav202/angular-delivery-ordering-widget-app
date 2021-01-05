@@ -1,0 +1,392 @@
+<div *ngIf="isCheckingDiscountValidation" class="spinner-border text-primary" role="status" style="position: absolute;top: 50%;left: 49%;">
+  <span class="sr-only">{{'Loading'|translate}}...</span>
+</div>
+
+<div *ngIf="isRemovingCard" id="removeCardLoader" class="spinner-border text-primary" role="status" style="z-index: 1051;">
+  <span class="sr-only">{{'Loading...'|translate}}</span>
+</div>
+
+
+<div *ngIf="!isCheckingDiscountValidation" class="widget-container">
+  <div class="header">
+    <div *ngIf="!parentPath" class="nav-back nav-back--primary" [routerLink]="['/', slug, 'cart']" [queryParams]="sourceInfluencer?{utm_source:sourceInfluencer}:{}" queryParamsHandling="merge" style="background-color: #e1e1e1;"><i class="fas
+      fa-chevron-left"></i>
+    </div>
+    <div *ngIf="parentPath" class="nav-back nav-back--primary" [routerLink]="['/', parentPath, slug, 'cart']" [queryParams]="sourceInfluencer?{utm_source:sourceInfluencer}:{}" queryParamsHandling="merge" style="background-color: #e1e1e1;"><i class="fas
+      fa-chevron-left"></i>
+    </div>
+    <div class="item-title item-title--standalone mb-3">
+      {{'Your Order'|translate}}
+    </div>
+  </div>
+
+  <div class="delivery-detail">
+    <div *ngIf="orderType === 'delivery'" class="item-title pt-3 default-padding">{{'Delivering to'|translate}}</div>
+    <div *ngIf="orderType === 'pickup'" class="item-title pt-3 default-padding">{{'Pickup from'|translate}}</div>
+
+    <div class="card-list__item pl-4">
+      <form [formGroup]="createCustomerForm" class="w-100">
+        <div class="form-group">
+          <label class="mb-2">{{'Customer Name'|translate}}*</label>
+          <input type="text" name="name" class="form-control"
+            formControlName="name" placeholder="{{'Please fill your full name'|translate}}" maxlength="40">
+        </div>
+        <div *ngIf="orderType === 'delivery' && !minOrderDeliveryZone">
+          <p class="alert alert-danger" style="font-size: 13px; max-width: 100%;">
+            {{'We don\'t serve the selected delivery area. Please choose pickup or another delivery area.'|translate}}
+          </p>
+        </div>
+        <div *ngIf="orderType === 'delivery'" class="form-group">
+          <div class="d-flex justify-content-between">
+            <label class="mb-2">{{'Location'|translate}}*</label>
+            <a (click)="changeDeliveryAddress()" class="small font-weight-bold">{{'Change'|translate}}</a>
+          </div>
+          <div class="delivery-address-form">
+            <span class="search-icon"><i class="fas fa-map-marker-alt mr-2 list-icon"></i></span>
+            <input placeholder="{{'Please fill your full address'|translate}}" type="text" class="form-control address-search-input" formControlName="deliveryAddress" disabled>
+          </div>
+        </div>
+
+        <div *ngIf="orderType === 'pickup'" class="form-group">
+          <div class="d-flex justify-content-between">
+            <label class="mb-2">{{'Pickup Address'|translate}}*</label>
+            <a (click)="changePickupAddress()" class="small font-weight-bold">{{'Change'|translate}}</a>
+          </div>
+          <div class="d-flex align-items-center">
+            <span><i class="fas fa-map-marker-alt mr-2 list-icon"></i></span>
+            <div>
+              <div  class="mb-1" style="font-weight: 600;">{{store.name}}</div>
+              <div style="font-size: 14px; color: #808080">{{deliveryAddress}}</div>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="orderType === 'delivery'" class="form-group">
+          <label class="mb-2">{{'Building Name & Flat Number'|translate}}*</label>
+          <input type="text" name="name" class="form-control"
+            formControlName="deliveryAddress2" placeholder="{{'Please fill your building name and flat number'|translate}}">
+        </div>
+        <div *ngIf="orderType === 'delivery'" class="form-group">
+          <label class="mb-2">{{'Delivery Instructions:'|translate}}</label>
+          <textarea class="form-control" formControlName="deliveryComment" rows="3" id="comment" placeholder="{{'E.g. Don\'t ring the bell...'|translate}}"></textarea>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="delivery-time pt-2 pb-2">
+    <div class="item-title default-padding">{{'Delivery Time'|translate}}</div>
+
+    <div class="card-list__item pl-4" (click)="changeASAP(asapmodal)">
+      <div class="item-subtitle"><i class="fas fa-clock list-icon"></i> {{orderTiming}}</div>
+      <a *ngIf="store && store.preOrderEnabled" [routerLink]="null" class="small font-weight-bold">{{'Change'|translate}}</a>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="payment-method pt-2 pb-2">
+    <div class="item-title default-padding">{{'Payment'|translate}}</div>
+
+    <div *ngIf="isErrorPaymentMethod" class="mt-3" style="padding: 0 14px;">
+      <p class="alert alert-danger" style="font-size: 13px; max-width: 100%;">
+        {{'Error in processing  payment'|translate}}
+      </p>
+    </div>
+
+    <div class="card-list__item pl-4" (click)="openPaymentMethodsModal(paymentModal)">
+      <div *ngIf="paymentMethod" class="item-subtitle"><i class="fas fa-credit-card
+          list-icon"></i> {{paymentMethod|translate}}</div>
+      <div *ngIf="!paymentMethod" class="item-subtitle"><i class="fas fa-credit-card
+        list-icon"></i> {{'Select Payment Method'|translate}}</div>
+    </div>
+  </div>
+
+  <div class="cart-discount">
+    <div *ngIf="!isSetRedemLoyaltyProgram" style="padding: 12px 14px;">
+      <div *ngIf="!isValidCurrentDiscount && appliedDiscount">
+        <p class="alert alert-danger" style="font-size: 13px; max-width: 100%;">
+          {{'The current discount is not valid'|translate}}
+        </p>
+      </div>
+      <div *ngIf="cart.discount" class="d-flex justify-content-between align-items-center promo-code">
+        <div class="item-subtitle">{{cart.discount.discount.node.name}}</div>
+        <a [routerLink]="null" class="small font-weight-bold"
+          (click)="removeDiscount()">{{'Remove'|translate}}</a>
+      </div>
+      <a *ngIf="!cart.discount" class="d-flex align-items-center promo-code" (click)="openPromoCodeModal(discountModal)" style="cursor: pointer;">
+        <svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+          <!-- Generator: Sketch 52.6 (67491) - http://www.bohemiancoding.com/sketch -->
+          <title>discount</title>
+          <desc>Created with Sketch.</desc>
+          <g id="settings" class="discount-logo" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" fill="#1B2A6A">
+              <g id="Settings" transform="translate(-101.000000, -596.000000)" >
+                  <g id="discount" transform="translate(101.000000, 596.000000)">
+                      <path d="M14.6026953,5.39730469 C14.3706641,5.16527344 14.0060937,5.16527344 13.7740625,5.39730469 C13.5420313,5.62933594 13.5420313,5.99386719 13.7740625,6.2259375 C14.0060937,6.45796875 14.3706641,6.45796875 14.6026953,6.2259375 C14.8347266,5.99390625 14.8347266,5.62933594 14.6026953,5.39730469 Z" id="Path"></path>
+                      <path d="M8.80222656,7.88320312 C8.57019531,7.65117188 8.205625,7.65117188 7.97359375,7.88320312 C7.74160156,8.11519531 7.7415625,8.47980469 7.97359375,8.71183594 C8.205625,8.94390625 8.57023438,8.94382812 8.80222656,8.71183594 C9.03425781,8.47980469 9.03425781,8.11523438 8.80222656,7.88320312 Z" id="Path"></path>
+                      <path d="M9.63085938,13.6837109 C9.39882812,13.4516797 9.03425781,13.4516797 8.80222656,13.6837109 C8.57023438,13.9157031 8.57019531,14.2803125 8.80222656,14.5123437 C9.03425781,14.744375 9.39886719,14.7443359 9.63085938,14.5123437 C9.86292969,14.2802734 9.86292969,13.9157422 9.63085938,13.6837109 Z" id="Path"></path>
+                      <path d="M19.56625,8.33898438 L18.2404687,3.03566406 C18.2073047,2.91964844 18.1659375,2.81191406 18.1161719,2.7125 L15.7710937,5.05757813 C16.0777344,5.7121875 15.97,6.5159375 15.4313672,7.05457031 C14.7436328,7.74230469 13.6332422,7.74234375 12.9454297,7.05457031 C12.2576562,6.36679688 12.2576953,5.25636719 12.9454297,4.56863281 C13.4840625,4.03 14.2878125,3.92226563 14.9424219,4.22890625 L17.2875,1.88382813 C17.1880859,1.8340625 17.0803516,1.79269531 16.9643359,1.75953125 L11.6610156,0.43375 C11.0644531,0.284609375 10.4264062,0.45859375 9.9871875,0.897773438 L0.515820312,10.3691406 C-0.171914063,11.056875 -0.171953125,12.1672656 0.515820312,12.8550781 L7.14496094,19.4842188 C7.83273437,20.1719922 8.94316406,20.1719531 9.63089844,19.4842188 L19.1022266,10.0128125 C19.5414453,9.57359375 19.7154297,8.93554688 19.56625,8.33898438 Z M7.14496094,7.05457031 C7.83273438,6.36679688 8.94308594,6.36679688 9.63089844,7.05457031 C10.3187109,7.74234375 10.3186719,8.85269531 9.63089844,9.54050781 C8.94316406,10.2282422 7.83277344,10.2282813 7.14496094,9.54050781 C6.45714844,8.85273438 6.45722656,7.74230469 7.14496094,7.05457031 Z M10.4595312,15.3409766 C9.77175781,16.0287109 8.66136719,16.02875 7.97359375,15.3409766 C7.28582031,14.6532031 7.28585938,13.5427734 7.97359375,12.8550391 C8.66136719,12.1672656 9.77171875,12.1672656 10.4595312,12.8550391 C11.1473047,13.5428125 11.1473047,14.6531641 10.4595312,15.3409766 Z M12.5958594,11.3660938 L5.13808594,12.1947266 C4.95398438,12.2145703 4.78039063,12.1478125 4.65863281,12.0260156 C4.56800781,11.9353906 4.50609375,11.8144141 4.49070313,11.6768359 C4.45550781,11.3551953 4.68695313,11.0654687 5.00859375,11.0294531 L12.4663672,10.2008203 C12.7876172,10.1668359 13.0777344,10.3970703 13.11375,10.7187109 C13.1489453,11.0403906 12.9175391,11.3300781 12.5958594,11.3660938 Z" id="Shape" fill-rule="nonzero"></path>
+                      <path d="M19.8259766,0.174023437 C19.5939453,-0.0580078125 19.229375,-0.0580078125 18.9973437,0.174023437 L17.2875,1.88386719 C17.6603906,2.05789062 17.9503906,2.34789062 18.1161328,2.7125 L19.8259766,1.00265625 C20.0580078,0.770625 20.0580078,0.406054687 19.8259766,0.174023437 Z" id="Path"></path>
+                  </g>
+              </g>
+          </g>
+        </svg>
+        <div class="item-subtitle ml-2">{{'Add promo code'|translate}}</div>
+      </a>
+    </div>
+  </div>
+
+  <div class="loyalty-program">
+    <div *ngIf="loyaltyProgram && loyaltyProgram.enabled" class="page-banner" style="cursor: pointer;">
+      <div class="page-banner__icon"><i class="fas fa-gift text-white"></i></div>
+      <div *ngIf="maximumRedemptionLoyaltyPoints" class="d-flex align-items-center">
+        <div class="mr-2" style="font-size: 12px; font-weight: 600;" (click)="openLoyaltyProgramModal(loyaltyProgramModal)">
+          {{'Use your loyalty balance to get'|translate}} {{currency}} {{maximumRedemptionLoyaltyPoints}} {{'off'|translate}}
+        </div>
+        <div>
+          <ui-switch size="small" defaultBgColor="red" checkedLabel="{{'Yes'|translate}}" uncheckedLabel="{{'No'|translate}}" checkedTextColor="#ffffff" uncheckedTextColor="#ffffff" [(ngModel)]="isSetRedemLoyaltyProgram" (change)="setRedemLoyaltyProgram($event)"></ui-switch>
+        </div>
+      </div>
+
+      <div *ngIf="!maximumRedemptionLoyaltyPoints" style="font-weight: 600;" (click)="openLoyaltyProgramModal(loyaltyProgramModal)">
+        <div style="font-size: 13px; font-weight: 600;">
+          {{"You'll earn"|translate}}
+          <b class="text-primary">
+            <span *ngIf="cart.discount && (cart.totalPrice >= cart.discount.discount.node.minOrderAmount)" style="margin-right: 0;">
+              <span *ngIf="orderType === 'delivery' && !isAppliedFreeDeliveryFee">{{currency}} {{(cart.totalPrice + deliveryFee - cart.discount.discount.node.calculatedDiscountValue) * loyaltyProgram.criterias[0].pointsPercentage / 100 | number:'1.0-1'}}</span>
+              <span *ngIf="orderType === 'pickup' || (orderType === 'delivery' && isAppliedFreeDeliveryFee)">{{currency}} {{(cart.totalPrice - cart.discount.discount.node.calculatedDiscountValue) * loyaltyProgram.criterias[0].pointsPercentage / 100 | number:'1.0-1'}}</span>
+            </span>
+            <span *ngIf="!cart.discount || (cart.totalPrice < cart.discount.discount.node.minOrderAmount)" style="margin-right: 0;">
+              <span *ngIf="orderType === 'delivery' && !isAppliedFreeDeliveryFee">{{currency}} {{(cart.totalPrice + deliveryFee) * loyaltyProgram.criterias[0].pointsPercentage / 100 | number:'1.0-1'}}</span>
+              <span *ngIf="orderType === 'pickup' || (orderType === 'delivery' && isAppliedFreeDeliveryFee)">{{currency}} {{cart.totalPrice * loyaltyProgram.criterias[0].pointsPercentage / 100 | number:'1.0-1'}}</span>
+            </span>
+          </b> {{'in Loyalty Points when you complete this order.'|translate}}
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div *ngIf="cart" class="cart-total">
+    <div class="cart-total__line">
+      <div>{{'Subtotal'|translate}}</div>
+      <div class="text-right">{{currency}} {{cart.totalPrice | number:'1.2-2'}}</div>
+    </div>
+    <div *ngIf="cart.discount && cart.discount.discount.node.calculatedDiscountValue !== 0 && !isSetRedemLoyaltyProgram" class="cart-total__line">
+      <div style="color: #1d2c6f;">{{'Discount'|translate}} <span *ngIf="cart.discount.discount.node.type === 'PERCENTAGE'">({{cart.discount.discount.node.discountValue}}%)</span></div>
+      <div style="color: #1d2c6f;">- {{currency}}
+        {{cart.discount.discount.node.calculatedDiscountValue | number:'1.2-2'}}</div>
+    </div>
+
+    <div *ngIf="isSetRedemLoyaltyProgram" class="cart-total__line">
+      <div style="color: #008000">{{'Loyalty'|translate}}</div>
+      <div style="color: #008000">- {{currency}} {{maximumRedemptionLoyaltyPoints | number}}</div>
+    </div>
+
+    <div *ngIf="orderType === 'delivery' && !isAppliedFreeDeliveryFee" class="cart-total__line">
+      <div translate>{{'Delivery Fee'|translate}}</div>
+      <div class="text-right">{{currency}} {{deliveryFee | number:'1.2-2'}}</div>
+    </div>
+    <div class="cart-total__line">
+      <div class="font-weight-bold">{{'Total'|translate}}</div>
+
+      <div *ngIf="cart.discount && !isSetRedemLoyaltyProgram" style="margin-right: 0;">
+        <div *ngIf="orderType === 'delivery' && !isAppliedFreeDeliveryFee" class="text-right font-weight-bold">{{currency}} {{cart.totalPrice + deliveryFee - cart.discount.discount.node.calculatedDiscountValue | number:'1.2-2'}}</div>
+        <div *ngIf="orderType === 'pickup' || (orderType === 'delivery' && isAppliedFreeDeliveryFee)" class="text-right font-weight-bold">{{currency}} {{cart.totalPrice - cart.discount.discount.node.calculatedDiscountValue | number:'1.2-2'}}</div>
+      </div>
+
+      <div *ngIf="isSetRedemLoyaltyProgram" style="margin-right: 0;">
+        <div *ngIf="orderType === 'delivery' && !isAppliedFreeDeliveryFee" class="text-right font-weight-bold">{{currency}} {{cart.totalPrice + deliveryFee - maximumRedemptionLoyaltyPoints | number:'1.2-2'}}</div>
+        <div *ngIf="orderType === 'pickup' || (orderType === 'delivery' && isAppliedFreeDeliveryFee)" class="text-right font-weight-bold">{{currency}} {{cart.totalPrice - maximumRedemptionLoyaltyPoints | number:'1.2-2'}}</div>
+      </div>
+
+      <div *ngIf="!cart.discount && !isSetRedemLoyaltyProgram" style="margin-right: 0;">
+        <div *ngIf="orderType === 'delivery' && !isAppliedFreeDeliveryFee" class="text-right font-weight-bold">{{currency}} {{cart.totalPrice + deliveryFee | number:'1.2-2'}}</div>
+        <div *ngIf="orderType === 'pickup' || (orderType === 'delivery' && isAppliedFreeDeliveryFee)" class="text-right font-weight-bold">{{currency}} {{cart.totalPrice | number:'1.2-2'}}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-slot" [ngClass]="{'btn--disabled': isPlaceOrderLoading}">
+    <button *ngIf="orderType === 'delivery' && storeId" id="placeOrder" [disabled]="isPlaceOrderLoading" (click)="placeOrder()" class="btn btn-primary btn-primary--focus d-block w-100 text-center text-white d-flex align-items-center justify-content-center p-2">
+      <span *ngIf="isPlaceOrderLoading" class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>
+      <span>{{'Place Order'|translate}}</span>
+    </button>
+    <button *ngIf="orderType === 'pickup' && storeId" id="placeOrder" [disabled]="isPlaceOrderLoading" (click)="placeOrder()" class="btn btn-primary btn-primary--focus d-block w-100 text-center text-white d-flex align-items-center justify-content-center p-2">
+      <span *ngIf="isPlaceOrderLoading" class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>
+      <span>{{'Place Order'|translate}}</span>
+    </button>
+  </div>
+</div>
+
+<ng-template #asapmodal let-modal>
+  <div class="modal-body">
+
+    <nav ngbNav #nav="ngbNav" [(activeId)]="modeTimeWhen" class="nav-justified">
+      <ng-container [ngbNavItem]="'today'">
+        <a ngbNavLink [routerLink]="null" [ngClass]="{'nav-item--active': modeTimeWhen == 'today'}" style="padding: 0.7rem 1rem;">{{'TODAY'|translate}}</a>
+        <ng-template ngbNavContent>
+          <a class="py-2 d-block text-center" *ngFor="let item of todayPreOrderTimes" [routerLink]="null" (click)="selectPreOrderTime(item.value, 'today')">{{item.time}}</a>
+        </ng-template>
+      </ng-container>
+
+      <ng-container [ngbNavItem]="'tomorrow'">
+        <a ngbNavLink [routerLink]="null" [ngClass]="{'nav-item--active': modeTimeWhen == 'tomorrow'}" style="padding: 0.7rem 1rem;">{{'TOMORROW'|translate}}</a>
+        <ng-template ngbNavContent>
+          <a class="py-2 d-block text-center" *ngFor="let item of tomorrowPreOrderTimes" [routerLink]="null" (click)="selectPreOrderTime(item.value, 'tomorrow')">{{item.time}}</a>
+        </ng-template>
+      </ng-container>
+    </nav>
+
+    <div [ngbNavOutlet]="nav" class="mt-2 overflow-auto"></div>
+  </div>
+</ng-template>
+
+<ng-template #discountModal let-modal>
+  <div class="modal-body p-4 text-center">
+    <h5 class="my-2">{{'Enter Promo Code'|translate}}</h5>
+    <p class="mt-4 mb-4" style="font-size: 14px; line-height: 18px;">{{'If you have a promo code, enter it and save on your order'|translate}}</p>
+    <form [formGroup]="promoCodeForm" class="w-100 text-left">
+      <div class="form-group">
+        <label class="mb-2" style="font-size: 14px;">{{'Promo Code'|translate}} *</label>
+        <input type="text" name="promoCode" class="form-control" formControlName="promoCode" placeholder="">
+        <div class="mt-2">
+          <p *ngIf="isInvalidPromoCode" class="text-danger" style="font-size: 13px; max-width: 100%;">
+            {{'The voucher is not valid'|translate}}
+          </p>
+        </div>
+      </div>
+    </form>
+    <div class="d-flex justify-content-end mt-4">
+      <button type="button" class="btn button-cancel" (click)="closeModal()">{{'Cancel'|translate}}</button>
+      <button type="button" class="btn btn-primary ml-3" (click)="applyPromoCode()" [disabled]="isApplyingCode || !promoCodeForm.valid">
+        <span *ngIf="isApplyingCode" class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>
+        <span>{{'Apply'|translate}}</span>
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #loyaltyProgramModal let-modal>
+  <div class="modal-body loyalty-modal-body">
+    <button type="button" class="close" style="float: left; font-size: 45px; outline: none;" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <div>
+      <div class="text-center loyalty-logo">🎉</div>
+      <h2 style="font-size: 1.875rem;">{{'Loyalty Program'|translate}}</h2>
+      <div class="mt-4 mb-4" style="color: #8c8c8c; line-height: 140%;">
+        {{'Collect points on every order you complete. Use them to get discounts on your next orders.'|translate}}
+      </div>
+      <div class="pt-4 pb-4">
+        <span class="active-points">{{'You have'|translate}} {{currency}} {{activeLoyaltyProgramPoints ? activeLoyaltyProgramPoints : '0.00'}} {{'in your wallet'|translate}}</span>
+      </div>
+
+      <div class="mt-4">
+        <h3 class="mb-4" style="font-size: 1.125rem;">{{'How it works'|translate}}</h3>
+        <div>
+          <div class="d-flex align-items-start mb-4">
+            <img src="assets/images/check-symbol.svg" style="width: 8px; margin-top: 4px;"/>
+            <div class="ml-2">{{'Get'|translate}} {{loyaltyProgram.criterias[0].pointsPercentage}}% {{'in credit as loyalty points.'|translate}}</div>
+          </div>
+          <div class="d-flex align-items-start mb-4">
+            <img src="assets/images/check-symbol.svg" style="width: 8px; margin-top: 4px;"/>
+            <div class="ml-2">{{'Redeem your points to get up to'|translate}} {{loyaltyProgram.criterias[0].redemptionPercentage}}% {{'off on your next order.'|translate}}</div>
+          </div>
+          <div class="d-flex align-items-start mb-4">
+            <img src="assets/images/check-symbol.svg" style="width: 8px; margin-top: 4px;"/>
+            <div class="ml-2">{{'Limited to maximum AED'|translate}} {{loyaltyProgram.criterias[0].redemptionMaxAmount}} {{'per order.'|translate}}</div>
+          </div>
+          <div class="d-flex align-items-start mb-4">
+            <img src="assets/images/check-symbol.svg" style="width: 8px; margin-top: 4px;"/>
+            <div class="ml-2">{{'Each loyalty point is valid for'|translate}} {{loyaltyProgram.criterias[0].pointsExpiryDays}} {{'days.'|translate}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #errorMessageModal let-modal>
+  <div class="modal-body text-center">
+    <h3 class="p-2" style="font-size: 20px;">Error</h3>
+    <div class="pt-4 pb-4">{{errorMessage}}</div>
+    <div class="p-2">
+      <button class="btn btn-primary" (click)="modal.close()">close</button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #paymentModal let-modal>
+  <div class="modal-body" [ngClass]="{'main-content--removing-card': isRemovingCard}">
+    <div class="payment-methods">
+      <div *ngIf="checkAvailablePaymentMethods(orderType === 'delivery' ? 'deliveryOnlineCard' : 'pickupOnlineCard' )" class="online-methods pb-2">
+        <div class="item-title">{{'Online Methods'|translate}}</div>
+        <div class="item-subtitle" (click)="selectPaymentMethod('Online')"><i class="fas fa-plus list-icon"></i> {{'Add new card'|translate}}</div>
+
+        <div *ngIf="isOpenCardForm" class="card-container">
+          <p id="errors" style="font-size: 13px; max-width: 100%;">
+          </p>
+
+          <form id="payment-form" accept-charset="UTF-8" method="GET"
+            action="{{formActionUrl}}" onsubmit="submitPaymentForm(); return false;">
+
+            <input type="hidden" name="payment_method_token" id="payment_method_token" value="" />
+
+            <fieldset>
+              <div class="spf-field">
+                <label class="internal" for="spf-fname">{{'Name'|translate}}</label>
+                <input type="text" class="spf-input-text spf-fname" id="full_name">
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <div class="spf-field mb-0">
+                <label class="internal">{{'Credit Card Number'|translate}}</label>
+                <div id="spreedly-number-test" class="spf-input-text spf-number">
+                </div>
+              </div>
+              <div class="spf-field spf-input-text spf-exp">
+                <label class="internal">{{'Expiration Date'|translate}}</label>
+                <input type="text" class="spf-month" id="month" size="3" maxlength="2" placeholder="MM">
+                <span class="spf-exp-divider">/</span>
+                <input type="text" class="spf-year" id="year" size="5" maxlength="4" placeholder="YYYY">
+              </div>
+              <div class="spf-field spf-verification_value">
+                <label class="internal">{{'CVV'|translate}}</label>
+                <div id="spreedly-cvv-test" class="spf-input-text spf-cvv">
+                </div>
+              </div>
+            </fieldset>
+
+            <div class="text-center mb-4">
+              <img src="assets/images/spreedly-logo.svg" style="width: 150px;"/>
+              <div style="font-weight: 600;">{{'Powered by'|translate}} <a style="color: #3d4fa0;">spreedly.com</a></div>
+            </div>
+
+            <fieldset>
+              <input type="submit" class="btn btn-primary btn-primary--focus d-block w-100 text-center spf-field-submit" value="{{'Save'|translate}}">
+            </fieldset>
+          </form>
+        </div>
+
+        <div *ngIf="checkAvailablePaymentMethods(orderType === 'delivery' ? 'deliveryOnlineCard' : 'pickupOnlineCard' ) && existingCreditCardInfo.length > 0">
+          <div *ngFor="let card of existingCreditCardInfo; let i = index" class="card-list__item align-items-center">
+            <div class="w-100" (click)="selectCard(card)">
+              <span class="font-weight-normal"><i class="fas fa-credit-card list-icon"></i> {{card.firstSixDigits}}** **** {{card.lastFourDigits}}</span>
+            </div>
+            <a class="btn" (click)="removeCreditCard(card, i)"><i class="fas fa-trash text-danger"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div *ngIf="checkAvailablePaymentMethods(orderType === 'delivery' ? 'deliveryPaymentCash' : 'pickupPaymentCash' ) || checkAvailablePaymentMethods(orderType === 'delivery' ? 'deliveryPaymentCard' : 'pickupPaymentCard' )" class="offline-methods">
+        <div class="item-title">{{'Offline Methods'|translate}}</div>
+        <div *ngIf="checkAvailablePaymentMethods(orderType === 'delivery' ? 'deliveryPaymentCash' : 'pickupPaymentCash' )" class="item-subtitle font-weight-normal justify-left" (click)="selectPaymentMethod('Offline Cash')" translate>Cash on {{orderType}}</div>
+        <div *ngIf="checkAvailablePaymentMethods(orderType === 'delivery' ? 'deliveryPaymentCard' : 'pickupPaymentCard' )" class="item-subtitle font-weight-normal justify-left" (click)="selectPaymentMethod('Offline Card')" translate="">Card on {{orderType}}</div>
+      </div>
+    </div>
+  </div>
+</ng-template>

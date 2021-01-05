@@ -1,0 +1,36 @@
+################################################################################
+##                                                                            ##
+##                                  MUTATION                                  ##
+##                                                                            ##
+################################################################################
+
+extend type Mutation {
+    """Request phone access token."""
+    requestPhoneAccessToken(input: RequestPhoneAccessTokenInput!): Boolean!
+
+    """Fetch phone access token."""
+    fetchPhoneAccessToken(input: FetchPhoneAccessTokenCodeInput!): String
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Request phone access token input."""
+input RequestPhoneAccessTokenInput {
+    """Phone number."""
+    phoneNumber: PhoneNumber!
+
+    locale: LocaleTag
+}
+
+"""Fetch phone access token input."""
+input FetchPhoneAccessTokenCodeInput {
+    """Phone number."""
+    phoneNumber: PhoneNumber!
+
+    """Code."""
+    code: String!
+}

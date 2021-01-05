@@ -1,0 +1,47 @@
+################################################################################
+##                                                                            ##
+##                                  MUTATION                                  ##
+##                                                                            ##
+################################################################################
+
+extend type Mutation {
+    """Set inventory category availability."""
+    setInventoryCategoryAvailability(input: SetInventoryCategoryAvailability!): InventoryCategoryAvailability!
+}
+
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+type InventoryCategoryAvailability {
+    """ID."""
+    id: ID!
+
+    """Category."""
+    category: InventoryCategory!
+
+    """Store."""
+    store: Store!
+
+    """Enabled flag."""
+    enabled: Boolean!
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+input SetInventoryCategoryAvailability {
+    """Category."""
+    category: ID!
+
+    """Store."""
+    store: ID!
+
+    """Enable flag."""
+    enabled: Boolean!
+}

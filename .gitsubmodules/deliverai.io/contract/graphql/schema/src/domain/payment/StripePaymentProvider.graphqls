@@ -1,0 +1,46 @@
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+type StripePaymentProvider implements PaymentProvider & Node & Audited {
+    """ID."""
+    id: ID!
+
+    """Catalog."""
+    catalog: Catalog!
+
+    """Login."""
+    login: String!
+
+    """User that created this entity."""
+    createdBy: User
+
+    """Date and time when this entity was created."""
+    createdAt: DateTime!
+
+    """User that last modified this entity."""
+    lastModifiedBy: User
+
+    """Date and time when this entity'es last modification was made."""
+    lastModifiedAt: DateTime
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Add stripe payment provider input"""
+input AddStripePaymentProviderInput {
+    """Login."""
+    login: String!
+}
+
+"""Update stripe payment provider input"""
+input UpdateStripePaymentProviderInput {
+    """Login."""
+    login: String!
+}

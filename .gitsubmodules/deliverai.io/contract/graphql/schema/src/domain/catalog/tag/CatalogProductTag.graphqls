@@ -1,0 +1,165 @@
+################################################################################
+##                                                                            ##
+##                                   QUERY                                    ##
+##                                                                            ##
+################################################################################
+
+extend type Query {
+    """Find catalog product tag by name."""
+    catalogProductTag(
+        """Name."""
+        name: String!
+    ): CatalogProductTag
+}
+
+################################################################################
+##                                                                            ##
+##                                  MUTATION                                  ##
+##                                                                            ##
+################################################################################
+
+extend type Mutation {
+    """Create catalog product tag."""
+    createCatalogProductTag(input: CreateCatalogProductTagInput!): CatalogProductTag!
+
+    """Update catalog product tag."""
+    updateCatalogProductTag(input: UpdateCatalogProductTagInput!): CatalogProductTag!
+
+    """Detach catalog product tag from product."""
+    detachCatalogProductTag(input: DetachCatalogProductTagInput!): Boolean!
+
+    """Delete catalog product tag."""
+    deleteCatalogProductTag(input: DeleteCatalogProductTagInput!): Boolean!
+}
+
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Catalog product tag."""
+type CatalogProductTag implements Node & Audited {
+    """ID"""
+    id: ID!
+
+    """Catalog products"""
+    catalogProducts: [CatalogProduct]!
+
+    """Name."""
+    name: String!
+
+    """Icon."""
+    icon: Url
+
+    """User that created this catalog product tag."""
+    createdBy: User
+
+    """Date and time when this catalog product tag was created."""
+    createdAt: DateTime!
+
+    """User that last modified this catalog product tag."""
+    lastModifiedBy: User
+
+    """Date and time when this catalog product tag'es last modification was made."""
+    lastModifiedAt: DateTime
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Create catalog product tag input."""
+input CreateCatalogProductTagInput {
+    """Catalog product ID."""
+    catalogProduct: ID!
+
+    """Name."""
+    name: String!
+
+    """Icon."""
+    icon: Upload
+}
+
+"""Update catalog product tag input."""
+input UpdateCatalogProductTagInput {
+    """Tag ID."""
+    tag: ID!
+
+    """Name."""
+    name: String
+
+    """Icon."""
+    icon: Upload
+}
+
+"""Detach catalog product tag from product input."""
+input DetachCatalogProductTagInput {
+    """Tag ID."""
+    tag: ID!
+
+    catalogProduct: ID!
+}
+
+"""Delete catalog product tag input."""
+input DeleteCatalogProductTagInput {
+    """Tag ID."""
+    tag: ID!
+}
+
+################################################################################
+##                                                                            ##
+##                                   RELAY                                    ##
+##                                                                            ##
+################################################################################
+
+"""
+catalog product tag connection.
+[Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types).
+"""
+type CatalogProductTagConnection {
+    """
+    A list of edges.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Edges).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Edges
+    edges: [CatalogProductTagConnectionEdge]
+
+    """
+    A list of nodes.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Node).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Node
+    nodes: [CatalogProductTag]
+
+    """
+    Information to aid in pagination.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types.Fields.PageInfo).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types.Fields.PageInfo
+    pageInfo: PageInfo!
+
+    """
+    Identifies the total count of products in the connection.
+    """
+    totalCount: Int!
+}
+
+"""catalog product tag connection's edge."""
+type CatalogProductTagConnectionEdge {
+    """
+    A cursor for use in pagination.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor
+    cursor: RelayCursor!
+
+    """
+    The product at the end of the edge.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Node).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Node
+    node: CatalogProductTag
+}

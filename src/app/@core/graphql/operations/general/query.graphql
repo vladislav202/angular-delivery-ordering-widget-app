@@ -1,0 +1,16 @@
+query GetTimeZoneList {
+    timeZones {
+        id
+        displayName
+        observesDaylightTime
+        offset
+    }
+}
+
+query GetCurrencyList {
+    currencies {
+        code
+        displayName
+        symbol
+    }
+}

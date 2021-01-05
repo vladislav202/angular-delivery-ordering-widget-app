@@ -1,0 +1,229 @@
+################################################################################
+##                                                                            ##
+##                                   QUERY                                    ##
+##                                                                            ##
+################################################################################
+
+extend type Query {
+    """Find a customer."""
+    customer(
+        """Find a customer by the ID."""
+        id: ID
+
+        """Find a customer by the phone access token."""
+        phoneAccessToken: String
+    ): Customer
+
+    """Customer connection."""
+    customerConnection(
+        """Find customers by business id."""
+        business: ID
+
+        nameOrPhone: String
+
+        # Using forward cursor pagination
+        """Find `first` items next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` items previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): CustomerConnection!
+}
+
+################################################################################
+##                                                                            ##
+##                                  MUTATION                                  ##
+##                                                                            ##
+################################################################################
+
+extend type Mutation {
+    """Checkout order."""
+    deleteCard(input: DeleteCardInput!): Boolean!
+
+    updateCustomer(input: UpdateCustomerInput): Customer!
+}
+
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Customer."""
+type Customer implements Node & Audited {
+    """ID."""
+    id: ID!
+
+    """Phone number."""
+    phoneNumber: PhoneNumberDetails
+
+    """Email address."""
+    email: EmailAddress
+
+    locale: LocaleTag
+
+    """Names."""
+    names: [String!]
+
+    """Attached payment cards."""
+    cards: [Card]
+
+    """First order."""
+    firstOrder(business: ID): Order
+
+    """Last order."""
+    lastOrder(business: ID): Order
+
+    """The number of orders."""
+    numberOfOrders(business: ID): PositiveInt
+
+    """Business connection."""
+    businessConnection(
+        # Using forward cursor pagination
+        """Find `first` items next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` items previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): BusinessConnection!
+
+    """Order connection."""
+    orderConnection(
+        # Using forward cursor pagination
+        """Find `first` items next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` items previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): OrderConnection!
+
+    """Total spent."""
+    totalSpent(business: ID): BigFloat!
+
+    """Available loyalty points."""
+    availableLoyaltyPoints(business: ID): BigFloat!
+
+    """User that created this entity."""
+    createdBy: User
+
+    """Date and time when this entity was created."""
+    createdAt: DateTime!
+
+    """User that last modified this entity."""
+    lastModifiedBy: User
+
+    """Date and time when this entity'es last modification was made."""
+    lastModifiedAt: DateTime
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Checkout order input."""
+input DeleteCardInput {
+    """customer ID."""
+    customerId: ID!
+
+    """First card's 6 digits."""
+    firstSixDigits: String!
+
+    """Last card's 4 digits."""
+    lastFourDigits: String!
+}
+
+input UpdateCustomerInput {
+    id: ID!
+
+    locale: LocaleTag
+}
+
+################################################################################
+##                                                                            ##
+##                                   RELAY                                    ##
+##                                                                            ##
+################################################################################
+
+"""
+Customer connection interface
+[Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types).
+"""
+type CustomerConnection {
+    """
+    A list of edges.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Edges).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Edges
+    edges: [CustomerConnectionEdge]
+
+    """
+    A list of nodes.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Node).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Node
+    nodes: [Customer]
+
+    """
+    Information to aid in pagination.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types.Fields.PageInfo).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types.Fields.PageInfo
+    pageInfo: PageInfo!
+
+    """
+    Identifies the total count of items in the connection.
+    """
+    totalCount: Int!
+}
+
+"""Customer connection's edge."""
+type CustomerConnectionEdge {
+    """
+    A cursor for use in pagination.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor
+    cursor: RelayCursor!
+
+    """
+    The item at the end of the edge.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Node).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Node
+    node: Customer
+}

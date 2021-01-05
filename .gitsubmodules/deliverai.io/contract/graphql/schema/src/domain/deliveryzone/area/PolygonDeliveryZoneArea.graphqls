@@ -1,0 +1,64 @@
+################################################################################
+##                                                                            ##
+##                                  MUTATION                                  ##
+##                                                                            ##
+################################################################################
+
+extend type Mutation {
+    """Create polygon delivery zone area."""
+    createPolygonDeliveryZoneArea(input: CreatePolygonDeliveryZoneAreaInput!): PolygonDeliveryZoneArea!
+
+    """Update polygon delivery zone area."""
+    updatePolygonDeliveryZoneArea(input: UpdatePolygonDeliveryZoneAreaInput!): PolygonDeliveryZoneArea!
+
+    """Delete polygon delivery zone area."""
+    deletePolygonDeliveryZoneArea(input: DeletePolygonDeliveryZoneAreaInput!): Boolean!
+}
+
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Polygon delivery zone area."""
+type PolygonDeliveryZoneArea implements Node & DeliveryZoneArea {
+    """ID."""
+    id: ID!
+
+    """Delivery zone."""
+    deliveryZone: DeliveryZone!
+
+    """Points forming the polygon geo area."""
+    points: [LatLng!]!
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Create polygon delivery zone area input."""
+input CreatePolygonDeliveryZoneAreaInput {
+    """ID of the delivery zone."""
+    deliveryZone: ID!
+
+    """Points forming the polygon."""
+    points: [SetLatLngInput!]!
+}
+
+"""Update polygon delivery zone area input."""
+input UpdatePolygonDeliveryZoneAreaInput {
+    """ID."""
+    id: ID!
+
+    """Points forming the polygon."""
+    points: [SetLatLngInput!]!
+}
+
+"""Delete polygon delivery zone area input."""
+input DeletePolygonDeliveryZoneAreaInput {
+    """ID."""
+    id: ID!
+}

@@ -1,0 +1,19 @@
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+interface Audited {
+    """User that created this entity."""
+    createdBy: User
+
+    """Date and time when this entity was created."""
+    createdAt: DateTime!
+
+    """User that last modified this entity."""
+    lastModifiedBy: User
+
+    """Date and time when this entity'es last modification was made."""
+    lastModifiedAt: DateTime
+}

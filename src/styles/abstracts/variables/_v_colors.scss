@@ -1,0 +1,40 @@
+@charset "utf-8";
+
+//
+// Description:
+//
+//    This file contains all application-wide SCSS colors variables.
+//
+
+$primary: #1d2c6f;
+$secondary: #ffffff;
+$success: #27c24c;
+$info: #23b7e5;
+$warning: #ff902b;
+$danger: #f05050;
+
+$yellow: #fff887;
+$lightgray: #ebedf2;
+
+$graytext: #9b9b9b;
+
+$amount-of-light: 10%;
+$primary-light: lighten($primary, $amount-of-light);
+$secondary-light: lighten($secondary, $amount-of-light);
+$success-light: lighten($success, $amount-of-light);
+$info-light: lighten($info, $amount-of-light);
+$warning-light: lighten($warning, $amount-of-light);
+$danger-light: lighten($danger, $amount-of-light);
+
+$amount-of-dark: 10%;
+$primary-dark: darken($primary, $amount-of-light);
+$secondary-dark: lighten($secondary, $amount-of-light);
+$success-dark: darken($success, $amount-of-light);
+$info-dark: darken($info, $amount-of-light);
+$warning-dark: darken($warning, $amount-of-light);
+$danger-dark: darken($danger, $amount-of-light);
+
+
+$input-border-color: $primary;
+$input-focus-border-color: $primary;
+$input-group-addon-bg: #ffffff;

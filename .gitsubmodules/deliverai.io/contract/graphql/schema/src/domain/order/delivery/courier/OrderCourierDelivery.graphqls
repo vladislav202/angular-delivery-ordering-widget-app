@@ -1,0 +1,53 @@
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Order courier delivery."""
+type OrderCourierDelivery implements Node & OrderDelivery {
+    """ID."""
+    id: ID!
+
+    """Order."""
+    order: Order!
+
+    """Fee."""
+    fee: BigFloat!
+
+    """Address."""
+    address: OrderCourierDeliveryAddress!
+
+    """Courier info."""
+    courier: CourierInfo
+
+    """If order courier delivery could be canceled"""
+    couldBeCanceled: Boolean!
+}
+
+"""Courier information."""
+type CourierInfo {
+    """Name."""
+    name: String
+
+    """Phone number."""
+    phone: String
+
+    """Tracking URL."""
+    trackingUrl: String
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Set order courier delivery input."""
+input SetOrderCourierDelivery {
+    """Address."""
+    address: SetOrderCourierDeliveryAddressInput!
+
+    """Delivery zone ID."""
+    deliveryZone: ID!
+}

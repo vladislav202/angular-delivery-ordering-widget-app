@@ -1,0 +1,119 @@
+################################################################################
+##                                                                            ##
+##                                   QUERY                                    ##
+##                                                                            ##
+################################################################################
+
+extend type Query {
+    """Find available order queue extensions for store."""
+    availableOrderQueueExtension(queueId: ID!): [OrderQueueAvailableExtension!]
+}
+
+################################################################################
+##                                                                            ##
+##                                  MUTATION                                  ##
+##                                                                            ##
+################################################################################
+
+extend type Mutation {
+    """Create an order queue extension."""
+    createOrderQueueExtension(input: CreateOrderQueueExtensionInput!): OrderQueueExtension!
+
+    """Delete an order queue extension."""
+    deleteOrderQueueExtension(input: DeleteOrderQueueExtensionInput!): Boolean!
+
+    """Add an order queue extension parameter."""
+    setOrderQueueExtensionParameter(input: SetOrderQueueExtensionParameterInput!): Boolean!
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Create order queue extension input."""
+input CreateOrderQueueExtensionInput {
+    """Order queue ID."""
+    queue: ID!
+
+    """Order queue extension ID."""
+    queueExtension: ID!
+}
+
+"""Delete order queue extension input."""
+input DeleteOrderQueueExtensionInput {
+    """Order queue extension ID."""
+    queueExtension: ID!
+}
+
+"""Add order queue extension parameter input."""
+input SetOrderQueueExtensionParameterInput {
+    """Order queue extension parameter ID."""
+    queueExtensionParameter: ID!
+
+    """Order queue extension ID."""
+    queueExtension: ID!
+
+    """Order queue extension parameter value."""
+    value: String!
+}
+
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+type OrderQueueAvailableExtension implements Node{
+    """Order queue extension ID."""
+    id: ID!
+
+    """Name."""
+    name: String!
+
+    """Description."""
+    description: String
+
+    """"Order queue extension parameters."""
+    parameters: [OrderQueueAvailableExtensionParameter!]
+
+    """Is optional?"""
+    optional: Boolean
+}
+
+type OrderQueueAvailableExtensionParameter implements Node{
+    """Order queue extension parameter ID."""
+    id: ID!
+
+    """Description."""
+    description: String!
+}
+
+type OrderQueueExtension implements Node{
+    """Order queue extension ID."""
+    id: ID!
+
+    """Name."""
+    name: String!
+
+    """Description."""
+    description: String
+
+    """"Order queue extension parameters."""
+    parameters: [OrderQueueExtensionParameter!]
+
+    """Is optional?"""
+    optional: Boolean
+}
+
+type OrderQueueExtensionParameter implements Node{
+    """Order queue extension parameter ID."""
+    id: ID!
+
+    """Description."""
+    description: String!
+
+    """Value."""
+    value: String
+}

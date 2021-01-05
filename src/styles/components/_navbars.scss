@@ -1,0 +1,19 @@
+@charset "utf-8";
+
+.navbar-nav {
+  .nav-link {
+    color: #525359;
+
+    &--active {
+      color: #000000;
+    }
+  }
+
+  .nav-item {
+    border-bottom: solid #e7e8ec 4px;
+
+    &--active {
+      border-bottom-color: $primary;
+    }
+  }
+}

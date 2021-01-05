@@ -1,0 +1,348 @@
+################################################################################
+##                                                                            ##
+##                                   QUERY                                    ##
+##                                                                            ##
+################################################################################
+
+extend type Query {
+    """It's you."""
+    me: User
+
+    """Find user."""
+    user(
+        """Find by indentifier."""
+        id: ID
+
+        """Find by email address."""
+        email: EmailAddress
+
+        """Find by phone number."""
+        phoneNumber: PhoneNumber
+    ): User
+
+    """User connection."""
+    userConnection(
+        # Using forward cursor pagination
+        """Find `first` items next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` items previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): UserConnection!
+}
+
+################################################################################
+##                                                                            ##
+##                                  MUTATION                                  ##
+##                                                                            ##
+################################################################################
+
+extend type Mutation {
+    """Create user."""
+    createUser(input: CreateUserInput!): User!
+
+    """Update user."""
+    updateUser(input: UpdateUserInput!): User!
+
+    """Upload user avatar."""
+    uploadUserAvatar(input: UploadUserAvatarInput!): User!
+
+    """Delete user avatar."""
+    deleteUserAvatar(input: DeleteUserAvatarInput!): User!
+
+    """Delete user."""
+    deleteUser(input: DeleteUserInput!): Boolean!
+
+    """Verify user's registration."""
+    verifyUserRegistration(input: VerifyUserRegistrationInput!): Boolean!
+
+    """Change user's password."""
+    changeUserPassword(input: ChangeUserPasswordInput!): Boolean!
+
+    """Request reset user's password."""
+    requestResetUserPassword(input: RequestResetUserPasswordInput!): Boolean!
+
+    """Try reset user's password."""
+    tryResetUserPassword(input: TryResetUserPasswordInput!): Boolean!
+
+    changeUserPhone(input: ChangeUserPhoneInput!): Boolean!
+}
+
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""User."""
+type User implements Node & Audited {
+    """ID."""
+    id: ID!
+
+    """Name."""
+    name: UserName!
+
+    """Email address."""
+    email: EmailAddress!
+
+    """Phone details."""
+    phoneNumberDetails: PhoneNumberDetails
+
+    """Avatar url."""
+    avatar: Url
+
+    locale: LocaleTag
+
+    """Business assignment connection."""
+    businessAssignmentConnection(
+        # Using forward cursor pagination
+        """Find `first` items next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` items previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): BusinessAssignmentConnection!
+
+    """Store assignment connection."""
+    storeAssignmentConnection(
+        """Business ID."""
+        business: ID
+
+        # Using forward cursor pagination
+        """Find `first` items next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` items previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): StoreAssignmentConnection!
+
+    """User that created this entity."""
+    createdBy: User
+
+    """Date and time when this entity was created."""
+    createdAt: DateTime!
+
+    """User that last modified this entity."""
+    lastModifiedBy: User
+
+    """Date and time when this entity'es last modification was made."""
+    lastModifiedAt: DateTime
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Create user input."""
+input CreateUserInput {
+    """Name."""
+    name: CreateUserNameInput!
+
+    """Email address."""
+    email: EmailAddress!
+
+    """Phone number."""
+    phoneNumber: PhoneNumber
+
+    """Password."""
+    password: String!
+
+    """Avatar."""
+    avatar: Upload
+}
+
+"""Update user input."""
+input UpdateUserInput {
+    """ID."""
+    # Field is not required because
+    # it's value is inferred from the authentication.
+    id: ID
+
+    """Name."""
+    name: UpdateUserNameInput
+
+    """Email address."""
+    email: EmailAddress
+
+    """Phone number."""
+    phoneNumber: PhoneNumber
+
+    """Avatar."""
+    avatar: Upload
+}
+
+"""Delete user input."""
+input DeleteUserInput {
+    """ID."""
+    id: ID
+
+    """Email address."""
+    email: EmailAddress
+
+    """Phone number."""
+    phoneNumber: PhoneNumber
+}
+
+"""Upload user avatar input."""
+input UploadUserAvatarInput {
+    """ID."""
+    # Field is not required because
+    # it's value is inferred from the authentication.
+    id: ID
+
+    """Avatar file of the user."""
+    file: Upload!
+}
+
+
+"""Delete user avatar input."""
+input DeleteUserAvatarInput {
+    """ID."""
+    # Field is not required because
+    # it's value is inferred from the authentication.
+    id: ID
+}
+
+"""Verify user's registration."""
+input VerifyUserRegistrationInput {
+    """User's registration verification code."""
+    verificationCode: String!
+}
+
+"""Change password user input."""
+input ChangeUserPasswordInput {
+    """ID."""
+    # Field is not required because
+    # it's value is inferred from the authentication.
+    id: ID
+
+    """Previous password."""
+    # Field is not required because
+    # it can be omitted when password is changed by administrators.
+    previousPassword: String
+
+    """New password."""
+    newPassword: String!
+
+    """Confirmation of new password."""
+    newPasswordConfirmation: String!
+}
+
+""" Request reset password user input."""
+input RequestResetUserPasswordInput {
+    """Email address."""
+    email: EmailAddress
+
+    """Phone number."""
+    phoneNumber: PhoneNumber
+}
+
+"""Reset password user input."""
+input TryResetUserPasswordInput {
+    """Verification code of the user."""
+    verificationCode: String!
+
+    """New password of the user."""
+    newPassword: String!
+
+    """Confirmation of new password."""
+    newPasswordConfirmation: String!
+}
+
+
+input ChangeUserPhoneInput {
+
+    email: EmailAddress!
+
+    phoneNumber: PhoneNumber!
+}
+
+################################################################################
+##                                                                            ##
+##                                   RELAY                                    ##
+##                                                                            ##
+################################################################################
+
+"""
+User connection.
+[Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types).
+"""
+type UserConnection {
+    """
+    A list of edges.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Edges).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Edges
+    edges: [UserConnectionEdge]
+
+    """
+    A list of nodes.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Node).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Node
+    nodes: [User]
+
+    """
+    Information to aid in pagination.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types.Fields.PageInfo).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types.Fields.PageInfo
+    pageInfo: PageInfo!
+
+    """
+    Identifies the total count of items in the connection.
+    """
+    totalCount: Int!
+}
+
+"""User connection's edge."""
+type UserConnectionEdge {
+    """
+    A cursor for use in pagination.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor
+    cursor: RelayCursor!
+
+    """
+    The item at the end of the edge.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Node).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Node
+    node: User
+}

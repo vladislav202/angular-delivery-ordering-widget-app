@@ -1,0 +1,117 @@
+################################################################################
+##                                                                            ##
+##                                  MUTATION                                  ##
+##                                                                            ##
+################################################################################
+
+extend type Mutation {
+    """Create business social network contact."""
+    createBusinessSocialNetworkContact(input: CreateBusinessSocialNetworkContactInput!): SocialNetworkContact!
+
+    """Create store social network contact."""
+    createStoreSocialNetworkContact(input: CreateStoreSocialNetworkContactInput!): SocialNetworkContact!
+
+    """Update social network contact."""
+    updateSocialNetworkContact(input: UpdateSocialNetworkContactInput!): SocialNetworkContact!
+
+    """Delete socialNetwork contact."""
+    deleteSocialNetworkContact(input: DeleteSocialNetworkContactInput!): Boolean!
+}
+
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Social network contact."""
+type SocialNetworkContact implements Node & Contact {
+    """ID."""
+    id: ID!
+
+    """Type."""
+    type: SocialNetworkContactType!
+
+    """Link."""
+    link: String!
+
+    """Name."""
+    name: String
+
+    """Description."""
+    description: String
+}
+
+"""Social network contact type."""
+enum SocialNetworkContactType {
+    FACEBOOK
+    INSTAGRAM
+    SKYPE
+    TELEGRAM
+    VIBER
+    VKONTAKTE
+    WHATS_APP
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Create social network contact input."""
+input CreateSocialNetworkContactInput {
+    """Type."""
+    type: SocialNetworkContactType!
+
+    """Link."""
+    link: String!
+
+    """Name."""
+    name: String
+
+    """Description."""
+    description: String
+}
+
+"""Create business social network contact input."""
+input CreateBusinessSocialNetworkContactInput {
+    """Business."""
+    business: ID!
+
+    """Contact."""
+    contact: CreateSocialNetworkContactInput!
+}
+
+"""Create store social network contact input."""
+input CreateStoreSocialNetworkContactInput {
+    """Store."""
+    store: ID!
+
+    """Contact."""
+    contact: CreateSocialNetworkContactInput!
+}
+
+"""Update social network contact input."""
+input UpdateSocialNetworkContactInput {
+    """ID."""
+    id: ID!
+
+    """Type."""
+    type: SocialNetworkContactType
+
+    """Link."""
+    link: String
+
+    """Name."""
+    name: String
+
+    """Description."""
+    description: String
+}
+
+"""Delete social network contact input."""
+input DeleteSocialNetworkContactInput {
+    """ID."""
+    id: ID!
+}

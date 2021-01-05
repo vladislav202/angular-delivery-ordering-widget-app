@@ -1,0 +1,362 @@
+mutation DeliveryCheckoutOrderWithOnlineNewCard(
+    $customerToken: ID!
+    $customerName: String!
+    $cart: ID!
+    $city: String!
+    $addressLine1: String!
+    $addressLine2: String
+    $cardId: ID!
+    $deliveryZone: ID!
+    $storeComment: String
+    $deliveryComment: String
+    $source: OrderSourceChannel!
+    $sourceInfluencer: String
+    $preOrderBy: DateTime
+    $latitude: BigFloat!
+    $longitude: BigFloat!
+) {
+    checkoutOrder(
+        input: {
+          customerToken: $customerToken,
+          customerName: $customerName,
+          cart: $cart,
+          delivery: {
+            courier: {
+              address: {
+                city: $city,
+                addressLine1: $addressLine1,
+                addressLine2: $addressLine2,
+                latLng: {
+                  latitude: $latitude,
+                  longitude: $longitude
+                }
+              },
+              deliveryZone: $deliveryZone
+            }
+          },
+          payment: {
+            onlineNewCard: {
+              cardId: $cardId
+            }
+          },
+          storeComment: $storeComment,
+          deliveryComment: $deliveryComment,
+          source: $source,
+          sourceInfluencer: $sourceInfluencer,
+          preOrderBy: $preOrderBy
+        }
+    ) {
+      id
+      uniqueLink
+    }
+}
+
+mutation DeliveryCheckoutOrderWithOnlineExistingCard(
+    $customerToken: ID!
+    $customerName: String!
+    $cart: ID!
+    $city: String!
+    $addressLine1: String!
+    $addressLine2: String
+    $firstSixDigits: String!
+    $lastFourDigits: String!
+    $deliveryZone: ID!
+    $storeComment: String
+    $deliveryComment: String
+    $source: OrderSourceChannel!
+    $sourceInfluencer: String
+    $preOrderBy: DateTime
+    $latitude: BigFloat!
+    $longitude: BigFloat!
+) {
+    checkoutOrder(
+        input: {
+          customerToken: $customerToken,
+          customerName: $customerName,
+          cart: $cart,
+          delivery: {
+            courier: {
+              address: {
+                city: $city,
+                addressLine1: $addressLine1,
+                addressLine2: $addressLine2,
+                latLng: {
+                  latitude: $latitude,
+                  longitude: $longitude
+                }
+              },
+              deliveryZone: $deliveryZone
+            }
+          },
+          payment: {
+            onlineExistingCard: {
+              firstSixDigits: $firstSixDigits,
+              lastFourDigits: $lastFourDigits
+            }
+          },
+          storeComment: $storeComment,
+          deliveryComment: $deliveryComment,
+          source: $source,
+          sourceInfluencer: $sourceInfluencer,
+          preOrderBy: $preOrderBy
+        }
+    ) {
+      id
+      uniqueLink
+    }
+}
+
+mutation DeliveryCheckoutOrderWithOfflineCash(
+    $customerToken: ID!
+    $customerName: String!
+    $cart: ID!
+    $city: String!
+    $addressLine1: String!
+    $addressLine2: String
+    $deliveryZone: ID!
+    $storeComment: String
+    $deliveryComment: String
+    $source: OrderSourceChannel!
+    $sourceInfluencer: String
+    $preOrderBy: DateTime
+    $latitude: BigFloat!
+    $longitude: BigFloat!
+) {
+    checkoutOrder(
+        input: {
+          customerToken: $customerToken,
+          customerName: $customerName,
+          cart: $cart,
+          delivery: {
+            courier: {
+              address: {
+                city: $city,
+                addressLine1: $addressLine1,
+                addressLine2: $addressLine2,
+                latLng: {
+                  latitude: $latitude,
+                  longitude: $longitude
+                }
+              },
+              deliveryZone: $deliveryZone
+            }
+          },
+          payment: {
+            offline: {
+              type: CASH
+            }
+          },
+          storeComment: $storeComment,
+          deliveryComment: $deliveryComment,
+          source: $source,
+          sourceInfluencer: $sourceInfluencer,
+          preOrderBy: $preOrderBy
+        }
+    ) {
+      id
+      uniqueLink
+    }
+}
+
+mutation DeliveryCheckoutOrderWithOfflineCard(
+    $customerToken: ID!
+    $customerName: String!
+    $cart: ID!
+    $city: String!
+    $addressLine1: String!
+    $addressLine2: String
+    $deliveryZone: ID!
+    $storeComment: String
+    $deliveryComment: String
+    $source: OrderSourceChannel!
+    $sourceInfluencer: String
+    $preOrderBy: DateTime
+    $latitude: BigFloat!
+    $longitude: BigFloat!
+) {
+    checkoutOrder(
+        input: {
+          customerToken: $customerToken,
+          customerName: $customerName,
+          cart: $cart,
+          delivery: {
+            courier: {
+              address: {
+                city: $city,
+                addressLine1: $addressLine1,
+                addressLine2: $addressLine2,
+                latLng: {
+                  latitude: $latitude,
+                  longitude: $longitude
+                }
+              },
+              deliveryZone: $deliveryZone
+            }
+          },
+          payment: {
+            offline: {
+              type: CARD
+            }
+          },
+          storeComment: $storeComment,
+          deliveryComment: $deliveryComment,
+          source: $source,
+          sourceInfluencer: $sourceInfluencer,
+          preOrderBy: $preOrderBy
+        }
+    ) {
+      id
+      uniqueLink
+    }
+}
+
+
+mutation PickupCheckoutOrderWithOnlineNewCard(
+    $customerToken: ID!
+    $customerName: String!
+    $cart: ID!
+    $store: ID!
+    $cardId: ID!
+    $storeComment: String
+    $source: OrderSourceChannel!
+    $sourceInfluencer: String
+    $preOrderBy: DateTime
+) {
+    checkoutOrder(
+        input: {
+          customerToken: $customerToken,
+          customerName: $customerName,
+          cart: $cart,
+          delivery: {
+            pickup: {
+              store: $store
+            }
+          },
+          payment: {
+            onlineNewCard: {
+              cardId: $cardId
+            }
+          },
+          storeComment: $storeComment,
+          source: $source,
+          sourceInfluencer: $sourceInfluencer,
+          preOrderBy: $preOrderBy
+        }
+    ) {
+      id
+      uniqueLink
+    }
+}
+
+mutation PickupCheckoutOrderWithOnlineExistingCard(
+    $customerToken: ID!
+    $customerName: String!
+    $cart: ID!
+    $store: ID!
+    $firstSixDigits: String!
+    $lastFourDigits: String!
+    $storeComment: String
+    $source: OrderSourceChannel!
+    $sourceInfluencer: String
+    $preOrderBy: DateTime
+) {
+    checkoutOrder(
+        input: {
+          customerToken: $customerToken,
+          customerName: $customerName,
+          cart: $cart,
+          delivery: {
+            pickup: {
+              store: $store
+            }
+          },
+          payment: {
+            onlineExistingCard: {
+              firstSixDigits: $firstSixDigits,
+              lastFourDigits: $lastFourDigits
+            }
+          },
+          storeComment: $storeComment,
+          source: $source,
+          sourceInfluencer: $sourceInfluencer,
+          preOrderBy: $preOrderBy
+        }
+    ) {
+      id
+      uniqueLink
+    }
+}
+
+mutation PickupCheckoutOrderWithOfflineCash(
+    $customerToken: ID!
+    $customerName: String!
+    $cart: ID!
+    $store: ID!
+    $storeComment: String
+    $source: OrderSourceChannel!
+    $sourceInfluencer: String
+    $preOrderBy: DateTime
+) {
+    checkoutOrder(
+        input: {
+          customerToken: $customerToken,
+          customerName: $customerName,
+          cart: $cart,
+          delivery: {
+            pickup: {
+              store: $store
+            }
+          },
+          payment: {
+            offline: {
+              type: CASH
+            }
+          },
+          storeComment: $storeComment,
+          source: $source,
+          sourceInfluencer: $sourceInfluencer,
+          preOrderBy: $preOrderBy
+        }
+    ) {
+      id
+      uniqueLink
+    }
+}
+
+mutation PickupCheckoutOrderWithOfflineCard(
+    $customerToken: ID!
+    $customerName: String!
+    $cart: ID!
+    $store: ID!
+    $storeComment: String
+    $source: OrderSourceChannel!
+    $sourceInfluencer: String
+    $preOrderBy: DateTime
+) {
+    checkoutOrder(
+        input: {
+          customerToken: $customerToken,
+          customerName: $customerName,
+          cart: $cart,
+          delivery: {
+            pickup: {
+              store: $store
+            }
+          },
+          payment: {
+            offline: {
+              type: CARD
+            }
+          },
+          storeComment: $storeComment,
+          source: $source,
+          sourceInfluencer: $sourceInfluencer,
+          preOrderBy: $preOrderBy
+        }
+    ) {
+      id
+      uniqueLink
+    }
+}
+
+

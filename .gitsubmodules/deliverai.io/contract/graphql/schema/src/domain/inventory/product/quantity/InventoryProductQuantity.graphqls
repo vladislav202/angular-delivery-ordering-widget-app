@@ -1,0 +1,127 @@
+################################################################################
+##                                                                            ##
+##                                  MUTATION                                  ##
+##                                                                            ##
+################################################################################
+
+extend type Mutation {
+    """Create inventory product quantity."""
+    createInventoryProductQuantity(input: CreateInventoryProductQuantityInput!): InventoryProductQuantity!
+
+    """Update inventory product quantity."""
+    updateInventoryProductQuantity(input: UpdateInventoryProductQuantityInput!): InventoryProductQuantity!
+
+    """Apply diff to inventory product quantity."""
+    applyDiffToInventoryProductQuantity(input: ApplyDiffToInventoryProductQuantityInput!): InventoryProductQuantity!
+
+    """Delete inventory product quantity."""
+    deleteInventoryProductQuantity(input: DeleteInventoryProductQuantity!): Boolean!
+}
+
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Inventory product quantity."""
+type InventoryProductQuantity implements Node & Audited {
+    """ID."""
+    id: ID!
+
+    """Product."""
+    product: InventoryProduct!
+
+    """Store."""
+    store: Store!
+
+    """Amount."""
+    amount: BigFloat!
+
+    """Unit."""
+    unit: QuantityUnit
+
+    """Exponent."""
+    exponent: Int
+
+    """User that created this inventory product quantity."""
+    createdBy: User
+
+    """Date and time when this inventory product quantity was created."""
+    createdAt: DateTime!
+
+    """User that last modified this inventory product quantity."""
+    lastModifiedBy: User
+
+    """Date and time when this inventory product quantity's last modification was made."""
+    lastModifiedAt: DateTime
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Create inventory product quantity input."""
+input CreateInventoryProductQuantityInput {
+    """Product ID."""
+    product: ID!
+
+    """Store ID."""
+    store: ID!
+
+    """Amount."""
+    amount: BigFloat!
+
+    """Unit."""
+    unit: QuantityUnit
+
+    """Exponent."""
+    exponent: Int
+}
+
+"""Update inventory product quantity input."""
+input UpdateInventoryProductQuantityInput {
+    """Product ID."""
+    product: ID!
+
+    """Store ID."""
+    store: ID!
+
+    """Amount."""
+    amount: BigFloat
+
+    """Unit."""
+    unit: QuantityUnit
+
+    """Exponent."""
+    exponent: Int
+}
+
+"""Apply diff to inventory product quantity input."""
+input ApplyDiffToInventoryProductQuantityInput {
+    """Product ID."""
+    product: ID!
+
+    """Store ID."""
+    store: ID!
+
+    """Diff."""
+    diff: BigFloat!
+
+    """Unit."""
+    unit: QuantityUnit
+
+    """Exponent."""
+    exponent: Int
+}
+
+"""Delete inventory product quantity input."""
+input DeleteInventoryProductQuantity {
+    """Product ID."""
+    product: ID!
+
+    """Store ID."""
+    store: ID!
+}

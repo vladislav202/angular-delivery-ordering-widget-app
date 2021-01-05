@@ -1,0 +1,156 @@
+subscription OrderFulfillment(
+    $order: String!
+) {
+    orderFulfillment(
+        order: $order
+    ) {
+      order {
+        id
+        customerName
+        customer {
+          locale
+        }
+        catalog {
+          id
+          slug
+          widgetBackgroundColor
+          widgetTextColor
+        }
+        delivery {
+            ... on OrderCourierDelivery {
+                __typename
+                fee
+                address {
+                    addressLine1
+                    addressLine2
+                }
+                courier {
+                    name
+                    phone
+                    trackingUrl
+                }
+            }
+            ... on OrderPickupDelivery {
+                __typename
+                store {
+                    id
+                    name
+                    address {
+                        id
+                        country
+                        city
+                        addressLine1
+                        addressLine2
+                    }
+                }
+            }
+        }
+        payment {
+            ... on OrderOfflinePayment {
+                __typename
+                order {
+                    id
+                    customerName
+                }
+                amount
+                currency {
+                    code
+                }
+                type
+                state
+            }
+            ... on OrderNewCardOnlinePayment {
+                __typename
+                order {
+                    id
+                    customerName
+                }
+                amount
+                currency {
+                    code
+                }
+            }
+            ... on OrderExistingCardOnlinePayment {
+                __typename
+                order {
+                    id
+                    customerName
+                }
+                amount
+                currency {
+                    code
+                }
+            }
+        }
+        productConnection {
+            edges {
+                node {
+                    id
+                    name
+                    price
+                    quantity
+                    modifierConnection {
+                        edges {
+                            node {
+                                id
+                                name
+                                optionConnection {
+                                    edges {
+                                        node {
+                                            id
+                                            name
+                                            price
+                                            quantity
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        discountConnection {
+            edges {
+                node {
+                    id
+                    name
+                    discountValue
+                    type
+                }
+            }
+        }
+        fulfillment {
+          id
+          state
+          status
+          store {
+            id
+            name
+            address {
+              id
+              country
+              city
+              addressLine1
+              addressLine2
+            }
+            image
+            contacts {
+              ... on PhoneContact {
+                id
+                phoneNumberDetails {
+                    countryCode
+                    nationalNumber
+                }
+              }
+            }
+            etaTimeUnit
+          }
+          preparationEta
+          eta
+        }
+        loyaltyPoints
+        createdAt
+      }
+    }
+}

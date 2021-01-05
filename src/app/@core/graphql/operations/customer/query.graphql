@@ -1,0 +1,49 @@
+query CartProduct(
+    $id: ID!
+) {
+    cartProduct(id: $id) {
+      id
+      catalogProduct {
+        id
+      }
+      cartModifierConnection {
+        edges {
+          node {
+            id
+            catalogModifierOption {
+              id
+              name
+              price
+              quantity
+            }
+            quantity
+          }
+        }
+      }
+      quantity
+    }
+}
+
+query Customer(
+  $phoneAccessToken: String
+) {
+  customer(phoneAccessToken: $phoneAccessToken) {
+    id
+    cards {
+      firstSixDigits
+      lastFourDigits
+    }
+    lastOrder {
+      customerName
+      delivery {
+        ... on OrderCourierDelivery {
+          __typename
+          address {
+            addressLine1
+            addressLine2
+          }
+        }
+      }
+    }
+  }
+}

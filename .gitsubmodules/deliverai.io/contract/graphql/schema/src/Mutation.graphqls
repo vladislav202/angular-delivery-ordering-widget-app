@@ -1,0 +1,15 @@
+################################################################################
+##                                                                            ##
+##                                  MUTATION                                  ##
+##                                                                            ##
+################################################################################
+
+"""`Mutation`."""
+type Mutation {
+    """
+    Dummy mutation. It simply everytime returns 'true' value.
+    Required by [Voyager](https://github.com/APIs-guru/graphql-voyager):
+    it doesn't accept empty mutations.
+    """
+    dummy: Boolean
+}

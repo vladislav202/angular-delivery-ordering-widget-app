@@ -1,0 +1,474 @@
+################################################################################
+##                                                                            ##
+##                                   QUERY                                    ##
+##                                                                            ##
+################################################################################
+
+extend type Query {
+    """Find catalog."""
+    catalog(
+        """ID."""
+        id: ID
+
+        """Slug."""
+        slug: String
+    ): Catalog
+
+    """Catalog connection."""
+    catalogConnection(
+        """Business ID."""
+        business: ID
+
+        """Store ID."""
+        store: ID
+
+        # Using forward cursor pagination
+        """Find `first` items next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` items previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): CatalogConnection!
+
+    """Fetch catalog delivery zones."""
+    catalogDeliveryZones(
+        """Catalog ID."""
+        catalog: ID!
+
+        """Geospatial latitude and longitude coordinates input."""
+        latLng: SetLatLngInput
+    ): [DeliveryZone!]!
+}
+
+################################################################################
+##                                                                            ##
+##                                  MUTATION                                  ##
+##                                                                            ##
+################################################################################
+
+extend type Mutation {
+    """Create catalog."""
+    createCatalog(input: CreateCatalogInput!): Catalog!
+
+    """Update catalog."""
+    updateCatalog(input: UpdateCatalogInput!): Catalog!
+
+    """Clone catalog."""
+    cloneCatalog(input: CloneCatalogInput!): Catalog!
+
+    """Add stores to catalog."""
+    addStoresToCatalog(input: AddStoresToCatalogInput!): Catalog!
+
+    """Removed stores from catalog."""
+    removeStoresFromCatalog(input: RemoveStoresFromCatalogInput!): Catalog!
+
+    """Delete catalog."""
+    deleteCatalog(input: DeleteCatalogInput!): Boolean!
+}
+
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Сatalog."""
+type Catalog implements Node & Audited {
+    """ID."""
+    id: ID!
+
+    """Version."""
+    version: NonNegativeInt!
+
+    """Store."""
+    business: Business!
+
+    """Name."""
+    name: String!
+
+    """Description."""
+    description: CatalogDescription
+
+    """Slug."""
+    slug: String
+
+    """Currency."""
+    currency: CurrencyDetails!
+
+    """Image."""
+    image: Url
+
+    """State."""
+    state: CatalogState!
+
+    """Tracking pixels."""
+    trackingPixels: [TrackingPixel!]
+
+    """Button color."""
+    buttonColor: String
+
+    """Button text color."""
+    buttonTextColor: String
+
+    """Headline text."""
+    headlineText: String
+
+    """Message text."""
+    messageText: String
+
+    """Widget background color."""
+    widgetBackgroundColor: String
+
+    """Widget text color."""
+    widgetTextColor: String
+
+    widgetFont: String
+
+    """Store connection"""
+    storeConnection(
+        # Using forward cursor pagination
+        """Find `first` items next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` items previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): StoreConnection!
+
+    """Delivery zone connection"""
+    deliveryZoneConnection(
+        # Using forward cursor pagination
+        """Find `first` items next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` items previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): DeliveryZoneConnection!
+
+    """Delivery zone area connection"""
+    deliveryZoneAreaConnection(
+        # Using forward cursor pagination
+        """Find `first` items next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` items previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): DeliveryZoneAreaConnection!
+
+    """Category connection."""
+    categoryConnection(
+        """Hidden."""
+        hidden: Boolean
+
+        # Using forward cursor pagination
+        """Find `first` items next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` items previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): CatalogCategoryConnection!
+
+    """Product connection"""
+    productConnection(
+        """Hidden."""
+        hidden: Boolean
+
+        # Using forward cursor pagination
+        """Find `first` items next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` items previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): CatalogProductConnection!
+
+    """Discount connection"""
+    discountConnection(
+        customer: ID
+        # Using forward cursor pagination
+        """Find `first` items next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` items previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): DiscountConnection!
+
+    """Store connection"""
+    loyaltyProgram: LoyaltyProgram
+
+    """Payment providers."""
+    paymentProviders: [PaymentProvider!]
+
+    """User that created this catalog."""
+    createdBy: User
+
+    """Date and time when this catalog was created."""
+    createdAt: DateTime!
+
+    """User that last modified this catalog."""
+    lastModifiedBy: User
+
+    """Date and time when this catalog'es last modification was made."""
+    lastModifiedAt: DateTime
+}
+
+"""Catalog state."""
+enum CatalogState {
+    DRAFT
+    LIVE
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Create catalog input."""
+input CreateCatalogInput {
+    """Business ID."""
+    business: ID!
+
+    """Store IDs."""
+    stores: [ID!]
+
+    """Name."""
+    name: String!
+
+    """Description."""
+    description: SetCatalogDescriptionInput
+
+    """Slug."""
+    slug: String
+
+    """Currency."""
+    currency: CurrencyCode!
+
+    """Image."""
+    image: Upload
+
+    """Button color."""
+    buttonColor: String
+
+    """Button text color."""
+    buttonTextColor: String
+
+    """Headline text."""
+    headlineText: String
+
+    """Message text."""
+    messageText: String
+
+    """Widget background color."""
+    widgetBackgroundColor: String
+
+    """Widget text color."""
+    widgetTextColor: String
+
+    widgetFont: String
+}
+
+"""Update catalog input."""
+input UpdateCatalogInput {
+    """Catalog ID."""
+    catalog: ID!
+
+    """Stores IDs."""
+    stores: [ID!]
+
+    """Name."""
+    name: String
+
+    """Description."""
+    description: SetCatalogDescriptionInput
+
+    """Slug."""
+    slug: String
+
+    """Currency."""
+    currency: CurrencyCode
+
+    """Image."""
+    image: Upload
+
+    """State."""
+    state: CatalogState
+
+    """Button color."""
+    buttonColor: String
+
+    """Button text color."""
+    buttonTextColor: String
+
+    """Headline text."""
+    headlineText: String
+
+    """Message text."""
+    messageText: String
+
+    """Widget background color."""
+    widgetBackgroundColor: String
+
+    """Widget text color."""
+    widgetTextColor: String
+
+    widgetFont: String
+}
+
+"""Clone catalog input."""
+input CloneCatalogInput {
+    """Catalog ID."""
+    catalog: ID!
+}
+
+input AddStoresToCatalogInput {
+    """Catalog ID."""
+    catalog: ID!
+
+    """Stores IDs."""
+    stores: [ID!]!
+}
+
+input RemoveStoresFromCatalogInput {
+    """Catalog ID."""
+    catalog: ID!
+
+    """Stores IDs."""
+    stores: [ID!]!
+}
+
+"""Delete catalog input."""
+input DeleteCatalogInput {
+    """Catlaog ID."""
+    catalog: ID!
+}
+
+################################################################################
+##                                                                            ##
+##                                   RELAY                                    ##
+##                                                                            ##
+################################################################################
+
+"""
+Catalog connection.
+[Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types).
+"""
+type CatalogConnection {
+    """
+    A list of edges.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Edges).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Edges
+    edges: [CatalogConnectionEdge]
+
+    """
+    A list of nodes.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Node).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Node
+    nodes: [Catalog]
+
+    """
+    Information to aid in pagination.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types.Fields.PageInfo).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types.Fields.PageInfo
+    pageInfo: PageInfo!
+
+    """
+    Identifies the total count of catalogs in the connection.
+    """
+    totalCount: Int!
+}
+
+"""Catalog connection's edge."""
+type CatalogConnectionEdge {
+    """
+    A cursor for use in pagination.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor
+    cursor: RelayCursor!
+
+    """
+    The catalog at the end of the edge.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Node).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Node
+    node: Catalog
+}

@@ -1,0 +1,8 @@
+{
+  "extends": "../../../../tslint.json",
+  "rules": {
+    "no-empty-interface": false,
+    "no-use-before-declare": false,
+    "deprecation": false
+  }
+}

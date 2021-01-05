@@ -1,0 +1,29 @@
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Geospatial latitude and lonitude."""
+type LatLng {
+    """Latitude."""
+    latitude: BigFloat!
+
+    """Longitude."""
+    longitude: BigFloat!
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Set geospatial latitude and lonitude input."""
+input SetLatLngInput {
+    """Latitude."""
+    latitude: BigFloat!
+
+    """Longitude."""
+    longitude: BigFloat!
+}

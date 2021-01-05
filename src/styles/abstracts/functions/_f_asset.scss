@@ -1,0 +1,18 @@
+@charset "utf-8";
+
+@import '../variables';
+
+/// Returns asset path
+@function asset-path($base, $type, $asset) {
+  @return $base + '/' + $type + '/' +  $asset;
+}
+
+/// Returns path to an image based on its path
+@function image-path($image, $base: $base-assets-path) {
+  @return asset-path($base, 'images', $image);
+}
+
+/// Returns URL to a font based on its path
+@function font-path($font, $base: $base-assets-path) {
+  @return asset-path($base, 'fonts', $font);
+}

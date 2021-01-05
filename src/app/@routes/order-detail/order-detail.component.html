@@ -1,0 +1,93 @@
+<div *ngIf="isLoadingOrderDetail" class="spinner-border text-primary" role="status" style="position: absolute;top: 50%;left: 49%;">
+  <span class="sr-only">{{'Loading'|translate}}...</span>
+</div>
+
+<div *ngIf="isShowErrorMessage" style="position: absolute; top: 50%;left: 50%; font-size: 18px; transform: translate(-50%, -50%);">This link is expired</div>
+
+<div *ngIf="!isLoadingOrderDetail && order">
+  <div class="header">
+    <div *ngIf="parentPath" class="nav-back nav-back--primary" [routerLink]="['/', parentPath, slug, 'order-tracking', uniqueLink]" [queryParams]="sourceInfluencer?{utm_source:sourceInfluencer}:{}" queryParamsHandling="merge" style="background-color: #e1e1e1;"><i class="fas fa-chevron-left"></i></div>
+    <div *ngIf="!parentPath" class="nav-back nav-back--primary" [routerLink]="['/', slug, 'order-tracking', uniqueLink]" [queryParams]="sourceInfluencer?{utm_source:sourceInfluencer}:{}" queryParamsHandling="merge" style="background-color: #e1e1e1;"><i class="fas fa-chevron-left"></i></div>
+
+    <div class="item-title item-title--standalone mb-4">
+      {{'Order Details'|translate}}
+    </div>
+  </div>
+
+  <div *ngIf="order" class="order-detail-container p-3">
+    <div class="order-detail">
+      <div class="mb-3" style="line-height: 130%;">
+        <div class="order-info-title">{{'Order Number'|translate}}</div>
+        <div>#{{order.id}}</div>
+      </div>
+      <div class="mb-3" style="line-height: 130%;">
+        <div class="order-info-title">{{'Placed at'|translate}}</div>
+        <div>{{ order.createdAt | date:'MMM d, y, h:mm a'}}</div>
+      </div>
+      <div class="mb-3">
+        <div *ngIf="getOrderType(order.delivery.__typename) === 'Courier'" style="line-height: 130%;">
+          <div class="order-info-title">{{'Delivery to'|translate}}</div>
+          <div>{{order.delivery.address.addressLine1}} {{order.delivery.address.addressLine2}}</div>
+        </div>
+        <div *ngIf="getOrderType(order.delivery.__typename) === 'Pickup'" style="line-height: 130%;">
+          <div class="order-info-title">{{'Pickup from'|translate}}</div>
+          <div>{{order.delivery.store.address.addressLine1}} {{order.delivery.store.address.city}} {{order.delivery.store.address.country}}</div>
+        </div>
+
+      </div>
+      <div style="line-height: 130%;">
+        <div class="order-info-title">{{'Paid with'|translate}}</div>
+        <div>{{getPaymentMethod(order)|translate}}</div>
+      </div>
+    </div>
+
+    <div class="order-prices mt-4">
+      <h4 class="text-center">{{'Your Order'|translate}}</h4>
+      <div class="mt-4">
+        <div class="mb-3 order-items" *ngFor="let product of order.productConnection.edges let i = index">
+          <div class="w-100">
+            <div class="d-flex align-items-center justify-content-between mb-1">
+              <div class="item-title--primary" style="font-weight: 600;">{{product.node.quantity}} X {{product.node.name}}</div>
+              <div style="font-weight: 600; white-space: nowrap;">{{order.payment.currency.code}} {{product.node.totalPrice | number}}</div>
+            </div>
+            <div class="pl-2 pr-2">
+              <div class="mb-1" *ngFor="let modifier of product.node.modifierConnection.edges">
+                <div *ngFor="let addon of modifier.node.optionConnection.edges" class="item-hint" style="word-break: break-word;">{{addon.node.quantity}} X {{addon.node.name}}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cart-prices mt-4">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div>{{'Subtotal'|translate}}</div>
+            <div class="text-right">{{order.payment.currency.code}} {{calculateSubtotalPrice(order) | number:'1.2-2'}}</div>
+          </div>
+
+          <div *ngIf="order.discountConnection.edges.length !== 0 && !order.loyaltyPoints" class="d-flex justify-content-between align-items-center mb-2">
+            <div style="color: #1d2c6f;">{{'Discount'|translate}} <span *ngIf="order.discountConnection.edges[0].node.type === 'PERCENTAGE'">({{order.discountConnection.edges[0].node.discountValue}}%)</span></div>
+            <div style="color: #1d2c6f;">- {{order.payment.currency.code}} {{calculateDiscountValue(order) | number:'1.2-2'}}</div>
+          </div>
+
+          <div *ngIf="order.loyaltyPoints" class="d-flex justify-content-between align-items-center mb-2">
+            <div style="color: #008000">{{'Loyalty'|translate}}</div>
+            <div style="color: #008000">- {{order.payment.currency.code}} {{order.loyaltyPoints | number:'1.2-2'}}</div>
+          </div>
+
+          <div *ngIf="getOrderType(order.delivery.__typename) === 'Courier' && order.delivery.fee !== 0" class="d-flex justify-content-between align-items-center mb-2">
+            <div>{{'Delivery Fee'|translate}}</div>
+            <div class="text-right">{{order.payment.currency.code}} {{order.delivery.fee | number:'1.2-2'}}</div>
+          </div>
+          <div class="d-flex justify-content-between align-items-center mt-3 pt-3" style="border-top: 1px solid #e9e9e9;">
+            <div class="font-weight-bold">{{'Total'|translate}}</div>
+            <div class="font-weight-bold">{{order.payment.currency.code}} {{order.payment.amount | number:'1.2-2'}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+

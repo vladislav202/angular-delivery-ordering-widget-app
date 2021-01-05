@@ -1,0 +1,84 @@
+################################################################################
+##                                                                            ##
+##                                  MUTATION                                  ##
+##                                                                            ##
+################################################################################
+
+extend type Mutation {
+    """Set delivery hours."""
+    setDeliveryHours(input: SetDeliveryHoursInput!): [DeliveryHours!]!
+
+    """Delete delivery hours."""
+    deleteDeliveryHours(input: DeleteDeliveryHoursInput!): Boolean!
+}
+
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""delivery hours."""
+type DeliveryHours {
+    """Day of the week."""
+    dayOfWeek: DeliveryHoursDayOfWeek!
+
+    """Time periods for the day."""
+    timePeriods: [DeliveryHoursTimePeriod!]!
+}
+
+"""delivery hours' day of the week."""
+enum DeliveryHoursDayOfWeek {
+    MONDAY
+    TUESDAY
+    WEDNESDAY
+    THURSDAY
+    FRIDAY
+    SATURDAY
+    SUNDAY
+}
+
+"""delivery hours' time period."""
+type DeliveryHoursTimePeriod {
+    """Left bound."""
+    from: Time!
+
+    """Right bound."""
+    to: Time!
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Set delivery hours input."""
+input SetDeliveryHoursInput {
+    """Store ID."""
+    store: ID!
+
+    """Days of the week."""
+    daysOfWeek: [DeliveryHoursDayOfWeek!]!
+
+    """Time periods for the day."""
+    timePeriods: [SetDeliveryHoursTimePeriodInput!]!
+}
+
+"""Set delivery hours' time period input."""
+input SetDeliveryHoursTimePeriodInput {
+    """Left bound."""
+    from: Time!
+
+    """Right bound."""
+    to: Time!
+}
+
+"""Delete delivery hours input."""
+input DeleteDeliveryHoursInput {
+    """Store ID."""
+    store: ID!
+
+    """Days of the week."""
+    daysOfWeek: [DeliveryHoursDayOfWeek!]!
+}

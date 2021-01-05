@@ -1,0 +1,13 @@
+@charset "utf-8";
+
+//
+// Description:
+//
+//    This file contains all application-wide SCSS assets variables.
+//
+
+/// Relative or absolute path where all assets are served from
+/// @type String
+/// @example scss - When using a CDN
+///   $base-url: 'http://cdn.example.com/assets/';
+$base-assets-path: '/assets' !default;

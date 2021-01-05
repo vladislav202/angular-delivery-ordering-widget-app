@@ -1,0 +1,15 @@
+{
+  "/api": {
+    "target":  {
+      "host": "api.dev.deliverai.io",
+      "protocol": "https:",
+      "port": 443
+    },
+    "pathRewrite": {
+      "^/api(.*)": "$1"
+    },
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}

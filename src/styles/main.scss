@@ -1,0 +1,57 @@
+@charset "utf-8";
+
+:root {
+  --theme-color: #ffffff;
+  --theme-background-color: #152051;
+}
+
+//
+// Description:
+//
+//    Read more about directory structure here:
+//    https://medium.com/@aaronverones/using-the-7-1-sass-scss-pattern-with-angular-7-bb210c015dcc
+//    and here: https://sass-guidelin.es/
+//
+
+// Configuration and helpers
+@import 'abstracts/variables';
+@import 'abstracts/mixins';
+@import 'abstracts/functions';
+@import 'abstracts/placeholders';
+
+// Vendors extensions
+@import 'vendors-extensions/bootstrap';
+
+// Vendors
+@import 'vendors/angled-edges';
+@import 'vendors/bootstrap';
+@import 'vendors/bourbon';
+@import 'vendors/fontawesome';
+@import 'vendors/spinkit';
+@import 'vendors/typesettings';
+
+// Base stuff
+@import 'base/base';
+@import 'base/fonts';
+@import 'base/helpers';
+@import 'base/reset';
+@import 'base/typography';
+
+// Components
+@import 'components/buttons';
+@import 'components/navbars';
+@import 'components/blocks';
+@import 'components/modals';
+@import 'components/ngbnav';
+@import 'components/icon';
+@import 'components/forms';
+
+// Themes
+@import 'themes/light';
+
+@import 'pages/layout';
+
+// Shame file
+@import 'shame';
+
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';

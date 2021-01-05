@@ -1,0 +1,47 @@
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Order payment."""
+interface OrderPayment {
+    """ID."""
+    id: ID!
+
+    """Order."""
+    order: Order!
+
+    """Amount."""
+    amount: BigFloat!
+
+    """Currency."""
+    currency: CurrencyDetails!
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Set order payment input."""
+input SetOrderPayment {
+    """Offline payment."""
+    offline: SetOrderOfflinePayment
+
+    """Online payment with new card."""
+    onlineNewCard: SetOrderNewCardOnlinePayment
+
+    """Online payment with existing card."""
+    onlineExistingCard: SetOrderExistingCardOnlinePayment
+}
+
+enum PaymentMethod {
+    PICKUP_CASH
+    PICKUP_CARD
+    PICKUP_ONLINE_CARD
+    DELIVERY_CASH
+    DELIVERY_CARD
+    DELIVERY_ONLINE_CARD
+}

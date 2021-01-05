@@ -1,0 +1,202 @@
+################################################################################
+##                                                                            ##
+##                                   QUERY                                    ##
+##                                                                            ##
+################################################################################
+
+extend type Query {
+    """Find inventory product by ID."""
+    inventoryProduct(id: ID!): InventoryProduct!
+
+    """Inventory product connection."""
+    inventoryProductConnection(
+        """Find by the business'es indentifier."""
+        business: ID
+
+        """Find by the store's indentifier."""
+        store: ID
+
+        # Using forward cursor pagination
+        """Find `first` items next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` items previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): InventoryProductConnection!
+}
+
+################################################################################
+##                                                                            ##
+##                                  MUTATION                                  ##
+##                                                                            ##
+################################################################################
+
+extend type Mutation {
+    """Create inventory product."""
+    createInventoryProduct(input: CreateInventoryProductInput!): InventoryProduct!
+
+    """Update inventory product."""
+    updateInventoryProduct(input: UpdateInventoryProductInput!): InventoryProduct!
+
+    """Delete inventory product."""
+    deleteInventoryProduct(input: DeleteInventoryProductInput!): Boolean!
+}
+
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Inventory product."""
+type InventoryProduct implements Node & Audited {
+    """ID."""
+    id: ID!
+
+    """Business."""
+    business: Business!
+
+    """Сategory."""
+    category: InventoryCategory
+
+    """Name."""
+    name: String!
+
+    """Description."""
+    description: String
+
+    """Images."""
+    images: [Url!]
+
+    """Quantities."""
+    quantities(stores: [ID!]): [InventoryProductQuantity]!
+
+    """Availabilities."""
+    availabilities(stores: [ID!]): [InventoryProductAvailability!]!
+
+    """User that created this inventory product."""
+    createdBy: User
+
+    """Date and time when this inventory product was created."""
+    createdAt: DateTime!
+
+    """User that last modified this inventory product."""
+    lastModifiedBy: User
+
+    """Date and time when this inventory product's last modification was made."""
+    lastModifiedAt: DateTime
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Create inventory product input."""
+input CreateInventoryProductInput {
+    """Business ID."""
+    business: ID!
+
+    """Category ID."""
+    category: ID
+
+    """Name."""
+    name: String!
+
+    """Description."""
+    description: String
+
+    """Images."""
+    images: [Upload!]
+}
+
+"""Update inventory product input."""
+input UpdateInventoryProductInput {
+    """ID."""
+    id: ID!
+
+    """Category ID."""
+    category: ID
+
+    """Name."""
+    name: String
+
+    """Description."""
+    description: String
+
+    """Images."""
+    images: [Upload!]
+}
+
+"""Delete inventory product input."""
+input DeleteInventoryProductInput {
+    """ID."""
+    id: ID!
+}
+
+################################################################################
+##                                                                            ##
+##                                   RELAY                                    ##
+##                                                                            ##
+################################################################################
+
+"""
+Inventory product connection.
+[Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types).
+"""
+type InventoryProductConnection {
+    """
+    A list of edges.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Edges).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Edges
+    edges: [InventoryProductConnectionEdge]
+
+    """
+    A list of nodes.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Node).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Node
+    nodes: [InventoryProduct]
+
+    """
+    Information to aid in pagination.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types.Fields.PageInfo).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types.Fields.PageInfo
+    pageInfo: PageInfo!
+
+    """
+    Identifies the total count of inventory products in the connection.
+    """
+    totalCount: Int!
+}
+
+"""Inventory product connection's edge."""
+type InventoryProductConnectionEdge {
+    """
+    A cursor for use in pagination.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor
+    cursor: RelayCursor!
+
+    """
+    The inventory product at the end of the edge.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Node).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Node
+    node: InventoryProduct
+}

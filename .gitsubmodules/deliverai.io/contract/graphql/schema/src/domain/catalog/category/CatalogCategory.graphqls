@@ -1,0 +1,274 @@
+################################################################################
+##                                                                            ##
+##                                   QUERY                                    ##
+##                                                                            ##
+################################################################################
+
+extend type Query {
+    """Find catalog category by ID."""
+    catalogCategory(
+        """ID."""
+        id: ID!
+    ): CatalogCategory
+
+    """Catalog category connection."""
+    catalogCategoryConnection(
+        """Business ID."""
+        business: ID
+
+        """Catalog ID."""
+        catalog: ID
+
+        """Hidden."""
+        hidden: Boolean
+
+        # Using forward cursor pagination
+        """Find `first` items next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` items previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): CatalogCategoryConnection!
+}
+
+################################################################################
+##                                                                            ##
+##                                  MUTATION                                  ##
+##                                                                            ##
+################################################################################
+
+extend type Mutation {
+    """Create a catalog category."""
+    createCatalogCategory(input: CreateCatalogCategoryInput!): CatalogCategory!
+
+    """Update a catalog category."""
+    updateCatalogCategory(input: UpdateCatalogCategoryInput!): CatalogCategory!
+
+    """Delete a catalog category."""
+    deleteCatalogCategory(input: DeleteCatalogCategoryInput!): Boolean!
+}
+
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Catalog category."""
+type CatalogCategory implements Node & Audited {
+    """ID."""
+    id: ID!
+
+    """Version."""
+    version: NonNegativeInt!
+
+    """Catalog."""
+    catalog: Catalog!
+
+    """Parent category."""
+    parentCategory: CatalogCategory
+
+    """Name."""
+    name: String!
+
+    """Description."""
+    description: CatalogCategoryDescription
+
+    """Hidden."""
+    hidden: Boolean!
+
+    """Image."""
+    image: Url
+
+    """Position (zero-based)."""
+    position: Int!
+
+    """Sub category connection."""
+    subCategoryConnection(
+        """Hidden."""
+        hidden: Boolean
+
+        # Using forward cursor pagination
+        """Find `first` items next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` items previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): CatalogCategoryConnection!
+
+    """Product connection."""
+    productConnection(
+        """Hidden."""
+        hidden: Boolean
+
+        # Using forward cursor pagination
+        """Find `first` items next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` items previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): CatalogProductConnection!
+
+    """User that created this catalog category."""
+    createdBy: User
+
+    """Date and time when this catalog category was created."""
+    createdAt: DateTime!
+
+    """User that last modified this catalog category."""
+    lastModifiedBy: User
+
+    """Date and time when this catalog category'es last modification was made."""
+    lastModifiedAt: DateTime
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Create catalog category input."""
+input CreateCatalogCategoryInput {
+    """Catalog ID."""
+    catalog: ID!
+
+    """Parent category ID."""
+    parentCategory: ID
+
+    """Name."""
+    name: String!
+
+    """Description."""
+    description: SetCatalogCategoryDescriptionInput
+
+    """Image."""
+    image: Upload
+
+    """Before category ID."""
+    beforeCategory: ID
+
+    """After category ID."""
+    afterCategory: ID
+}
+
+"""Update catalog category input."""
+input UpdateCatalogCategoryInput {
+    """Category ID."""
+    category: ID!
+
+    """Parent category ID."""
+    parentCategory: ID
+
+    """Name."""
+    name: String
+
+    """Description."""
+    description: SetCatalogCategoryDescriptionInput
+
+    """Hidden."""
+    hidden: Boolean
+
+    """Image."""
+    image: Upload
+
+    """Before category ID."""
+    beforeCategory: ID
+
+    """After category ID."""
+    afterCategory: ID
+}
+
+"""Delete catalog category input."""
+input DeleteCatalogCategoryInput {
+    """Category ID."""
+    category: ID!
+}
+
+################################################################################
+##                                                                            ##
+##                                   RELAY                                    ##
+##                                                                            ##
+################################################################################
+
+"""
+Catalog category connection.
+[Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types).
+"""
+type CatalogCategoryConnection {
+    """
+    A list of edges.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Edges).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Edges
+    edges: [CatalogCategoryConnectionEdge]
+
+    """
+    A list of nodes.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Node).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Node
+    nodes: [CatalogCategory]
+
+    """
+    Information to aid in pagination.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types.Fields.PageInfo).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types.Fields.PageInfo
+    pageInfo: PageInfo!
+
+    """
+    Identifies the total count of catalog categorys in the connection.
+    """
+    totalCount: Int!
+}
+
+"""Catalog category connection's edge."""
+type CatalogCategoryConnectionEdge {
+    """
+    A cursor for use in pagination.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor
+    cursor: RelayCursor!
+
+    """
+    The catalog category at the end of the edge.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Node).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Node
+    node: CatalogCategory
+}

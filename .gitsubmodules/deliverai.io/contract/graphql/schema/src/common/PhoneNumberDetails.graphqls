@@ -1,0 +1,14 @@
+"""Phone number details."""
+type PhoneNumberDetails {
+    """Country code."""
+    countryCode: Int!
+
+    """National number."""
+    nationalNumber: Long!
+
+    """Extension."""
+    extension: String
+
+    """Leading zeros count."""
+    leadingZerosCount: Int!
+}

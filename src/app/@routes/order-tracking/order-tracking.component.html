@@ -1,0 +1,92 @@
+<div *ngIf="isLoadingOrderDetail" class="spinner-border text-primary" role="status" style="position: absolute;top: 50%;left: 49%;">
+  <span class="sr-only">{{'Loading...'|translate}}</span>
+</div>
+
+<div *ngIf="isShowErrorMessage" style="position: absolute; top: 50%;left: 50%; font-size: 18px; transform: translate(-50%, -50%);">This link is expired</div>
+
+<div class="widget-container" *ngIf="!isLoadingOrderDetail && order">
+  <div class="header">
+    <div *ngIf="parentPath" class="nav-back nav-back--primary" [routerLink]="['/', parentPath, slug, 'order-confirm', uniqueLink]" [queryParams]="sourceInfluencer?{utm_source:sourceInfluencer}:{}" queryParamsHandling="merge" style="background-color: #e1e1e1;"><i class="fas fa-chevron-left"></i></div>
+    <div *ngIf="!parentPath" class="nav-back nav-back--primary" [routerLink]="['/', slug, 'order-confirm', uniqueLink]" [queryParams]="sourceInfluencer?{utm_source:sourceInfluencer}:{}" queryParamsHandling="merge" style="background-color: #e1e1e1;"><i class="fas fa-chevron-left"></i></div>
+
+    <div class="item-title item-title--standalone mb-4">
+      {{'Track Your Order'|translate}}
+    </div>
+  </div>
+
+  <div class="track-container p-3" id="trackContainer">
+    <div class="order-info d-flex justify-content-between">
+      <div class="order-id" style="line-height: 130%;">
+        <div class="order-info-title">{{'Order ID'|translate}}</div>
+        <a *ngIf="parentPath" href="#" [routerLink]="['/', parentPath, slug, 'order-detail', uniqueLink]" [queryParams]="sourceInfluencer?{utm_source:sourceInfluencer}:{}" queryParamsHandling="merge" style="text-decoration: underline !important; color: #000000">#{{order.id}}</a>
+        <a *ngIf="!parentPath" href="#" [routerLink]="['/', slug, 'order-detail', uniqueLink]" [queryParams]="sourceInfluencer?{utm_source:sourceInfluencer}:{}" queryParamsHandling="merge" style="text-decoration: underline !important; color: #000000">#{{order.id}}</a>
+      </div>
+      <div *ngIf="!isLoadingStoreDetail" class="delivery-time">
+        <div *ngIf="getOrderType(order.delivery.__typename) === 'Courier' && counter && order.fulfillment.status !== 'Completed'" class="text-center" style="line-height: 130%;">
+          <div class="order-info-title">{{'Est. Delivery'|translate}}</div>
+          <div>in {{counter}} {{etaTimeUnit|translate}}</div>
+        </div>
+        <div *ngIf="getOrderType(order.delivery.__typename) !== 'Courier' && counter && order.fulfillment.status !== 'Completed'" class="text-center" style="line-height: 130%;">
+          <div class="order-info-title">{{'Est. Pickup'|translate}}</div>
+          <div>in {{counter}} {{etaTimeUnit|translate}}</div>
+        </div>
+
+      </div>
+      <div *ngIf="order.delivery.courier && order.delivery.courier.trackingUrl" class="delivery-by text-right" style="line-height: 130%;">
+        <div class="order-info-title mb-1">{{'Delivery by'|translate}}</div>
+        <img src="assets/images/quiqup-logo.png" style="width: 90px;">
+      </div>
+    </div>
+
+    <div class="track-content">
+      <ul class="StepProgress" id="stepProgress">
+        <li class="StepProgress-item" [ngClass]="{'is-done': order.fulfillment.state === 'PROCESSING' || order.fulfillment.status === 'Completed'}">
+          <div class="step">{{'New'|translate}}</div>
+          <div class="description">{{'Your order has been sent'|translate}}</div>
+        </li>
+        <li class="StepProgress-item" [ngClass]="{'current': order.fulfillment.status === 'In progress', 'is-done': order.fulfillment.status === 'In delivery' || order.fulfillment.status === 'Ready for pickup' || order.fulfillment.status === 'Completed'}">
+          <div class="step">{{'In process'|translate}}</div>
+          <div class="description">{{'Your order is in process'|translate}}</div>
+        </li>
+        <li *ngIf="getOrderType(order.delivery.__typename) === 'Courier'" class="StepProgress-item" [ngClass]="{'current': order.fulfillment.status === 'In delivery', 'is-done': order.fulfillment.status === 'Completed'}">
+          <div class="step">{{'In Route'|translate}}</div>
+          <div class="description">{{'Your order is out for delivery'|translate}}</div>
+          <a *ngIf="order.delivery.courier && order.delivery.courier.trackingUrl" class="btn btn-outline-primary" style="font-size: 12px; padding: 2px 5px;" target="_blank" (click)="trackOrder(order)">View on Map</a>
+        </li>
+        <li *ngIf="getOrderType(order.delivery.__typename) !== 'Courier'" class="StepProgress-item" [ngClass]="{'current': order.fulfillment.status === 'Ready for pickup', 'is-done': order.fulfillment.status === 'Completed'}">
+          <div class="step">{{'Ready for pickup'|translate}}</div>
+          <div class="description">{{'Your order is ready for pick up'|translate}}</div>
+        </li>
+        <li *ngIf="getOrderType(order.delivery.__typename) === 'Courier'" class="StepProgress-item" [ngClass]="{'is-done': order.fulfillment.status === 'Completed', 'delivery': order.delivery.courier && order.delivery.courier.trackingUrl}">
+          <div class="step">{{'Delivered'|translate}}</div>
+          <div class="description">{{'Your order has been delivered'|translate}}</div>
+        </li>
+        <li *ngIf="getOrderType(order.delivery.__typename) !== 'Courier'" class="StepProgress-item" [ngClass]="{'is-done': order.fulfillment.status === 'Completed'}">
+          <div class="step">{{'Completed'|translate}}</div>
+          <div class="description">{{'Your order has been completed'|translate}}</div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoadingStoreDetail" class="view-cart shadow-lg bg-white rounded" id="callusButton" style="padding-top: 20px;">
+    <div class="d-flex align-items-center" style="padding-bottom: 25px;">
+      <div>
+        <img *ngIf="store.image" src="{{store.image}}" style="width: 80px; height: 80px; border-radius: 50%;"/>
+        <div *ngIf="!store.image" style="width: 80px; height: 80px;"></div>
+      </div>
+      <div class="ml-3">
+        <h2 class="mb-2" style="font-size: 20px;">{{store.name}}</h2>
+        <div *ngIf="store.address" class="mb-2" style="font-weight: 700; color: #a9a9a9">{{store.address.addressLine1}} {{store.address.city}} {{store.address.country}}</div>
+        <div *ngIf="store.contacts.length !== 0" style="font-weight: 700; color: #a9a9a9">+{{store.contacts[0].phoneNumberDetails.countryCode}}{{store.contacts[0].phoneNumberDetails.nationalNumber}}</div>
+      </div>
+    </div>
+    <button class="btn btn-primary btn-primary--focus view-cart__btn w-100 d-flex justify-content-center" (click)="callUs()">
+      {{'Call Us'|translate}}
+    </button>
+  </div>
+</div>
+
+
+
+

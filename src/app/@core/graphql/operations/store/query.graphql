@@ -1,0 +1,72 @@
+query StoreLookupById(
+    $id: ID!
+) {
+    store(id: $id) {
+        id
+        name
+        address {
+          id
+          country
+          city
+          addressLine1
+          addressLine2
+        }
+        contacts {
+          ... on PhoneContact {
+            id
+            phoneNumberDetails {
+                countryCode
+                nationalNumber
+            }
+          }
+        }
+        deliveryHours(daysOfTheWeek: []) {
+          dayOfWeek
+      		timePeriods {
+            from
+            to
+          }
+        }
+        pickupHours(daysOfTheWeek: []) {
+          dayOfWeek
+      		timePeriods {
+            from
+            to
+          }
+        }
+        paymentMethods
+        preOrderEnabled
+        deliveryEnabled
+        pickupEnabled
+        pickupEta
+        deliveryEta
+        etaTimeUnit
+    }
+}
+
+query CatalogStoreConnection($id: ID, $slug: String) {
+  catalog(id: $id, slug: $slug) {
+    id
+    name
+    storeConnection {
+      edges {
+        node {
+          id
+          name
+          address {
+            id
+            country
+            city
+            addressLine1
+            addressLine2
+          }
+          image
+          pickupEta
+          pickupEnabled
+          deliveryEnabled
+          etaTimeUnit
+        }
+      }
+    }
+  }
+}

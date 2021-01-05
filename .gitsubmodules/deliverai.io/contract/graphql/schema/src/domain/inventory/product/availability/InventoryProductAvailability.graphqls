@@ -1,0 +1,29 @@
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Inventory product availability."""
+interface InventoryProductAvailability {
+    """ID."""
+    id: ID!
+
+    """Product."""
+    product: InventoryProduct!
+
+    """Store."""
+    store: Store!
+
+    """User that created this inventory product availability."""
+    createdBy: User
+
+    """Date and time when this inventory product availability was created."""
+    createdAt: DateTime!
+
+    """User that last modified this inventory product availability."""
+    lastModifiedBy: User
+
+    """Date and time when this inventory product availability's last modification was made."""
+    lastModifiedAt: DateTime
+}

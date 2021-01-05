@@ -1,0 +1,28 @@
+<label class="form-block__label--big">
+    <div>{{'Move the red pin to your delivery location'|translate}}</div>
+
+    <div class="input-group">
+        <Form [formGroup]="deliveryAddressForm" class="mt-2 w-100">
+          <div class="form-group delivery-address-form">
+            <span class="search-icon"><i class="fas fa-map-marker-alt mr-2 list-icon"></i></span>
+            <input placeholder="{{'Search location on map'|translate}}" autocorrect="off" autocapitalize="off" spellcheck="off" type="text" class="form-control address-search-input" #search formControlName="deliveryAddress">
+          </div>
+          <div *ngIf="isInvalidDeliveryAddress">
+            <p class="alert alert-danger" style="font-size: 13px; max-width: 100%;">
+              {{'Please enter the valid delivery address'|translate}}
+            </p>
+          </div>
+          <div class="mb-2">
+            <button class="btn btn-primary btn-primary--focus d-block w-100 text-center text-white" [disabled]="isSavingLocation || !deliveryAddress" (click)="selectLocation()">
+              <span *ngIf="isSavingLocation" class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>
+              <span>{{'Proceed'|translate}}</span>
+            </button>
+          </div>
+          <agm-map [latitude]="latitude" [longitude]="longitude" [scrollwheel]="false" [zoom]="zoom" [streetViewControl]="false">
+            <agm-marker [latitude]="latitude" [longitude]="longitude" [markerDraggable]="true" (dragEnd)="markerDragEnd($event)"></agm-marker>
+          </agm-map>
+        </Form>
+    </div>
+</label>
+
+

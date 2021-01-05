@@ -1,0 +1,181 @@
+################################################################################
+##                                                                            ##
+##                                   QUERY                                    ##
+##                                                                            ##
+################################################################################
+
+extend type Query {
+    """Find business address by the ID."""
+    businessAddress(id: ID!): BusinessAddress
+
+    """Business address connection."""
+    businessAddressConnection(
+        # Using forward cursor pagination
+        """Find `first` items next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` items previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): BusinessAddressConnection!
+}
+
+################################################################################
+##                                                                            ##
+##                                  MUTATION                                  ##
+##                                                                            ##
+################################################################################
+
+extend type Mutation {
+    """Create business address."""
+    createBusinessAddress(input: CreateBusinessAddressInput!): BusinessAddress!
+
+    """Update business address."""
+    updateBusinessAddress(input: UpdateBusinessAddressInput!): BusinessAddress!
+
+    """Delete business address."""
+    deleteBusinessAddress(input: DeleteBusinessAddressInput!): Boolean!
+}
+
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Business address."""
+type BusinessAddress {
+    """Business ID."""
+    business: Business!
+
+    """Country."""
+    country: String!
+
+    """City."""
+    city: String!
+
+    """Address line 1"""
+    addressLine1: String!
+
+    """Address line 2."""
+    addressLine2: String
+
+    """Geospatial latitude and lonitude."""
+    latLng: LatLng
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Create business address input."""
+input CreateBusinessAddressInput {
+    """Business ID."""
+    business: ID!
+
+    """Country."""
+    country: String!
+
+    """City."""
+    city: String!
+
+    """Address line 1."""
+    addressLine1: String!
+
+    """Address line 2."""
+    addressLine2: String
+
+    """Geospatial latitude and lonitude."""
+    latLng: SetLatLngInput
+}
+
+"""Update business address input."""
+input UpdateBusinessAddressInput {
+    """ID."""
+    id: ID!
+
+    """Country."""
+    country: String!
+
+    """City."""
+    city: String!
+
+    """Address line 1."""
+    addressLine1: String!
+
+    """Address line 2."""
+    addressLine2: String
+
+    """Geospatial latitude and lonitude."""
+    latLng: SetLatLngInput
+}
+
+"""Delete business address input."""
+input DeleteBusinessAddressInput {
+    """ID."""
+    id: ID!
+}
+
+################################################################################
+##                                                                            ##
+##                                   RELAY                                    ##
+##                                                                            ##
+################################################################################
+
+"""Business address connection."""
+type BusinessAddressConnection {
+    """
+    List of edges.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Edges).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Edges
+    edges: [BusinessAddressConnectionEdge]
+
+    """
+    List of nodes.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Node).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Node
+    nodes: [BusinessAddress]
+
+    """
+    Information to aid in pagination.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types.Fields.PageInfo).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types.Fields.PageInfo
+    pageInfo: PageInfo!
+
+    """
+    Identifies the total count of items in the connection.
+    """
+    totalCount: Int!
+}
+
+"""Business address connection's edge."""
+type BusinessAddressConnectionEdge {
+    """
+    Cursor for use in pagination.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor
+    cursor: RelayCursor!
+
+    """
+    The item at the end of the edge.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Node).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Node
+    node: BusinessAddress
+}

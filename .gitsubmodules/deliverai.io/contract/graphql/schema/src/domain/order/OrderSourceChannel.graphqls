@@ -1,0 +1,17 @@
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+enum OrderSourceChannel {
+    WEBSITE
+    MOBILE
+    FACEBOOK
+    INSTAGRAM
+    MESSENGER
+    WHATSAPP
+    SMS
+    EMAIL
+    GOOGLE
+}

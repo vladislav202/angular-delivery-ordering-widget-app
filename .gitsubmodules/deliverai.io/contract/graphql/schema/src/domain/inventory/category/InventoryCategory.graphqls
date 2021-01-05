@@ -1,0 +1,226 @@
+################################################################################
+##                                                                            ##
+##                                   QUERY                                    ##
+##                                                                            ##
+################################################################################
+
+extend type Query {
+    """Find inventory category by ID."""
+    inventoryCategory(id: ID!): InventoryCategory
+
+    """Inventory category connection."""
+    inventoryCategoryConnection(
+        # Using forward cursor pagination
+        """Find `first` items next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` items previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): InventoryCategoryConnection!
+}
+
+################################################################################
+##                                                                            ##
+##                                  MUTATION                                  ##
+##                                                                            ##
+################################################################################
+
+extend type Mutation {
+    """Create inventory category."""
+    createInventoryCategory(input: CreateInventoryCategoryInput!): InventoryCategory!
+
+    """Update inventory category."""
+    updateInventoryCategory(input: UpdateInventoryCategoryInput!): InventoryCategory!
+
+    """Delete inventory category."""
+    deleteInventoryCategory(input: DeleteInventoryCategoryInput!): Boolean!
+}
+
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Inventory category."""
+type InventoryCategory implements Node & Audited {
+    """ID."""
+    id: ID!
+
+    """Business."""
+    business: Business!
+
+    """Name."""
+    name: String!
+
+    """Description."""
+    description: String
+
+    """Image url."""
+    image: Url
+
+    """Availabilities."""
+    availabilities(stores: [ID!]): [InventoryCategoryAvailability!]!
+
+    """Category connection."""
+    categoryConnection(
+        # Using forward cursor pagination
+        """Find `first` items next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` items previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): InventoryCategoryConnection!
+
+    """Product connection."""
+    productConnection(
+        # Using forward cursor pagination
+        """Find `first` items next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` items previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): InventoryProductConnection!
+
+    """User that created this entity."""
+    createdBy: User
+
+    """Date and time when this entity was created."""
+    createdAt: DateTime!
+
+    """User that last modified this entity."""
+    lastModifiedBy: User
+
+    """Date and time when this entity'es last modification was made."""
+    lastModifiedAt: DateTime
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Create inventory category input."""
+input CreateInventoryCategoryInput {
+    """Business ID."""
+    business: ID!
+
+    """Name."""
+    name: String!
+
+    """Description."""
+    description: String
+
+    """Image."""
+    image: Upload
+}
+
+"""Update inventory category input."""
+input UpdateInventoryCategoryInput {
+    """ID."""
+    id: ID!
+
+    """Name."""
+    name: String
+
+    """Description."""
+    description: String
+
+    """Image."""
+    image: Upload
+}
+
+"""Delete inventory category input."""
+input DeleteInventoryCategoryInput {
+    """ID."""
+    id: ID!
+}
+
+################################################################################
+##                                                                            ##
+##                                   RELAY                                    ##
+##                                                                            ##
+################################################################################
+
+"""
+Inventory category connection.
+[Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types).
+"""
+type InventoryCategoryConnection {
+    """
+    A list of edges.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Edges).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Edges
+    edges: [InventoryCategoryConnectionEdge]
+
+    """
+    A list of nodes.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Node).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Node
+    nodes: [InventoryCategory]
+
+    """
+    Information to aid in pagination.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types.Fields.PageInfo).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types.Fields.PageInfo
+    pageInfo: PageInfo!
+
+    """
+    Identifies the total count of inventory categorys in the connection.
+    """
+    totalCount: Int!
+}
+
+"""Inventory category connection's edge."""
+type InventoryCategoryConnectionEdge {
+    """
+    A cursor for use in pagination.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor
+    cursor: RelayCursor!
+
+    """
+    The inventory category at the end of the edge.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Node).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Node
+    node: InventoryCategory
+}

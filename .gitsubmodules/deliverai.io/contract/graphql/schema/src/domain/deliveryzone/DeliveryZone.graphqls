@@ -1,0 +1,220 @@
+################################################################################
+##                                                                            ##
+##                                   QUERY                                    ##
+##                                                                            ##
+################################################################################
+
+extend type Query {
+    """Find delivery zone by ID."""
+    deliveryZone(id: ID!): DeliveryZone
+
+    """Delivery zone connection."""
+    deliveryZoneConnection(
+        """Find by the business'es indentifier."""
+        business: ID
+
+        """Find by the store's indentifier."""
+        store: ID
+
+        # Using forward cursor pagination
+        """Find `first` items next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` items previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): DeliveryZoneConnection!
+}
+
+################################################################################
+##                                                                            ##
+##                                  MUTATION                                  ##
+##                                                                            ##
+################################################################################
+
+extend type Mutation {
+    """Create delivery zone."""
+    createDeliveryZone(input: CreateDeliveryZoneInput!): DeliveryZone!
+
+    """Update delivery zone."""
+    updateDeliveryZone(input: UpdateDeliveryZoneInput!): DeliveryZone!
+
+    """Delete delivery zone."""
+    deleteDeliveryZone(input: DeleteDeliveryZoneInput!): Boolean!
+}
+
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Delivery zone."""
+type DeliveryZone implements Node & Audited {
+    """ID."""
+    id: ID!
+
+    """Business."""
+    business: Business!
+
+    """Store."""
+    store: Store!
+
+    """Name."""
+    name: String
+
+    """Order minimal amount."""
+    minimalAmount: BigFloat!
+
+    """Delivery fee."""
+    fee: BigFloat!
+
+    """Order amount for free delivery."""
+    freeDeliveryAmount: BigFloat
+
+    """Delivery zone area connection."""
+    areaConnection(
+        # Using forward cursor pagination
+        """Find `first` items next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` items previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): DeliveryZoneAreaConnection!
+
+    """User that created this entity."""
+    createdBy: User
+
+    """Date and time when this entity was created."""
+    createdAt: DateTime!
+
+    """User that last modified this entity."""
+    lastModifiedBy: User
+
+    """Date and time when this entity'es last modification was made."""
+    lastModifiedAt: DateTime
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Create delivery zone input."""
+input CreateDeliveryZoneInput {
+    """Store ID."""
+    store: ID!
+
+    """Name."""
+    name: String
+
+    """Order minimal amount."""
+    minimalAmount: BigFloat
+
+    """Delivery fee."""
+    fee: BigFloat
+
+    """Order amount for free delivery."""
+    freeDeliveryAmount: BigFloat
+}
+
+"""Update delivery zone input."""
+input UpdateDeliveryZoneInput {
+    """ID."""
+    id: ID!
+
+    """Name."""
+    name: String
+
+    """Order minimal amount."""
+    minimalAmount: BigFloat
+
+    """Delivery fee."""
+    fee: BigFloat
+
+    """Order amount for free delivery."""
+    freeDeliveryAmount: BigFloat
+}
+
+"""Delete delivery zone input."""
+input DeleteDeliveryZoneInput {
+    """ID."""
+    id: ID!
+}
+
+################################################################################
+##                                                                            ##
+##                                   RELAY                                    ##
+##                                                                            ##
+################################################################################
+
+"""
+Delivery zone connection.
+[Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types).
+"""
+type DeliveryZoneConnection {
+    """
+    A list of edges.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Edges).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Edges
+    edges: [DeliveryZoneConnectionEdge]
+
+    """
+    A list of nodes.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Node).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Node
+    nodes: [DeliveryZone]
+
+    """
+    Information to aid in pagination.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types.Fields.PageInfo).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types.Fields.PageInfo
+    pageInfo: PageInfo!
+
+    """
+    Identifies the total count of items in the connection.
+    """
+    totalCount: Int!
+}
+
+"""Delivery zone connection's edge."""
+type DeliveryZoneConnectionEdge {
+    """
+    A cursor for use in pagination.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor
+    cursor: RelayCursor!
+
+    """
+    The item at the end of the edge.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Node).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Node
+    node: DeliveryZone
+}

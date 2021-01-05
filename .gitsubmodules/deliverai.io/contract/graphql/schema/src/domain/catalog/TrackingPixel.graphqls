@@ -1,0 +1,70 @@
+################################################################################
+##                                                                            ##
+##                                  MUTATION                                  ##
+##                                                                            ##
+################################################################################
+
+extend type Mutation {
+    """Add tracking pixel to catalog."""
+    addTrackingPixel(input: AddTrackingPixelInput!): TrackingPixel!
+
+    """Update tracking pixel to catalog."""
+    updateTrackingPixel(input: UpdateTrackingPixelInput!): TrackingPixel!
+
+    """Delete tracking pixel to catalog."""
+    deleteTrackingPixel(input: DeleteTrackingPixelInput!): Boolean!
+}
+
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Tracking pixel."""
+type TrackingPixel {
+    """Tracking pixel id."""
+    id: ID!
+
+    """Type."""
+    type: String!
+
+    """Pixel's script."""
+    data: String
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Add tracking pixel for catalog input."""
+input AddTrackingPixelInput {
+    """Catalog ID."""
+    catalogId: ID!
+
+    """Type."""
+    type: String!
+
+    """Pixel's script."""
+    data: String!
+}
+
+"""Update tracking pixel for catalog input."""
+input UpdateTrackingPixelInput {
+    """Tracking pixel id."""
+    id: ID!
+
+    """Type."""
+    type: String!
+
+    """Pixel's script."""
+    data: String
+}
+
+"""Delete tracking pixel for catalog input."""
+input DeleteTrackingPixelInput {
+    """Tracking pixel id."""
+    id: ID!
+}

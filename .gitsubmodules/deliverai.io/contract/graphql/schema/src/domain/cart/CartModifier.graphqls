@@ -1,0 +1,190 @@
+################################################################################
+##                                                                            ##
+##                                   QUERY                                    ##
+##                                                                            ##
+################################################################################
+
+extend type Query {
+    """Find cart modifier by ID."""
+    cartModifier(id: ID!): CartModifier
+
+    """Cart modifier connection."""
+    cartModifierConnection(
+        # Using forward cursor pagination
+        """Find `first` products next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` products previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): CartModifierConnection!
+}
+
+################################################################################
+##                                                                            ##
+##                                  MUTATION                                  ##
+##                                                                            ##
+################################################################################
+
+extend type Mutation {
+    """Add cart modifier."""
+    addCartModifier(input: AddCartModifierInput!): CartModifier!
+
+    """Update cart modifier."""
+    updateCartModifier(input: UpdateCartModifierInput!): CartModifier!
+
+    """Remove cart modifier."""
+    removeCartModifier(input: RemoveCartModifierInput!): CartModifier!
+
+    """Drop cart modifier."""
+    dropCartModifier(input: DropCartModifierInput!): Boolean!
+}
+
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Cart modifier."""
+type CartModifier implements Node & Audited {
+    """ID."""
+    id: ID!
+
+    """Cart product."""
+    cartProduct: CartProduct!
+
+    """Catalog modifier option."""
+    catalogModifierOption: CatalogModifierOption!
+
+    """Quantity."""
+    quantity: PositiveInt!
+
+    """User that created this cart modifier ."""
+    createdBy: User
+
+    """Date and time when this cart modifier  was created."""
+    createdAt: DateTime!
+
+    """User that last modified this cart modifier ."""
+    lastModifiedBy: User
+
+    """Date and time when this cart modifier 's last modification was made."""
+    lastModifiedAt: DateTime
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Include cart modifier input."""
+input IncludeCartModifierInput {
+    """Catalog modifier option ID."""
+    catalogModifierOption: ID!
+
+    """Quantity."""
+    quantity: PositiveInt
+}
+
+"""Add cart modifier input."""
+input AddCartModifierInput {
+    """Cart product ID."""
+    cartProduct: ID!
+
+    """Catalog modifier option ID."""
+    catalogModifierOption: ID!
+
+    """Quantity."""
+    quantity: PositiveInt
+}
+
+"""Update cart modifier input."""
+input UpdateCartModifierInput {
+    """Cart modifier ID."""
+    id: ID!
+
+    """Quantity."""
+    quantity: PositiveInt
+}
+
+"""Remove cart modifier input."""
+input RemoveCartModifierInput {
+    """Cart modifier ID."""
+    id: ID!
+
+    """Quantity."""
+    quantity: PositiveInt
+}
+
+"""Drop cart modifier input."""
+input DropCartModifierInput {
+    """Cart modifier ID."""
+    id: ID!
+}
+
+################################################################################
+##                                                                            ##
+##                                   RELAY                                    ##
+##                                                                            ##
+################################################################################
+
+"""
+Cart modifier connection.
+[Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types).
+"""
+type CartModifierConnection {
+    """
+    A list of edges.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Edges).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Edges
+    edges: [CartModifierConnectionEdge]
+
+    """
+    A list of nodes.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Node).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Node
+    nodes: [CartModifier]
+
+    """
+    Information to aid in pagination.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types.Fields.PageInfo).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types.Fields.PageInfo
+    pageInfo: PageInfo!
+
+    """
+    Identifies the total count of CartModifiers in the connection.
+    """
+    totalCount: Int!
+}
+
+"""Cart modifier connection's edge."""
+type CartModifierConnectionEdge {
+    """
+    A cursor for use in pagination.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor
+    cursor: RelayCursor!
+
+    """
+    The CartModifier at the end of the edge.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Node).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Node
+    node: CartModifier
+}

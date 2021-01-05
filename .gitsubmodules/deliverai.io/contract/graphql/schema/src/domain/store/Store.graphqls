@@ -1,0 +1,325 @@
+################################################################################
+##                                                                            ##
+##                                   QUERY                                    ##
+##                                                                            ##
+################################################################################
+
+extend type Query {
+    """Find store by ID."""
+    store(id: ID!): Store
+
+    """Store connection."""
+    storeConnection(
+        """Find by the business'es indentifier."""
+        business: ID
+
+        # Using forward cursor pagination
+        """Find `first` items next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` items previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): StoreConnection!
+}
+
+################################################################################
+##                                                                            ##
+##                                  MUTATION                                  ##
+##                                                                            ##
+################################################################################
+
+extend type Mutation {
+    """Create store."""
+    createStore(input: CreateStoreInput!): Store!
+
+    """Update store."""
+    updateStore(input: UpdateStoreInput!): Store!
+
+    """Delete the store."""
+    deleteStore(input: DeleteStoreInput!): Boolean!
+
+    """Remove image for store."""
+    removeStoreImage(input: RemoveStoreImageInput!): Boolean!
+}
+
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Store."""
+type Store implements Node & Audited {
+    """ID."""
+    id: ID!
+
+    """Name."""
+    name: String!
+
+    """Description."""
+    description: StoreDescription
+
+    """Address."""
+    address: StoreAddress
+
+    """Time zone details."""
+    timeZone: TimeZoneDetails!
+
+    """Image."""
+    image: Url
+
+    """Contacts."""
+    contacts: [Contact!]!
+
+    """Working hours."""
+    workingHours(daysOfTheWeek: [StoreWorkingHoursDayOfWeek!]): [StoreWorkingHours!]!
+
+    """Delivery hours."""
+    deliveryHours(daysOfTheWeek: [DeliveryHoursDayOfWeek!]): [DeliveryHours!]!
+
+    """Pickup hours."""
+    pickupHours(daysOfTheWeek: [PickupHoursDayOfWeek!]): [PickupHours!]!
+
+    """Accepting pickup orders."""
+    pickupEnabled: Boolean!
+
+    """Order preparation time."""
+    pickupEta: PositiveInt!
+
+    """Accepting delivery orders."""
+    deliveryEnabled: Boolean!
+
+    """Order delivery time."""
+    deliveryEta: PositiveInt!
+
+    """Time unit for pickup and delivery values."""
+    etaTimeUnit: TimeUnit!
+
+    """Accepting pre-orders."""
+    preOrderEnabled: Boolean!
+
+    """Order flow."""
+    orderFlow: OrderFlow!
+
+    """Use default values for order preparation time."""
+    defaultEtaValues: Boolean
+
+    """Available payment methods for store."""
+    paymentMethods: [PaymentMethod!]!
+
+    """Order connection."""
+    orderConnection(
+        # Using forward cursor pagination
+        """Find `first` items next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` items previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): OrderConnection!
+
+    """Delivery zone connection."""
+    deliveryZoneConnection(
+        # Using forward cursor pagination
+        """Find `first` items next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` items previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): DeliveryZoneConnection!
+
+    """Store user assignment connection."""
+    assignmentConnection(
+        # Using forward cursor pagination
+        """Find `first` items next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` items previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): StoreAssignmentConnection!
+
+    """User that created this store."""
+    createdBy: User
+
+    """Date and time when this store was created."""
+    createdAt: DateTime!
+
+    """User that last modified this store."""
+    lastModifiedBy: User
+
+    """Date and time when this store'es last modification was made."""
+    lastModifiedAt: DateTime
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Create store input."""
+input CreateStoreInput {
+    """Business ID."""
+    business: ID!
+
+    """Name."""
+    name: String!
+
+    """Description."""
+    description: SetStoreDescriptionInput
+
+    """TimeZone."""
+    timeZone: TimeZoneId!
+
+    """Image."""
+    image: Upload
+}
+
+"""Update store input."""
+input UpdateStoreInput {
+    """ID."""
+    id: ID!
+
+    """Name."""
+    name: String
+
+    """Description."""
+    description: SetStoreDescriptionInput
+
+    """TimeZone."""
+    timeZone: TimeZoneId
+
+    """Image."""
+    image: Upload
+
+    """Accepting delivery orders."""
+    deliveryEnabled: Boolean
+
+    """Order delivery time."""
+    deliveryEta: PositiveInt
+
+    """Accepting pickup orders."""
+    pickupEnabled: Boolean
+
+    """Order preparation time."""
+    pickupEta: PositiveInt
+
+    """Time unit for pickup and delivery values."""
+    etaTimeUnit: TimeUnit
+
+    """Accepting pre-orders."""
+    preOrderEnabled: Boolean
+
+    """Use default values for order preparation time."""
+    defaultEtaValues: Boolean
+
+    """Available payment methods for store."""
+    paymentMethods: [PaymentMethod!]
+}
+
+"""Delete store input."""
+input DeleteStoreInput {
+    """ID."""
+    id: ID!
+}
+
+"""Remove avatar store input."""
+input RemoveStoreImageInput {
+    """ID."""
+    id: ID!
+}
+
+################################################################################
+##                                                                            ##
+##                                   RELAY                                    ##
+##                                                                            ##
+################################################################################
+
+"""Store connection."""
+type StoreConnection {
+    """
+    List of edges.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Edges).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Edges
+    edges: [StoreConnectionEdge]
+
+    """
+    List of nodes.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Node).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Node
+    nodes: [Store]
+
+    """
+    Information to aid in pagination.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types.Fields.PageInfo).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types.Fields.PageInfo
+    pageInfo: PageInfo!
+
+    """
+    Identifies the total count of items in the connection.
+    """
+    totalCount: Int!
+}
+
+"""Store connection's edge."""
+type StoreConnectionEdge {
+    """
+    Cursor for use in pagination.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor
+    cursor: RelayCursor!
+
+    """
+    The item at the end of the edge.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Node).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Node
+    node: Store
+}

@@ -1,0 +1,83 @@
+"""`Upload` scalar."""
+scalar Upload
+
+"""`Long` scalar."""
+scalar Long
+
+"""`BigInt` scalar."""
+scalar BigInt
+
+"""`BigFloat` scalar."""
+scalar BigFloat
+
+"""
+`RFC-3339` compliant date time scalar
+that accepts string values like `1996-12-19T16:39:57-08:00`.
+"""
+scalar DateTime
+
+"""
+`RFC-3339` compliant date scalar
+that accepts string values like `1996-12-19`.
+"""
+scalar Date
+
+"""
+`RFC-3339` compliant time scalar
+that accepts string values like `16:39:57-08:00`.
+"""
+scalar Time
+
+"""TimeZone id."""
+scalar TimeZoneId
+
+"""Currency code."""
+scalar CurrencyCode
+
+"""
+`Object` scalar allows you to have a multi level data value
+without defining it in the graphql schema.
+"""
+scalar JSON
+
+"""`URL` scalar that accepts URL strings."""
+scalar Url
+
+"""`Locale` scalar that accepts a IETF BCP 47 language tag string."""
+scalar LocaleTag
+
+"""`Int` scalar that MUST be greater than zero."""
+scalar PositiveInt
+
+"""`Int` scalar that MUST be less than zero."""
+scalar NegativeInt
+
+"""`Int` scalar that MUST be less than or equal to zero."""
+scalar NonPositiveInt
+
+"""`Int` scalar that MUST be greater than or equal to zero."""
+scalar NonNegativeInt
+
+"""`Float` scalar that MUST be greater than zero."""
+scalar PositiveFloat
+
+"""`Float` scalar that MUST be less than zero."""
+scalar NegativeFloat
+
+"""`Float` scalar that MUST be less than or equal to zero."""
+scalar NonPositiveFloat
+
+"""`Float` scalar that MUST be greater than or equal to zero."""
+scalar NonNegativeFloat
+
+"""`Email address`."""
+scalar EmailAddress
+
+"""`Phone number`."""
+scalar PhoneNumber
+
+"""`RelayCursor`."""
+scalar RelayCursor
+
+"""Duration."""
+scalar Duration

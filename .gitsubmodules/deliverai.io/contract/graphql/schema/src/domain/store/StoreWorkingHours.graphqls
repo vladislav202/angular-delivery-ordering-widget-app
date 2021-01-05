@@ -1,0 +1,84 @@
+################################################################################
+##                                                                            ##
+##                                  MUTATION                                  ##
+##                                                                            ##
+################################################################################
+
+extend type Mutation {
+    """Set store working hours."""
+    setStoreWorkingHours(input: SetStoreWorkingHoursInput!): [StoreWorkingHours!]!
+
+    """Delete store working hours."""
+    deleteStoreWorkingHours(input: DeleteStoreWorkingHoursInput!): Boolean!
+}
+
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Store working hours."""
+type StoreWorkingHours {
+    """Day of the week."""
+    dayOfWeek: StoreWorkingHoursDayOfWeek!
+
+    """Time periods for the day."""
+    timePeriods: [StoreWorkingHoursTimePeriod!]!
+}
+
+"""Store working hours' day of the week."""
+enum StoreWorkingHoursDayOfWeek {
+    MONDAY
+    TUESDAY
+    WEDNESDAY
+    THURSDAY
+    FRIDAY
+    SATURDAY
+    SUNDAY
+}
+
+"""Store working hours' time period."""
+type StoreWorkingHoursTimePeriod {
+    """Left bound."""
+    from: Time!
+
+    """Right bound."""
+    to: Time!
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Set store working hours input."""
+input SetStoreWorkingHoursInput {
+    """Store ID."""
+    store: ID!
+
+    """Days of the week."""
+    daysOfWeek: [StoreWorkingHoursDayOfWeek!]!
+
+    """Time periods for the day."""
+    timePeriods: [SetStoreWorkingHoursTimePeriodInput!]!
+}
+
+"""Set store working hours' time period input."""
+input SetStoreWorkingHoursTimePeriodInput {
+    """Left bound."""
+    from: Time!
+
+    """Right bound."""
+    to: Time!
+}
+
+"""Delete store working hours input."""
+input DeleteStoreWorkingHoursInput {
+    """Store ID."""
+    store: ID!
+
+    """Days of the week."""
+    daysOfWeek: [StoreWorkingHoursDayOfWeek!]!
+}

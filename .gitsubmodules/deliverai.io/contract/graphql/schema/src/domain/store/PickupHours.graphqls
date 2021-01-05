@@ -1,0 +1,84 @@
+################################################################################
+##                                                                            ##
+##                                  MUTATION                                  ##
+##                                                                            ##
+################################################################################
+
+extend type Mutation {
+    """Set pickup hours."""
+    setPickupHours(input: SetPickupHoursInput!): [PickupHours!]!
+
+    """Delete pickup hours."""
+    deletePickupHours(input: DeletePickupHoursInput!): Boolean!
+}
+
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Pickup hours."""
+type PickupHours {
+    """Day of the week."""
+    dayOfWeek: PickupHoursDayOfWeek!
+
+    """Time periods for the day."""
+    timePeriods: [PickupHoursTimePeriod!]!
+}
+
+"""Pickup hours' day of the week."""
+enum PickupHoursDayOfWeek {
+    MONDAY
+    TUESDAY
+    WEDNESDAY
+    THURSDAY
+    FRIDAY
+    SATURDAY
+    SUNDAY
+}
+
+"""Pickup hours' time period."""
+type PickupHoursTimePeriod {
+    """Left bound."""
+    from: Time!
+
+    """Right bound."""
+    to: Time!
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Set pickup hours input."""
+input SetPickupHoursInput {
+    """Store ID."""
+    store: ID!
+
+    """Days of the week."""
+    daysOfWeek: [PickupHoursDayOfWeek!]!
+
+    """Time periods for the day."""
+    timePeriods: [SetPickupHoursTimePeriodInput!]!
+}
+
+"""Set pickup hours' time period input."""
+input SetPickupHoursTimePeriodInput {
+    """Left bound."""
+    from: Time!
+
+    """Right bound."""
+    to: Time!
+}
+
+"""Delete pickup hours input."""
+input DeletePickupHoursInput {
+    """Store ID."""
+    store: ID!
+
+    """Days of the week."""
+    daysOfWeek: [PickupHoursDayOfWeek!]!
+}

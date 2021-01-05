@@ -1,0 +1,17 @@
+agm-map {
+  height: 520px;
+}
+
+.delivery-address-form {
+  position: relative;
+
+  .search-icon {
+    position: absolute;
+    top: 12px;
+    left: 10px;
+  }
+
+  .address-search-input {
+    padding-left: 35px;
+  }
+}

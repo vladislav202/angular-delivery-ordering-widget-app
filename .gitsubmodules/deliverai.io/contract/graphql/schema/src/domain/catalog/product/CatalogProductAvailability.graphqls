@@ -1,0 +1,62 @@
+################################################################################
+##                                                                            ##
+##                                  MUTATION                                  ##
+##                                                                            ##
+################################################################################
+
+extend type Mutation {
+
+    """Set catalog product availability."""
+    setCatalogProductAvailability(input: SetCatalogProductAvailabilityInput!): CatalogProductAvailability!
+}
+
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Catalog product availability."""
+type CatalogProductAvailability implements Node & Audited {
+    """ID."""
+    id: ID!
+
+    """Catalog product."""
+    catalogProduct: CatalogProduct!
+
+    """Store."""
+    store: Store!
+
+    """Value."""
+    value: Boolean!
+
+    """User that created this catalog product."""
+    createdBy: User
+
+    """Date and time when this catalog product was created."""
+    createdAt: DateTime!
+
+    """User that last modified this catalog product."""
+    lastModifiedBy: User
+
+    """Date and time when this catalog product'es last modification was made."""
+    lastModifiedAt: DateTime
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Set catalog product availability input."""
+input SetCatalogProductAvailabilityInput {
+    """Catalog product ID."""
+    catalogProduct: ID!
+
+    """Store ID."""
+    store: ID!
+
+    """Value."""
+    value: Boolean!
+}

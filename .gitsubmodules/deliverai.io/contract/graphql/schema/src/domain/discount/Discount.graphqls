@@ -1,0 +1,336 @@
+################################################################################
+##                                                                            ##
+##                                   QUERY                                    ##
+##                                                                            ##
+################################################################################
+
+extend type Query {
+    """Find discount by ID."""
+    discount(id: ID!): Discount
+
+    """Discounts connection"""
+    discountConnection(
+        """Business ID."""
+        business: ID
+
+        """Catalog ID."""
+        catalog: ID
+
+        # Using forward cursor pagination
+        """Find `first` items next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` items previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): DiscountConnection!
+}
+
+################################################################################
+##                                                                            ##
+##                                  MUTATION                                  ##
+##                                                                            ##
+################################################################################
+
+extend type Mutation {
+    """Create discount."""
+    createDiscount(input: CreateDiscountInput!): Discount!
+
+    """Update discount."""
+    updateDiscount(input: UpdateDiscountInput!): Discount!
+
+    """Add catalogs to discount."""
+    addCatalogsToDiscount(input: AddCatalogsToDiscountInput!): Discount!
+
+    """Remove catalogs from discount."""
+    removeCatalogsFromDiscount(input: RemoveCatalogsFromDiscountInput!): Discount!
+
+    """Delete discount."""
+    deleteDiscount(input: DeleteDiscountInput!): Boolean!
+}
+
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Discount."""
+type Discount implements Node & Audited {
+    """ID."""
+    id: ID!
+
+    """Business."""
+    business: Business!
+
+    """Catalog connection"""
+    catalogConnection(
+        # Using forward cursor pagination
+        """Find `first` items next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` items previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): CatalogConnection!
+
+    """Name."""
+    name: String!
+
+    """Code."""
+    code: String!
+
+    """Type."""
+    type: DiscountType!
+
+    """Value of discount (fixed or percentage)."""
+    discountValue: BigFloat!
+
+    """Minimal order amount."""
+    minOrderAmount: BigFloat!
+
+    """Maximal discount amount."""
+    maxDiscountAmount: BigFloat!
+
+    """Application type."""
+    applicationType: DiscountApplicationType!
+
+    """Customer type."""
+    customerType: DiscountCustomerType!
+
+    """Start date and time."""
+    startDateTime: DateTime!
+
+    """End date and time."""
+    endDateTime: DateTime
+
+    """Maximal usage count by each customer."""
+    maxUsageCountByCustomer: Int
+
+    """Maximal total usage count."""
+    maxUsageCount: Int
+
+    """User that created this entity."""
+    createdBy: User
+
+    """Date and time when this entity was created."""
+    createdAt: DateTime!
+
+    """User that last modified this entity."""
+    lastModifiedBy: User
+
+    """Date and time when this entity'es last modification was made."""
+    lastModifiedAt: DateTime
+
+    """Discount usage count"""
+    usageCount: Int!
+}
+
+enum DiscountType {
+    PERCENTAGE,
+    FIXED_VALUE
+}
+
+enum DiscountApplicationType {
+    AUTO,
+    MANUAL,
+    CODE
+}
+
+enum DiscountCustomerType {
+    NEW,
+    ALL
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Create discount input."""
+input CreateDiscountInput {
+    """Business ID."""
+    business: ID!
+
+    """Catalogs IDs."""
+    catalogs: [ID!]
+
+    """Name."""
+    name: String!
+
+    """Code."""
+    code: String!
+
+    """Type."""
+    type: DiscountType!
+
+    """Value of discount (fixed or percentage)."""
+    discountValue: BigFloat!
+
+    """Minimal order amount."""
+    minOrderAmount: BigFloat!
+
+    """Maximal discount amount."""
+    maxDiscountAmount: BigFloat!
+
+    """Application type."""
+    applicationType: DiscountApplicationType!
+
+    """Customer type."""
+    customerType: DiscountCustomerType!
+
+    """Start date and time."""
+    startDateTime: DateTime!
+
+    """End date and time."""
+    endDateTime: DateTime
+
+    """Maximal usage count by each customer."""
+    maxUsageCountByCustomer: Int
+
+    """Maximal total usage count."""
+    maxUsageCount: Int
+}
+
+"""Update discount input."""
+input UpdateDiscountInput {
+    """ID."""
+    id: ID!
+
+    """Catalogs IDs."""
+    catalogs: [ID!]
+
+    """Name."""
+    name: String
+
+    """Code."""
+    code: String
+
+    """Type."""
+    type: DiscountType
+
+    """Value of discount (fixed or percentage)."""
+    discountValue: BigFloat
+
+    """Minimal order amount."""
+    minOrderAmount: BigFloat
+
+    """Maximal discount amount."""
+    maxDiscountAmount: BigFloat
+
+    """Application type."""
+    applicationType: DiscountApplicationType
+
+    """Customer type."""
+    customerType: DiscountCustomerType
+
+    """Start date and time."""
+    startDateTime: DateTime
+
+    """End date and time."""
+    endDateTime: DateTime
+
+    """Maximal usage count by each customer."""
+    maxUsageCountByCustomer: Int
+
+    """Maximal total usage count."""
+    maxUsageCount: Int
+}
+
+input AddCatalogsToDiscountInput {
+    """Discount ID."""
+    discount: ID!
+
+    """Catalogs IDs."""
+    catalogs: [ID!]!
+}
+
+input RemoveCatalogsFromDiscountInput {
+    """Discount ID."""
+    discount: ID!
+
+    """Catalogs IDs."""
+    catalogs: [ID!]!
+}
+
+"""Delete discount input."""
+input DeleteDiscountInput {
+    """ID."""
+    id: ID!
+}
+
+################################################################################
+##                                                                            ##
+##                                   RELAY                                    ##
+##                                                                            ##
+################################################################################
+
+"""
+Business connection.
+[Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types).
+"""
+type DiscountConnection {
+    """
+    A list of edges.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Edges).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Edges
+    edges: [DiscountConnectionEdge]
+
+    """
+    A list of nodes.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Node).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Node
+    nodes: [Discount]
+
+    """
+    Information to aid in pagination.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types.Fields.PageInfo).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types.Fields.PageInfo
+    pageInfo: PageInfo!
+
+    """
+    Identifies the total count of items in the connection.
+    """
+    totalCount: Int!
+}
+
+"""Discount connection's edge."""
+type DiscountConnectionEdge {
+    """
+    A cursor for use in pagination.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor
+    cursor: RelayCursor!
+
+    """
+    The item at the end of the edge.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Node).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Node
+    node: Discount
+}

@@ -1,0 +1,91 @@
+################################################################################
+##                                                                            ##
+##                                   QUERY                                    ##
+##                                                                            ##
+################################################################################
+
+extend type Query {
+    """TotalCustomers metric."""
+    metricTotalCustomers(
+        """Business Id."""
+        business: ID
+
+        """From datetime."""
+        from: DateTime!
+
+        """To datetime."""
+        to: DateTime
+
+        """Step."""
+        step: Duration
+    ): [Metric!]!
+
+    """Revenue metric."""
+    metricRevenue(
+        """Business Id."""
+        business: ID
+
+        """Store Id."""
+        store: ID
+
+        """From datetime."""
+        from: DateTime!
+
+        """To datetime."""
+        to: DateTime
+
+        """Step."""
+        step: Duration
+    ): [Metric!]!
+
+    """TotalOrders metric."""
+    metricTotalOrders(
+        """Business Id."""
+        business: ID
+
+        """Store Id."""
+        store: ID
+
+        """From datetime."""
+        from: DateTime!
+
+        """To datetime."""
+        to: DateTime
+
+        """Step."""
+        step: Duration
+    ): [Metric!]!
+
+    """AvgOrderAmount metric."""
+    metricAvgOrderAmount(
+        """Business Id."""
+        business: ID
+
+        """Store Id."""
+        store: ID
+
+        """From datetime."""
+        from: DateTime!
+
+        """To datetime."""
+        to: DateTime
+
+        """Step."""
+        step: Duration
+    ): [Metric!]!
+}
+
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Metric."""
+type Metric {
+    """DateTime value."""
+    dateTime: DateTime!
+
+    """Value."""
+    value: Float!
+}

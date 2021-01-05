@@ -1,0 +1,73 @@
+################################################################################
+##                                                                            ##
+##                                  MUTATION                                  ##
+##                                                                            ##
+################################################################################
+
+extend type Mutation {
+    """Create circle delivery zone area."""
+    createCircleDeliveryZoneArea(input: CreateCircleDeliveryZoneAreaInput!): CircleDeliveryZoneArea!
+
+    """Update circle delivery zone area."""
+    updateCircleDeliveryZoneArea(input: UpdateCircleDeliveryZoneAreaInput!): CircleDeliveryZoneArea!
+
+    """Delete circle delivery zone area."""
+    deleteCircleDeliveryZoneArea(input: DeleteCircleDeliveryZoneAreaInput!): Boolean!
+}
+
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Circle delivery zone area."""
+type CircleDeliveryZoneArea implements Node & DeliveryZoneArea {
+    """ID."""
+    id: ID!
+
+    """Delivery zone."""
+    deliveryZone: DeliveryZone!
+
+    """Center point of the circle."""
+    center: LatLng!
+
+    """Corner point of the circle."""
+    corner: LatLng!
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Create circle delivery zone area input."""
+input CreateCircleDeliveryZoneAreaInput {
+    """Delivery zone ID."""
+    deliveryZone: ID!
+
+    """Center point of the circle."""
+    center: SetLatLngInput!
+
+    """Corner point of the circle."""
+    corner: SetLatLngInput!
+}
+
+"""Update circle delivery zone area input."""
+input UpdateCircleDeliveryZoneAreaInput {
+    """ID."""
+    id: ID!
+
+    """Center point of the circle."""
+    center: SetLatLngInput
+
+    """Corner point of the circle."""
+    corner: SetLatLngInput
+}
+
+"""Delete circle delivery zone area input."""
+input DeleteCircleDeliveryZoneAreaInput {
+    """ID."""
+    id: ID!
+}

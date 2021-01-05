@@ -1,0 +1,232 @@
+################################################################################
+##                                                                            ##
+##                                   QUERY                                    ##
+##                                                                            ##
+################################################################################
+
+extend type Query {
+    """Find order queue by ID."""
+    orderQueue(id: ID!): OrderQueue
+
+    """Order queue connection."""
+    orderQueueConnection(
+        """Business ID."""
+        business: ID
+
+        """Store ID."""
+        store: ID
+
+        """Order flow ID."""
+        orderFlow: ID
+
+        # Using forward cursor pagination
+        """Find `first` items next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` items previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): OrderQueueConnection!
+}
+
+################################################################################
+##                                                                            ##
+##                                  MUTATION                                  ##
+##                                                                            ##
+################################################################################
+
+extend type Mutation {
+    """
+    Create an order queue.
+    """
+    createOrderQueue(input: CreateOrderQueueInput!): OrderQueue!
+
+    """
+    Update an order queue.
+    """
+    updateOrderQueue(input: UpdateOrderQueueInput!): OrderQueue!
+
+    """
+    Delete an order queue.
+    """
+    deleteOrderQueue(input: DeleteOrderQueueInput!): Boolean!
+}
+
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Order queue."""
+type OrderQueue implements Node & Audited {
+    """ID."""
+    id: ID!
+
+    """Name."""
+    name: String!
+
+    """Description."""
+    description: String
+
+    """Order queue extesions applies."""
+    extensions: [OrderQueueExtension!]
+
+    """Order connection."""
+    orderConnection(
+        # Using forward cursor pagination
+        """Find `first` items next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` items previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): OrderConnection!
+
+    """User that created this entity."""
+    createdBy: User
+
+    """Date and time when this entity was created."""
+    createdAt: DateTime!
+
+    """User that last modified this entity."""
+    lastModifiedBy: User
+
+    """Date and time when this entity'es last modification was made."""
+    lastModifiedAt: DateTime
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Create order queue input."""
+input CreateOrderQueueInput {
+    """Flow ID."""
+    flow: ID!
+
+    """
+    ID of the previous order queue in the order flow.
+    Used for further position inferrence.
+    """
+    after: ID
+
+    """
+    ID of the next order queue in the order flow.
+    Used for further position inferrence.
+    """
+    before: ID
+
+    """Name."""
+    name: String!
+
+    """Description."""
+    description: String
+}
+
+"""Update order queue input."""
+input UpdateOrderQueueInput {
+    """ID."""
+    id: ID!
+
+    """
+    ID of the previous order queue in the order flow.
+    Used for further position inferrence.
+    """
+    after: ID
+
+    """
+    ID of the next order queue in the order flow.
+    Used for further position inferrence.
+    """
+    before: ID
+
+    """Name."""
+    name: String
+
+    """Description."""
+    description: String
+}
+
+"""Delete order queue input."""
+input DeleteOrderQueueInput {
+    """ID."""
+    id: ID!
+}
+
+################################################################################
+##                                                                            ##
+##                                   RELAY                                    ##
+##                                                                            ##
+################################################################################
+
+"""
+Order queue connection.
+[Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types).
+"""
+type OrderQueueConnection {
+    """
+    A list of edges.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Edges).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Edges
+    edges: [OrderQueueConnectionEdge]
+
+    """
+    A list of nodes.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Node).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Node
+    nodes: [OrderQueue]
+
+    """
+    Information to aid in pagination.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types.Fields.PageInfo).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types.Fields.PageInfo
+    pageInfo: PageInfo!
+
+    """
+    Identifies the total count of items in the connection.
+    """
+    totalCount: Int!
+}
+
+"""Order queue connection's edge."""
+type OrderQueueConnectionEdge {
+    """
+    A cursor for use in pagination.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor
+    cursor: RelayCursor!
+
+    """
+    The item at the end of the edge.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Node).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Node
+    node: OrderQueue
+}

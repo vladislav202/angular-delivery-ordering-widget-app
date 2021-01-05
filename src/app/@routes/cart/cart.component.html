@@ -1,0 +1,219 @@
+<div *ngIf="isCheckingAvailabilityProducts" class="spinner-border text-primary" role="status" style="position: absolute;top: 50%;left: 49%;">
+  <span class="sr-only">{{'Loading'|translate}}...</span>
+</div>
+
+<div *ngIf="isCheckingDiscountValidation" id="checkingDiscountValidation" class="spinner-border text-primary" role="status" style="position: absolute; top: 50%; left: 48%; z-index: 1;">
+  <span class="sr-only">{{'Loading'|translate}}...</span>
+</div>
+
+<div class="widget-container" [ngClass]="{'widget-container--disabled': isCheckingDiscountValidation}">
+  <div class="header">
+    <div *ngIf="!parentPath" class="nav-back nav-back--primary" [routerLink]="['/', slug]" [queryParams]="sourceInfluencer?{utm_source:sourceInfluencer}:{}" queryParamsHandling="merge" style="background-color: #e1e1e1;"><i class="fas
+      fa-chevron-left"></i>
+    </div>
+    <div *ngIf="parentPath" class="nav-back nav-back--primary" [routerLink]="['/', parentPath, slug]" [queryParams]="sourceInfluencer?{utm_source:sourceInfluencer}:{}" queryParamsHandling="merge" style="background-color: #e1e1e1;"><i class="fas
+      fa-chevron-left"></i>
+    </div>
+
+    <div class="item-title item-title--standalone mb-4">
+      {{'Your Basket'|translate}}
+    </div>
+  </div>
+
+  <div *ngIf="!isCheckingAvailabilityProducts">
+    <div *ngIf="cart && cart.products.length === 0" class="empty-basket">
+      <div class="empty-basket__icon">
+        <span style="font-size: 32px;"><i class="fas fa-shopping-basket"></i></span>
+      </div>
+      <h5>{{'Your basket is empty'|translate}}</h5>
+    </div>
+    <div *ngIf="cart && cart.products.length > 0">
+      <p *ngIf="isShowErrorMessage && orderType === 'delivery'" class="text-danger mt-3 mb-3 text-center" style="font-size: 13px; max-width: 100%;">
+        {{'Minimum order is'|translate}} {{currency}} {{minOrderDeliveryZone.minimalAmount | number}}
+      </p>
+
+      <p *ngIf="basketIsSmallerThanMinOrder" class="text-danger mt-3 mb-3 text-center" style="font-size: 13px; max-width: 100%;">
+        {{'Minimum basket for discount is'|translate}} {{currency}} {{appliedDiscount.discount.node.minOrderAmount | number}}
+      </p>
+
+      <p *ngIf="isIncludingUnavailableProduct" class="text-danger mt-3 mb-3 text-center pl-4 pr-4" style="font-size: 13px; max-width: 100%;">
+        {{'One or more added product not available at the moment for'|translate}} {{orderType === 'delivery' ? 'delivery' : 'pickup'}}. {{'Please remove the unavailable product.'|translate}}
+      </p>
+
+      <p *ngIf="!isValidCurrentDiscount" class="text-danger mt-3 mb-3 text-center" style="font-size: 13px; max-width: 100%; text-indent: unset;">
+        {{'The current discount is not valid'|translate}}
+      </p>
+
+      <div class="cart-items">
+        <div class="mb-3" *ngFor="let item of
+          cart.products let i=index" style="display: grid; grid-template-columns: 80% 20%;">
+
+          <div *ngIf="!parentPath" class="cart-product w-100">
+            <div class="cart-items__header mb-1">
+              <div class="item-title">{{item.name}}</div>
+            </div>
+
+            <div *ngIf="item.availability" style="font-weight: 600;">{{currency}} {{item.productTotalPrice | number}}</div>
+            <div *ngIf="!item.availability" style="font-weight: 600;"><del style="color: red;">{{currency}} {{item.productTotalPrice | number}}</del></div>
+            <div *ngFor="let modifierItem of item.modifiers"
+              class="item-hint" style="word-break: break-word;">{{modifierItem.name}}
+              x{{modifierItem.quantity}}</div>
+          </div>
+
+          <div *ngIf="parentPath" class="cart-product w-100">
+            <div class="cart-items__header mb-1">
+              <div class="item-title item-title--primary">{{item.name}}</div>
+            </div>
+
+            <div *ngIf="item.availability" style="font-weight: 600;">{{currency}} {{item.productTotalPrice | number}}</div>
+            <div *ngIf="!item.availability" style="font-weight: 600;"><del style="color: red;">{{currency}} {{item.productTotalPrice | number}}</del></div>
+            <div *ngFor="let modifierItem of item.modifiers"
+              class="item-hint">{{modifierItem.name}}
+              x{{modifierItem.quantity}}</div>
+          </div>
+
+          <div class="d-flex justify-content-center align-items-center" style="height: 30px;">
+            <button type="button" class="btn btn-outline-primary btn-primary--focus btn-group__btn" style="padding: 0 5px;" (click)="decrement(i)"><i class="fas fa-minus"></i></button>
+            <span class="ml-2 mr-2" style="font-size: 15px; font-weight: 600;">{{item.quantity}}</span>
+            <button type="button" class="btn btn-outline-primary btn-primary--focus btn-group__btn" style="padding: 0 5px;" (click)="increment(i)"><i class="fas fa-plus"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="order-comments">
+        <form [formGroup]="orderCommentForm">
+          <div class="form-group">
+            <label class="mb-2">{{'Special Requests:'|translate}}</label>
+            <textarea class="form-control" formControlName="storeComment" rows="3" id="comment" placeholder="{{'Add a note or any instructions.'|translate}}"></textarea>
+          </div>
+        </form>
+      </div>
+
+      <div *ngIf="loyaltyProgram && loyaltyProgram.enabled" class="page-banner" style="cursor: pointer;" (click)="openLoyaltyProgramModal(loyaltyProgramModal)">
+        <div class="page-banner__icon"><i class="fas fa-gift text-white"></i></div>
+        <div style="font-size: 13px; font-weight: 600;">
+          {{'You\'ll earn'|translate}}
+          <b class="text-primary">
+            <span *ngIf="isValidCurrentDiscount && cart.discount && (cart.totalPrice >= cart.discount.discount.node.minOrderAmount)" style="margin-right: 0;">
+              <span *ngIf="orderType === 'delivery' && !isAppliedFreeDeliveryFee">{{currency}} {{(cart.totalPrice + deliveryFee - cart.discount.discount.node.calculatedDiscountValue) * loyaltyProgram.criterias[0].pointsPercentage / 100 | number : '1.0-1'}}</span>
+              <span *ngIf="orderType === 'pickup' || (orderType === 'delivery' && isAppliedFreeDeliveryFee)">{{currency}} {{(cart.totalPrice - cart.discount.discount.node.calculatedDiscountValue) * loyaltyProgram.criterias[0].pointsPercentage / 100 | number : '1.0-1'}}</span>
+            </span>
+            <span *ngIf="!isValidCurrentDiscount || !cart.discount || (cart.totalPrice < cart.discount.discount.node.minOrderAmount)" style="margin-right: 0;">
+              <span *ngIf="orderType === 'delivery' && !isAppliedFreeDeliveryFee">{{currency}} {{(cart.totalPrice + deliveryFee) * loyaltyProgram.criterias[0].pointsPercentage / 100 | number : '1.0-1'}}</span>
+              <span *ngIf="orderType === 'pickup' || (orderType === 'delivery' && isAppliedFreeDeliveryFee)">{{currency}} {{cart.totalPrice * loyaltyProgram.criterias[0].pointsPercentage / 100 | number : '1.0-1'}}</span>
+            </span>
+          </b> {{'in Loyalty Points when you complete this order.'|translate}}
+        </div>
+      </div>
+
+      <div class="cart-total">
+        <div class="cart-total__line">
+          <div class="item-title item-title--graytext">{{'Subtotal'|translate}}</div>
+          <div class="item-title item-title--graytext">{{currency}}
+            {{cart.totalPrice | number:'1.2-2'}}</div>
+        </div>
+        <div *ngIf="isValidCurrentDiscount && cart.discount && (cart.totalPrice >= cart.discount.discount.node.minOrderAmount)" class="cart-total__line">
+          <div class="item-title" style="color: #1d2c6f;">{{'Discount'|translate}} <span *ngIf="cart.discount.discount.node.type === 'PERCENTAGE'">({{cart.discount.discount.node.discountValue}}%)</span></div>
+          <div class="item-title" style="color: #1d2c6f;">- {{currency}}
+            {{cart.discount.discount.node.calculatedDiscountValue | number:'1.2-2'}}</div>
+        </div>
+        <div *ngIf="orderType === 'delivery' && !isAppliedFreeDeliveryFee" class="cart-total__line">
+          <div class="item-title item-title--graytext">{{'Delivery Fees'|translate}}</div>
+          <div class="item-title item-title--graytext">{{currency}} {{deliveryFee | number:'1.2-2'}}</div>
+        </div>
+        <div class="cart-total__line">
+          <div class="item-title">{{'Total'|translate}}</div>
+          <div *ngIf="isValidCurrentDiscount && cart.discount && (cart.totalPrice >= cart.discount.discount.node.minOrderAmount)" style="margin-right: 0;">
+            <div *ngIf="orderType === 'delivery' && !isAppliedFreeDeliveryFee" class="item-title">{{currency}} {{cart.totalPrice + deliveryFee - cart.discount.discount.node.calculatedDiscountValue | number:'1.2-2'}}</div>
+            <div *ngIf="orderType === 'pickup' || (orderType === 'delivery' && isAppliedFreeDeliveryFee)" class="item-title">{{currency}} {{cart.totalPrice - cart.discount.discount.node.calculatedDiscountValue | number:'1.2-2'}}</div>
+          </div>
+          <div *ngIf="!isValidCurrentDiscount || !cart.discount || (cart.totalPrice < cart.discount.discount.node.minOrderAmount)" style="margin-right: 0;">
+            <div *ngIf="orderType === 'delivery' && !isAppliedFreeDeliveryFee" class="item-title">{{currency}} {{cart.totalPrice + deliveryFee | number:'1.2-2'}}</div>
+            <div *ngIf="orderType === 'pickup' || (orderType === 'delivery' && isAppliedFreeDeliveryFee)" class="item-title">{{currency}} {{cart.totalPrice | number:'1.2-2'}}</div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="!isShowErrorMessage && orderType === 'delivery' && !isAppliedFreeDeliveryFee" class="view-cart" [ngClass]="{'btn--disabled': isIncludingUnavailableProduct}">
+        <button class="btn btn-primary btn-primary--focus view-cart__btn w-100
+          d-flex" (click)="gotoCheckout()" [disabled]="isIncludingUnavailableProduct">
+          <span class="view-cart__quantity">{{cart.products.length}}</span>
+          <span>{{'Go to Checkout'|translate}}</span>
+          <div *ngIf="isValidCurrentDiscount && cart.discount && (cart.totalPrice >= cart.discount.discount.node.minOrderAmount)">
+            <span>{{currency}} {{cart.totalPrice + deliveryFee - cart.discount.discount.node.calculatedDiscountValue | number:'1.2-2'}}</span>
+          </div>
+          <div *ngIf="!isValidCurrentDiscount || !cart.discount || (cart.totalPrice < cart.discount.discount.node.minOrderAmount)">
+            <span>{{currency}} {{cart.totalPrice + deliveryFee | number:'1.2-2'}}</span>
+          </div>
+        </button>
+      </div>
+
+      <div *ngIf="(!isShowErrorMessage && orderType === 'delivery' && isAppliedFreeDeliveryFee) || orderType === 'pickup'" class="view-cart" [ngClass]="{'btn--disabled': isIncludingUnavailableProduct}">
+        <button class="btn btn-primary btn-primary--focus view-cart__btn w-100
+          d-flex" (click)="gotoCheckout()" [disabled]="isIncludingUnavailableProduct">
+          <span class="view-cart__quantity">{{cart.products.length}}</span>
+          <span>{{'Go to Checkout'|translate}}</span>
+          <div *ngIf="isValidCurrentDiscount && cart.discount && (cart.totalPrice >= cart.discount.discount.node.minOrderAmount)">
+            <span>{{currency}} {{cart.totalPrice - cart.discount.discount.node.calculatedDiscountValue | number:'1.2-2'}}</span>
+          </div>
+          <div *ngIf="!isValidCurrentDiscount || !cart.discount || (cart.totalPrice < cart.discount.discount.node.minOrderAmount)">
+            <span>{{currency}} {{cart.totalPrice | number:'1.2-2'}}</span>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="(isShowErrorMessage && orderType === 'delivery') || (cart && cart.products.length === 0)" class="view-cart">
+      <button *ngIf="!parentPath" class="btn btn-primary btn-primary--focus view-cart__btn w-100
+        d-flex justify-content-center" style="padding: 12px 0px;" [routerLink]="['/', slug]" [queryParams]="sourceInfluencer?{utm_source:sourceInfluencer}:{}" queryParamsHandling="merge">
+        <span>{{'Add more items'|translate}}</span>
+      </button>
+
+      <button *ngIf="parentPath" class="btn btn-primary btn-primary--focus view-cart__btn w-100
+        d-flex justify-content-center" style="padding: 12px 0px;" [routerLink]="['/', parentPath, slug]" [queryParams]="sourceInfluencer?{utm_source:sourceInfluencer}:{}" queryParamsHandling="merge">
+        <span>{{'Add more items'|translate}}</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<ng-template #loyaltyProgramModal let-modal>
+  <div class="modal-body loyalty-modal-body">
+    <button type="button" class="close" style="float: left; font-size: 45px; outline: none;" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <div>
+      <div class="text-center" style="padding-top: 60px; padding-bottom: 60px; font-size: 3rem;">🎉</div>
+      <h2 style="font-size: 1.875rem;">{{'Loyalty Program'|translate}}</h2>
+      <div class="mt-4 mb-4" style="color: #8c8c8c; line-height: 140%;">
+        {{'Collect points on every order you complete. Use them to get discounts on your next orders.'|translate}}
+      </div>
+      <div class="pt-4 pb-4">
+        <span class="active-points">{{'You have'|translate}} {{currency}} {{activeLoyaltyProgramPoints ? activeLoyaltyProgramPoints : '0.00'}} {{'in your wallet'|translate}}</span>
+      </div>
+      <div class="mt-4">
+        <h3 class="mb-4" style="font-size: 1.125rem;">{{'How it works'|translate}}</h3>
+        <div>
+          <div class="d-flex align-items-start mb-4">
+            <img src="assets/images/check-symbol.svg" style="width: 8px; margin-top: 4px;"/>
+            <div class="ml-2">{{'Get'|translate}} {{loyaltyProgram.criterias[0].pointsPercentage}}% {{'in credit as loyalty points.'|translate}}</div>
+          </div>
+          <div class="d-flex align-items-start mb-4">
+            <img src="assets/images/check-symbol.svg" style="width: 8px; margin-top: 4px;"/>
+            <div class="ml-2">{{'Redeem your points to get up to'|translate}} {{loyaltyProgram.criterias[0].redemptionPercentage}}% {{'off on your next order.'|translate}}</div>
+          </div>
+          <div class="d-flex align-items-start mb-4">
+            <img src="assets/images/check-symbol.svg" style="width: 8px; margin-top: 4px;"/>
+            <div class="ml-2">{{'Limited to maximum AED'|translate}} {{loyaltyProgram.criterias[0].redemptionMaxAmount}} {{'per order.'|translate}}</div>
+          </div>
+          <div class="d-flex align-items-start mb-4">
+            <img src="assets/images/check-symbol.svg" style="width: 8px; margin-top: 4px;"/>
+            <div class="ml-2">{{'Each loyalty point is valid for'|translate}} {{loyaltyProgram.criterias[0].pointsExpiryDays}} {{'days.'|translate}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

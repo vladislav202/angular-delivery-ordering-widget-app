@@ -1,0 +1,268 @@
+################################################################################
+##                                                                            ##
+##                                   QUERY                                    ##
+##                                                                            ##
+################################################################################
+
+extend type Query {
+    """Find catalog product by ID."""
+    catalogProduct(
+        """ID."""
+        id: ID!
+    ): CatalogProduct
+
+    """Catalog product connection."""
+    catalogProductConnection(
+        """Business ID."""
+        business: ID
+
+        """Catalog ID."""
+        catalog: ID
+
+        """Product name."""
+        name: String
+
+        """Hidden."""
+        hidden: Boolean
+
+        # Using forward cursor pagination
+        """Find `first` items next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` items previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): CatalogProductConnection!
+}
+
+################################################################################
+##                                                                            ##
+##                                  MUTATION                                  ##
+##                                                                            ##
+################################################################################
+
+extend type Mutation {
+    """Create catalog product."""
+    createCatalogProduct(input: CreateCatalogProductInput!): CatalogProduct!
+
+    """Update catalog product."""
+    updateCatalogProduct(input: UpdateCatalogProductInput!): CatalogProduct!
+
+    """Delete catalog product."""
+    deleteCatalogProduct(input: DeleteCatalogProductInput!): Boolean!
+}
+
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Catalog product."""
+type CatalogProduct implements Node & Audited {
+    """ID"""
+    id: ID!
+
+    """Version."""
+    version: NonNegativeInt!
+
+    """Catalog"""
+    catalog: Catalog!
+
+    """Catalog category."""
+    category: CatalogCategory
+
+    """Name."""
+    name: String!
+
+    """Description."""
+    description: CatalogProductDescription
+
+    """Price."""
+    price: BigFloat!
+
+    """Hidden."""
+    hidden: Boolean!
+
+    """Availability."""
+    availability(stores: [ID!]): [CatalogProductAvailability!]
+
+    """Image."""
+    image: Url
+
+    """Position (zero-based)."""
+    position: Int!
+
+    """Tags set."""
+    tags: [CatalogProductTag!]!
+
+    """Catalog modifier connection."""
+    modifierConnection(
+        """Hidden."""
+        hidden: Boolean
+
+        # Using forward cursor pagination
+        """Find `first` items next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` items previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): CatalogModifierConnection!
+
+    """User that created this catalog product."""
+    createdBy: User
+
+    """Date and time when this catalog product was created."""
+    createdAt: DateTime!
+
+    """User that last modified this catalog product."""
+    lastModifiedBy: User
+
+    """Date and time when this catalog product'es last modification was made."""
+    lastModifiedAt: DateTime
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Create catalog product input."""
+input CreateCatalogProductInput {
+    """Catalog ID."""
+    catalog: ID!
+
+    """Catalog category ID."""
+    category: ID
+
+    """Name."""
+    name: String!
+
+    """Description."""
+    description: SetCatalogProductDescriptionInput
+
+    """Price."""
+    price: BigFloat!
+
+    """Image."""
+    image: Upload
+
+    """Before product ID."""
+    beforeProduct: ID
+
+    """After product ID."""
+    afterProduct: ID
+}
+
+"""Update catalog product input."""
+input UpdateCatalogProductInput {
+    """Product ID."""
+    product: ID!
+
+    """Catalog category ID."""
+    category: ID
+
+    """Name."""
+    name: String
+
+    """Description."""
+    description: SetCatalogProductDescriptionInput
+
+    """Price."""
+    price: BigFloat
+
+    """Hidden."""
+    hidden: Boolean
+
+    """Image."""
+    image: Upload
+
+    """Before product ID."""
+    beforeProduct: ID
+
+    """After product ID."""
+    afterProduct: ID
+}
+
+"""Delete catalog product input."""
+input DeleteCatalogProductInput {
+    """Product ID."""
+    product: ID!
+}
+
+################################################################################
+##                                                                            ##
+##                                   RELAY                                    ##
+##                                                                            ##
+################################################################################
+
+"""
+Catalog product connection.
+[Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types).
+"""
+type CatalogProductConnection {
+    """
+    A list of edges.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Edges).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Edges
+    edges: [CatalogProductConnectionEdge]
+
+    """
+    A list of nodes.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Node).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Node
+    nodes: [CatalogProduct]
+
+    """
+    Information to aid in pagination.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types.Fields.PageInfo).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types.Fields.PageInfo
+    pageInfo: PageInfo!
+
+    """
+    Identifies the total count of products in the connection.
+    """
+    totalCount: Int!
+}
+
+"""Catalog product connection's edge."""
+type CatalogProductConnectionEdge {
+    """
+    A cursor for use in pagination.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor
+    cursor: RelayCursor!
+
+    """
+    The product at the end of the edge.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Node).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Node
+    node: CatalogProduct
+}

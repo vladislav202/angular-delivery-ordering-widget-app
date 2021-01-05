@@ -1,0 +1,11 @@
+<div *ngIf="isLoadingStore" class="spinner-border text-primary" role="status" style="position: absolute;top: 50%;left: 49%;">
+  <span class="sr-only">{{'Loading'|translate}}...</span>
+</div>
+<div *ngIf="!isLoadingStore">
+  <div ngbNav [activeId]="router.url" class="nav-justified">
+    <a *ngIf="deliveryEnableStoreList.length !== 0" ngbNavItem="/delivery" ngbNavLink routerLink="." [queryParams]="sourceInfluencer?{utm_source:sourceInfluencer}:{}" queryParamsHandling="merge" routerLinkActive="nav-item--active" [routerLinkActiveOptions]="{exact: true}">{{'DELIVERY'|translate}}</a>
+    <a *ngIf="pickupEnableStoreList.length !== 0" ngbNavItem="/delivery/pickup" ngbNavLink routerLink="pickup" [queryParams]="sourceInfluencer?{utm_source:sourceInfluencer}:{}" queryParamsHandling="merge" routerLinkActive="nav-item--active" [routerLinkActiveOptions]="{exact: true}">{{'PICKUP'|translate}}</a>
+  </div>
+</div>
+<router-outlet></router-outlet>
+

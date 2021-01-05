@@ -1,0 +1,76 @@
+################################################################################
+##                                                                            ##
+##                                  MUTATION                                  ##
+##                                                                            ##
+################################################################################
+
+extend type Mutation {
+    """Set quantity inventory product availability."""
+    setQuantityInventoryProductAvailability(input: SetQuantityInventoryProductAvailability!): QuantityInventoryProductAvailability!
+}
+
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Quantity inventory product availability."""
+type QuantityInventoryProductAvailability implements Node & Audited & InventoryProductAvailability {
+    """ID."""
+    id: ID!
+
+    """Product."""
+    product: InventoryProduct!
+
+    """Store."""
+    store: Store!
+
+    """Limit amount."""
+    limitAmount: BigFloat!
+
+    """Used amount."""
+    usedAmount: BigFloat!
+
+    """Unit."""
+    unit: QuantityUnit
+
+    """Exponent."""
+    exponent: Int
+
+    """User that created this quantity inventory product availability."""
+    createdBy: User
+
+    """Date and time when this quantity inventory product availability was created."""
+    createdAt: DateTime!
+
+    """User that last modified this quantity inventory product availability."""
+    lastModifiedBy: User
+
+    """Date and time when this quantity inventory product availability's last modification was made."""
+    lastModifiedAt: DateTime
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Set quantity inventory product availability input."""
+input SetQuantityInventoryProductAvailability {
+    """Product ID."""
+    product: ID!
+
+    """Store ID."""
+    store: ID!
+
+    """Limit amount."""
+    limitAmount: BigFloat!
+
+    """Unit."""
+    unit: QuantityUnit
+
+    """Exponent."""
+    exponent: Int
+}

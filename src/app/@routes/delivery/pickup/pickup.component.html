@@ -1,0 +1,37 @@
+<div *ngIf="isLoadingStore" class="spinner-border text-primary" role="status" style="position: absolute;top: 50%;left: 49%;">
+  <span class="sr-only">{{'Loading'|translate}}...</span>
+</div>
+<div *ngIf="!isLoadingStore">
+  <label class="form-block__label--big">
+    <div>{{"Choose where you'll pick up your order"|translate}}</div>
+
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text "><i class="fas fa-search"></i></span>
+        </div>
+
+        <input class="form-control" type="text" placeholder="{{'search for an outlet'|translate}}" (keyup)="applyFilter($event)">
+    </div>
+
+  </label>
+  <div *ngIf="filteredStoreList.length === 0" class="text-center">{{'No search stores to display'|translate}}</div>
+  <ng-container *ngFor="let store of filteredStoreList">
+      <div class="card-list__item card-list__item--bordered d-block" (click)="selectStore(store)" [ngClass]="{'card-list__item--disabled': !store.node.pickupEnabled}">
+        <img *ngIf="store.node.image" class="mb-2" src="{{store.node.image}}" style="width: 100%; height: 200px; border-radius: 5px;"/>
+        <div class="d-flex justify-content-between mb-2">
+          <div class="item-title">{{store.node.name}}</div>
+          <div>{{store.node.pickupEta}} {{store.node.etaTimeUnit.toLowerCase()|translate}}</div>
+        </div>
+        <div class="d-flex justify-content-between align-items-end">
+          <div class="item-hint">{{store.node.address.addressLine1}} {{store.node.address.city}} {{store.node.address.country}}</div>
+          <div *ngIf="!store.node.pickupEnabled">
+            <p class="alert alert-danger alert-disabled">
+              Closed for pickup
+            </p>
+        </div>
+        </div>
+
+      </div>
+  </ng-container>
+</div>
+

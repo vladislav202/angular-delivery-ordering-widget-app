@@ -1,0 +1,3 @@
+[submodule "contract/graphql/schema"]
+	path = .gitsubmodules/deliverai.io/contract/graphql/schema
+	url = ../../../contract/graphql/schema.git

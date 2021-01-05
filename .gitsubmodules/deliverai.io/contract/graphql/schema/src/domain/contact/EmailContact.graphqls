@@ -1,0 +1,97 @@
+################################################################################
+##                                                                            ##
+##                                  MUTATION                                  ##
+##                                                                            ##
+################################################################################
+
+extend type Mutation {
+    """Create business email contact."""
+    createBusinessEmailContact(input: CreateBusinessEmailContactInput!): EmailContact!
+
+    """Create store email contact."""
+    createStoreEmailContact(input: CreateStoreEmailContactInput!): EmailContact!
+
+    """Update email contact."""
+    updateEmailContact(input: UpdateEmailContactInput!): EmailContact!
+
+    """Delete email contact."""
+    deleteEmailContact(input: DeleteEmailContactInput!): Boolean!
+}
+
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Email contact."""
+type EmailContact implements Node & Contact {
+    """ID."""
+    id: ID!
+
+    """Email address."""
+    email: EmailAddress!
+
+    """Name."""
+    name: String
+
+    """Description."""
+    description: String
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Create email contact input."""
+input CreateEmailContactInput {
+    """Email address."""
+    email: EmailAddress!
+
+    """Name."""
+    name: String
+
+    """Description."""
+    description: String
+}
+
+"""Create business email contact input."""
+input CreateBusinessEmailContactInput {
+    """Business."""
+    business: ID!
+
+    """Contact."""
+    contact: CreateEmailContactInput!
+}
+
+"""Create store email contact input."""
+input CreateStoreEmailContactInput {
+    """Store."""
+    store: ID!
+
+    """Contact."""
+    contact: CreateEmailContactInput!
+}
+
+"""Update email contact input."""
+input UpdateEmailContactInput {
+    """ID."""
+    id: ID!
+
+    """Email address."""
+    email: EmailAddress
+
+    """Name."""
+    name: String
+
+    """Description."""
+    description: String
+}
+
+"""Delete email contact input."""
+input DeleteEmailContactInput {
+    """ID."""
+    id: ID!
+}

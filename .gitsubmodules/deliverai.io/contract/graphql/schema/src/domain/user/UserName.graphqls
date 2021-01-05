@@ -1,0 +1,50 @@
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""User name."""
+type UserName {
+    """Given name."""
+    given: String!
+
+    """Family name."""
+    family: String!
+
+    """Middle name."""
+    middle: String
+
+    """Full name."""
+    full: String
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Create user name input."""
+input CreateUserNameInput {
+    """Given name."""
+    given: String!
+
+    """Family name."""
+    family: String!
+
+    """Middle name."""
+    middle: String
+}
+
+"""Update user name input."""
+input UpdateUserNameInput {
+    """Given name."""
+    given: String
+
+    """Family name."""
+    family: String
+
+    """Middle name."""
+    middle: String
+}

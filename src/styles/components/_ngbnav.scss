@@ -1,0 +1,11 @@
+@charset "utf-8";
+
+.nav-justified {
+  .nav-item {
+    border-bottom: solid #dee2e6 4px;
+
+    &--active {
+      border-bottom-color: var(--theme-background-color);
+    }
+  }
+}

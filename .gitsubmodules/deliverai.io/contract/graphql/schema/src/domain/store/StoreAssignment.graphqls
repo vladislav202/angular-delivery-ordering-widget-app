@@ -1,0 +1,174 @@
+################################################################################
+##                                                                            ##
+##                                   QUERY                                    ##
+##                                                                            ##
+################################################################################
+
+extend type Query {
+    """Find store user assignment by the ID."""
+    storeAssignment(id: ID!): StoreAssignment
+
+    """Store assignment connection."""
+    storeAssignmentConnection(
+        """Business ID."""
+        business: ID
+
+        """Store ID."""
+        store: ID
+
+        """User ID."""
+        user: ID
+
+        # Using forward cursor pagination
+        """Find `first` items next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` items previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): StoreAssignmentConnection!
+}
+
+################################################################################
+##                                                                            ##
+##                                  MUTATION                                  ##
+##                                                                            ##
+################################################################################
+
+extend type Mutation {
+    """Assign roles to user in store"""
+    storeAssignUser(input: StoreAssignUserInput!): StoreAssignment!
+
+    """Revoke user roles or entire assignment from store"""
+    storeRevokeUserAssignment(input: StoreRevokeUserAssignmentInput!): Boolean!
+}
+
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Store user assignment."""
+type StoreAssignment implements Node & Audited {
+    """ID."""
+    id: ID!
+
+    """Store."""
+    store: Store!
+
+    """User."""
+    user: User!
+
+    """Roles."""
+    roles: [StoreRole!]!
+
+    """User that created this entity."""
+    createdBy: User
+
+    """Date and time when this entity was created."""
+    createdAt: DateTime!
+
+    """User that last modified this entity."""
+    lastModifiedBy: User
+
+    """Date and time when this entity'es last modification was made."""
+    lastModifiedAt: DateTime
+}
+
+"""Store role."""
+enum StoreRole {
+    ADMINISTRATOR
+    OPERATOR
+    WATCHER
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Assign user to store."""
+input StoreAssignUserInput {
+    """Store ID."""
+    store: ID!
+
+    """User ID."""
+    user: ID!
+
+    """Roles."""
+    roles: [StoreRole!]!
+}
+
+"""Revoke user assignment for store."""
+input StoreRevokeUserAssignmentInput {
+    """ID."""
+    id: ID!
+
+    """Roles."""
+    roles: [StoreRole!]
+}
+
+################################################################################
+##                                                                            ##
+##                                   RELAY                                    ##
+##                                                                            ##
+################################################################################
+
+"""Store user assignment connection."""
+type StoreAssignmentConnection {
+    """
+    List of edges.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Edges).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Edges
+    edges: [StoreAssignmentEdge]
+
+    """
+    List of nodes.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Node).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Node
+    nodes: [StoreAssignment]
+
+    """
+    Information to aid in pagination.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types.Fields.PageInfo).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types.Fields.PageInfo
+    pageInfo: PageInfo!
+
+    """
+    Identifies the total count of items in the connection.
+    """
+    totalCount: Int!
+}
+
+"""Store address connection's edge."""
+type StoreAssignmentEdge {
+    """
+    Cursor for use in pagination.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor
+    cursor: RelayCursor!
+
+    """
+    The item at the end of the edge.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Node).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Node
+    node: StoreAssignment
+}
+

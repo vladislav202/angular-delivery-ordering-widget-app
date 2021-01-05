@@ -1,0 +1,58 @@
+################################################################################
+##                                                                            ##
+##                                  MUTATION                                  ##
+##                                                                            ##
+################################################################################
+
+extend type Mutation {
+    """Create loyalty program."""
+    addPaymentProvider(input: AddPaymentProviderInput!): PaymentProvider!
+
+    """Update loyalty program."""
+    updatePaymentProvider(input: UpdatePaymentProviderInput!): PaymentProvider!
+
+    """Delete loyalty program."""
+    deletePaymentProvider(input: DeletePaymentProviderInput!): Boolean!
+}
+
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Payment provider."""
+interface PaymentProvider {
+    """Catalog."""
+    catalog: Catalog!
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Add payment provider input"""
+input AddPaymentProviderInput {
+    """Catalog id."""
+    catalog: ID!
+
+    """Stripe payment provider"""
+    stripe: AddStripePaymentProviderInput
+}
+
+"""Update payment provider input"""
+input UpdatePaymentProviderInput {
+    """ID."""
+    id: ID!
+
+    """Stripe payment provider"""
+    stripe: UpdateStripePaymentProviderInput
+}
+
+"""Delete payment provider input"""
+input DeletePaymentProviderInput {
+    """ID."""
+    id: ID!
+}

@@ -1,0 +1,61 @@
+################################################################################
+##                                                                            ##
+##                                  MUTATION                                  ##
+##                                                                            ##
+################################################################################
+
+extend type Mutation {
+    """Set manual inventory product availability."""
+    setManualInventoryProductAvailability(input: SetManualInventoryProductAvailabilityInput!): ManualInventoryProductAvailability!
+}
+
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Manual inventory product availability."""
+type ManualInventoryProductAvailability implements Node & Audited & InventoryProductAvailability {
+    """ID."""
+    id: ID!
+
+    """Product."""
+    product: InventoryProduct!
+
+    """Store."""
+    store: Store!
+
+    """Enabled flag."""
+    enabled: Boolean!
+
+    """User that created this manual inventory product availability."""
+    createdBy: User
+
+    """Date and time when this manual inventory product availability was created."""
+    createdAt: DateTime!
+
+    """User that last modified this manual inventory product availability."""
+    lastModifiedBy: User
+
+    """Date and time when this manual inventory product availability's last modification was made."""
+    lastModifiedAt: DateTime
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Set manual inventory product availability input."""
+input SetManualInventoryProductAvailabilityInput {
+    """Product ID."""
+    product: ID!
+
+    """Store ID."""
+    store: ID!
+
+    """Enabled flag."""
+    enabled: Boolean!
+}

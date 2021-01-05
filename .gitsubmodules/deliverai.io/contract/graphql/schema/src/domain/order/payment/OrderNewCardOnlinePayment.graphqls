@@ -1,0 +1,32 @@
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Order online payment."""
+type OrderNewCardOnlinePayment implements Node & OrderPayment {
+    """ID."""
+    id: ID!
+
+    """Order."""
+    order: Order!
+
+    """Amount."""
+    amount: BigFloat!
+
+    """Currency."""
+    currency: CurrencyDetails!
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Set order online payment with new card input."""
+input SetOrderNewCardOnlinePayment {
+    """Card ID."""
+    cardId: ID!
+}

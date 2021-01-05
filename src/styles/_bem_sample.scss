@@ -1,0 +1,56 @@
+// BEM Methodology: https://ru.bem.info/methodology/quick-start/
+// BEM StyleLint plugin: https://github.com/simonsmith/stylelint-selector-bem-pattern
+//                  and: https://github.com/postcss/postcss-bem-linter/blob/master/test/fixtures/bem-valid.css
+//                  and: https://github.com/postcss/postcss-bem-linter/blob/master/lib/preset-patterns.js
+
+// Disable formatting in WebStorm
+// @formatter:off
+
+/** postcss-bem-linter: define sample; use strict */
+.app-sample {}
+.app-sample__input {}
+.app-sample__button {}
+/** postcss-bem-linter: end */
+
+/** postcss-bem-linter: define block-name; use strict */
+.app-block-name {}
+.app-block-name_mod-name_mod-val {}
+.app-block-name_mod {}
+.app-block-name__elem-name {}
+.app-block-name__elem-name_mod-name_mod-val {}
+.app-block-name__elem_mod {}
+
+.app-block-name .app-block-name {}
+.app-block-name_mod-name_mod-val .app-block-name_mod-name_mod-val {}
+.app-block-name_mod .app-block-name_mod {}
+.app-block-name__elem-name .app-block-name__elem-name {}
+.app-block-name__elem-name_mod-name_mod-val .app-block-name__elem-name_mod-name_mod-val {}
+.app-block-name__elem_mod .app-block-name__elem_mod {}
+.app-block-name__camelCase {}
+
+.app-block-name__camelCase:nth-child(3n) {}
+.app-block-name__camelCase:nth-child(3n+1) {}
+.app-block-name[disabled] {}
+.app-block-name__elem_mod[disabled] {}
+
+/* Harry Roberts bem style additions */
+.app-block-name--mod {}
+.app-block-name__elem-name--mod {}
+/** postcss-bem-linter: end */
+
+/** postcss-bem-linter: define another-block-name; use strict */
+.app-another-block-name {
+  color: rgb(164, 25, 41);
+
+  .app-another-block-name__element {}
+  &__element {}
+  &__element-modifier {}
+  &__element--modifier {}
+  &_modifier {}
+  &--modifier {}
+  &[attr] {}
+}
+/** postcss-bem-linter: end */
+
+// Enable formatting in WebStorm
+// @formatter:on

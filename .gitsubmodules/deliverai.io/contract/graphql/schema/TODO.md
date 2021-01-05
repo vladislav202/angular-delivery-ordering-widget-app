@@ -1,0 +1,2 @@
+- [ ] Git SHA: `f5dc9f42` — Rework `Payment + Card`. Do we need `Delivery` ?
+- [ ] Minimum order price. Do we need to create smth like `Customer Campaign` ?	

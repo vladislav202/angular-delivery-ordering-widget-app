@@ -1,0 +1,37 @@
+################################################################################
+##                                                                            ##
+##                                   QUERY                                    ##
+##                                                                            ##
+################################################################################
+
+extend type Query {
+    """Fetch all time zones' details."""
+    timeZones: [TimeZoneDetails!]!
+
+    """Fetch time zone's details by ID."""
+    timeZone(
+        """Time zone id."""
+        id: TimeZoneId!
+    ): TimeZoneDetails
+}
+
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Time zone details."""
+type TimeZoneDetails {
+    """Time zone id."""
+    id: TimeZoneId!
+
+    """Display name."""
+    displayName(locale: LocaleTag): String!
+
+    """Does it observe day light time."""
+    observesDaylightTime: Boolean!
+
+    """Offset to UTC in milliseconds."""
+    offset: Int!
+}

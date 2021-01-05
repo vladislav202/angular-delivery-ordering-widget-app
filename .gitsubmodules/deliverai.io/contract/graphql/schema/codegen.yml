@@ -1,0 +1,16 @@
+overwrite: true
+
+schema:
+    - src/**/*.graphqls
+
+generates:
+    ./dist/schema.json:
+        plugins:
+            - introspection
+
+    ./dist/schema.graphql:
+        config:
+            commentDescriptions: false
+            includeDirectives: true
+        plugins:
+            - schema-ast

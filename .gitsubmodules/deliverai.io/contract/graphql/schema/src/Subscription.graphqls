@@ -1,0 +1,15 @@
+################################################################################
+##                                                                            ##
+##                                SUBSCRIPTION                                ##
+##                                                                            ##
+################################################################################
+
+"""`Subscription`."""
+type Subscription {
+    """
+    Dummy subscriptions. It simply everytime returns 'true' value.
+    Required by [Voyager](https://github.com/APIs-guru/graphql-voyager):
+    it doesn't accept empty subscriptions.
+    """
+    dummy: Boolean
+}

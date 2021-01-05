@@ -1,0 +1,13 @@
+mutation RedeemLoyaltyPoints(
+    $cart: ID!
+    $customer: ID!
+    $points: BigFloat!
+) {
+    redeemLoyaltyPoints(
+        input: {
+            cart: $cart,
+            customer: $customer,
+            points: $points
+        }
+    )
+}

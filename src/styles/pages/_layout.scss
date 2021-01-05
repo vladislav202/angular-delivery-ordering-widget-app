@@ -1,0 +1,16 @@
+.app-layout {
+  /* Positioning */
+  position: relative;
+
+  /* Box Model */
+  max-width: 460px;
+  min-height: 100%;
+
+  /* Visual */
+  background-color: #ffffff;
+  border-right: solid #e7e8ec 1px;
+
+  .widget-container {
+    padding-bottom: 70px;
+  }
+}

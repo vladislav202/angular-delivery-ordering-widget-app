@@ -1,0 +1,615 @@
+<div *ngIf="isLoadingStore" class="spinner-border text-primary" role="status" style="position: absolute;top: 50%;left: 49%;">
+  <span class="sr-only">{{'Loading'|translate}}...</span>
+</div>
+
+<div *ngIf="isLoadingProductDetail" id="productDetailLoading" class="spinner-border text-primary" role="status" style="display: none; z-index: 1;">
+  <span class="sr-only">{{'Loading'|translate}}...</span>
+</div>
+
+<div *ngIf="isShowErrorMessage" style="position: absolute; top: 50%;left: 50%; font-size: 18px; transform: translate(-50%, -50%);">{{'This link doesn\'t exist'|translate}}</div>
+
+<div *ngIf="catalog && !isLoadingStore" class="widget-container" [ngClass]="{'widget-container--disabled': isLoadingProductDetail}">
+
+  <div *ngIf="!store || (store && !store.deliveryEnabled && !store.pickupEnabled)" class="delivery-store">
+    <div class="d-flex justify-content-between align-items-center" style="padding-top: 10px; padding-bottom: 18px;">
+      <div class="store-name">{{catalog.business.name}}</div>
+      <div ngbDropdown class="d-inline-block" placement="bottom-right">
+        <button class="btn btn-sm btn-link py-0" id="dropdownBasic1" ngbDropdownToggle><img src='assets/images/flags/{{flag}}.png' class="flag"/></button>
+        <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+          <button ngbDropdownItem (click)="changeLang('en')"><img src='assets/images/flags/United-Kingdom.png' class="flag"/>English</button>
+          <button ngbDropdownItem (click)="changeLang('it')"><img src='assets/images/flags/Italy.png' class="flag"/>Italiano</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="store-address">{{catalog.business.description.longContent}}</div>
+  </div>
+  <div *ngIf="orderType === 'delivery'">
+    <div *ngIf="store" class="delivery-store">
+      <div class="d-flex justify-content-between align-items-center" style="padding-top: 10px; padding-bottom: 18px;">
+        <div class="store-name">{{store.name}}</div>
+        <div ngbDropdown class="d-inline-block" placement="bottom-right">
+          <button class="btn btn-sm btn-link py-0" id="dropdownBasic2" ngbDropdownToggle><img src='assets/images/flags/{{flag}}.png' class="flag"/></button>
+          <div ngbDropdownMenu aria-labelledby="dropdownBasic2">
+            <button ngbDropdownItem (click)="changeLang('en')"><img src='assets/images/flags/United-Kingdom.png' class="flag"/>English</button>
+            <button ngbDropdownItem (click)="changeLang('it')"><img src='assets/images/flags/Italy.png' class="flag"/>Italiano</button>
+          </div>
+        </div>
+      </div>
+      <div class="store-address">{{store.address.addressLine1}} {{store.address.city}} {{store.address.country}}</div>
+
+      <div class="d-flex justify-content-between align-items-center mt-3">
+        <span><i class='far fa-clock'></i> {{store.pickupEta}} - {{store.deliveryEta}} {{store.etaTimeUnit.toLowerCase()|translate}}</span>
+        <span *ngIf="!minOrderDeliveryZone"><i class="fa fa-shopping-bag"></i> {{'No minimum order'|translate}}</span>
+        <span *ngIf="minOrderDeliveryZone"><i class="fa fa-shopping-bag"></i> {{currency}} {{minOrderDeliveryZone.minimalAmount}} {{'minimum order'|translate}}</span>
+      </div>
+    </div>
+    <div class="delivery-toolbar">
+      <div (click)="deliveryModal(content)" class="delivery-toolbar__pointer
+        w-100" style="padding-right: 20px;">
+        <div class="delivery-toolbar__label">{{'DELIVERING TO'|translate}}</div>
+        <div *ngIf="deliveryAddress !== '' && deliveryAddress !== null && orderTiming !== '' && orderTiming !== null" class="delivery-toolbar__to"><i class="fas fa-map-marker-alt list-icon mr-2"></i>{{deliveryAddress}} <span *ngIf="isEnableOrdering">({{orderTiming}})</span><i
+          class="hint fas fa-caret-down" style="margin-left: 5px;"></i></div>
+        <div *ngIf="(deliveryAddress !== '' && deliveryAddress !== null && orderTiming === '') || (deliveryAddress !== '' && deliveryAddress !== null && orderTiming === null)" class="delivery-toolbar__to"><i class="fas fa-map-marker-alt list-icon mr-2"></i>{{deliveryAddress}}<i
+          class="hint fas fa-caret-down" style="margin-left: 5px;"></i></div>
+        <div *ngIf="deliveryAddress === '' || deliveryAddress === null" class="delivery-toolbar__to"><i class="fas fa-map-marker-alt list-icon mr-2"></i>{{addressNotification|translate}}<i
+          class="hint fas fa-caret-down" style="margin-left: 5px;"></i></div>
+      </div>
+
+      <div *ngIf="pickupEnableStoreList.length !== 0 && deliveryEnableStoreList.length !== 0" class="btn-group btn-group-sm btn-group-toggle" ngbRadioGroup
+        name="radioBasic" [(ngModel)]="orderType">
+        <label *ngIf="parentPath" ngbButtonLabel class="btn-outline-primary btn-primary--focus">
+          <input ngbButton type="radio" value="delivery" [routerLink]="['/', parentPath, slug, 'delivery']" [queryParams]="sourceInfluencer?{utm_source:sourceInfluencer}:{}" queryParamsHandling="merge">{{'Delivery'|translate}}
+        </label>
+        <label *ngIf="!parentPath" ngbButtonLabel class="btn-outline-primary btn-primary--focus">
+          <input ngbButton type="radio" value="delivery" [routerLink]="['/', slug, 'delivery']" [queryParams]="sourceInfluencer?{utm_source:sourceInfluencer}:{}" queryParamsHandling="merge">{{'Delivery'|translate}}
+        </label>
+        <label ngbButtonLabel class="btn-outline-primary btn-primary--focus">
+          <input ngbButton type="radio" value="pickup"
+          [routerLink]="['delivery/pickup']" [queryParams]="sourceInfluencer?{utm_source:sourceInfluencer}:{}" queryParamsHandling="merge">{{'Pickup'|translate}}
+        </label>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="orderType === 'pickup'">
+    <div *ngIf="store" class="delivery-store">
+      <div class="d-flex justify-content-between align-items-center" style="padding-top: 10px; padding-bottom: 18px;">
+        <div class="store-name">{{store.name}}</div>
+        <div ngbDropdown class="d-inline-block" placement="bottom-right">
+          <button class="btn btn-sm btn-link py-0" id="dropdownBasic1" ngbDropdownToggle><img src='assets/images/flags/{{flag}}.png' class="flag"/></button>
+          <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+            <button ngbDropdownItem (click)="changeLang('en')"><img src='assets/images/flags/United-Kingdom.png' class="flag"/>English</button>
+            <button ngbDropdownItem (click)="changeLang('it')"><img src='assets/images/flags/Italy.png' class="flag"/>Italiano</button>
+          </div>
+        </div>
+      </div>
+      <div class="store-address">{{store.address.addressLine1}} {{store.address.city}} {{store.address.country}}</div>
+
+      <div class="d-flex justify-content-between align-items-center mt-3">
+        <span><i class='far fa-clock'></i> {{store.pickupEta}} - {{store.deliveryEta}} {{store.etaTimeUnit.toLowerCase()|translate}}</span>
+        <span><i class="fa fa-shopping-bag"></i> {{'No minimum order'|translate}}</span>
+      </div>
+    </div>
+    <div class="delivery-toolbar">
+      <div (click)="deliveryModal(content)" class="delivery-toolbar__pointer
+        w-100" style="padding-right: 20px;">
+        <div class="delivery-toolbar__label">{{'PICK UP FROM'|translate}}</div>
+        <div *ngIf="deliveryAddress !== '' && orderTiming !== '' && orderTiming !== null" class="delivery-toolbar__to"><i class="fas fa-map-marker-alt list-icon mr-2"></i>{{deliveryAddress}} <span *ngIf="isEnableOrdering">({{orderTiming}})</span><i
+          class="hint fas fa-caret-down" style="margin-left: 5px;"></i></div>
+        <div *ngIf="(deliveryAddress !== '' && orderTiming === '') || (deliveryAddress !== '' && orderTiming === null)" class="delivery-toolbar__to"><i class="fas fa-map-marker-alt list-icon mr-2"></i>{{deliveryAddress}}<i
+          class="hint fas fa-caret-down" style="margin-left: 5px;"></i></div>
+        <div *ngIf="deliveryAddress === ''" class="delivery-toolbar__to"><i class="fas fa-map-marker-alt list-icon mr-2"></i>{{addressNotification|translate}}<i
+          class="hint fas fa-caret-down" style="margin-left: 5px;"></i></div>
+      </div>
+
+      <div *ngIf="pickupEnableStoreList.length !== 0 && deliveryEnableStoreList.length !== 0" class="btn-group btn-group-sm btn-group-toggle" ngbRadioGroup
+        name="radioBasic" [(ngModel)]="orderType">
+        <label *ngIf="parentPath" ngbButtonLabel class="btn-outline-primary btn-primary--focus">
+          <input ngbButton type="radio" value="delivery" [routerLink]="['/', parentPath, slug, 'delivery']" [queryParams]="sourceInfluencer?{utm_source:sourceInfluencer}:{}" queryParamsHandling="merge">{{'Delivery'|translate}}
+        </label>
+        <label *ngIf="!parentPath" ngbButtonLabel class="btn-outline-primary btn-primary--focus">
+          <input ngbButton type="radio" value="delivery" [routerLink]="['/', slug, 'delivery']" [queryParams]="sourceInfluencer?{utm_source:sourceInfluencer}:{}" queryParamsHandling="merge">{{'Delivery'|translate}}
+        </label>
+        <label ngbButtonLabel class="btn-outline-primary btn-primary--focus">
+          <input ngbButton type="radio" value="pickup"
+          [routerLink]="['delivery/pickup']" [queryParams]="sourceInfluencer?{utm_source:sourceInfluencer}:{}" queryParamsHandling="merge">{{'Pickup'|translate}}
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="store && !store.deliveryEnabled && orderType === 'delivery'" style="padding: 0 14px;">
+    <p class="alert alert-danger" style="font-size: 13px; max-width: 100%;">
+      {{'We\'re currently closed for delivery.'|translate}}
+    </p>
+  </div>
+  <div *ngIf="store && !store.pickupEnabled && orderType === 'pickup'" style="padding: 0 14px;">
+    <p class="alert alert-danger" style="font-size: 13px; max-width: 100%;">
+      {{'We\'re currently closed for pickup.'|translate}}
+    </p>
+  </div>
+
+  <div *ngIf="deliveryAddress !== '' && deliveryAddress !== null">
+    <div *ngIf="!store || (store && store.deliveryEnabled && !minOrderDeliveryZone && orderType === 'delivery')" style="padding: 0 14px;">
+      <p class="alert alert-danger" style="font-size: 13px; max-width: 100%;">
+        {{'We don\'t serve the selected delivery area. Please choose pickup or another delivery area.'|translate}}
+      </p>
+    </div>
+  </div>
+
+  <div *ngIf="(deliveryAddress === '' || deliveryAddress === null) && orderType === 'delivery'" style="padding: 0 14px;">
+    <p class="alert alert-danger" style="font-size: 13px; max-width: 100%;">{{'Please select a delivery address'|translate}}</p>
+  </div>
+
+  <div *ngIf="isEnableOrdering && store && orderTiming !== 'ASAP' && orderTiming" style="padding: 0 14px;">
+    <p class="order-timing" style="font-size: 13px; max-width: 100%;">
+      {{'You\'re ordering for'|translate}} {{orderTiming}}
+    </p>
+  </div>
+
+  <div *ngIf="isClosedStore && orderType === 'pickup'" style="padding: 0 14px;">
+    <p class="alert alert-danger" style="font-size: 13px; max-width: 100%;">
+      {{'The store is not available for pickup'|translate}}
+    </p>
+  </div>
+
+  <div *ngIf="isClosedStore && orderType === 'delivery'" style="padding: 0 14px;">
+    <p class="alert alert-danger" style="font-size: 13px; max-width: 100%;">
+      {{'The store is not available for delivery'|translate}}
+    </p>
+  </div>
+
+  <div *ngIf="!store || (store && !store.deliveryEnabled && !store.pickupEnabled)" style="padding: 0 14px;">
+    <p class="alert alert-danger" style="font-size: 13px; max-width: 100%;">
+      {{'The Store is closed'|translate}}
+    </p>
+  </div>
+
+  <div *ngIf="loyaltyProgram && loyaltyProgram.enabled" class="page-banner" style="cursor: pointer;" (click)="openLoyaltyProgramModal(loyaltyProgramModal)">
+    <div class="page-banner__icon"><i class="fas fa-gift text-white"></i></div>
+    <div class="loyalty-program">
+      <div class="title mb-1">{{'Loyalty Program'|translate}}</div>
+      <div class="description mt-1">
+        {{'Earn'|translate}} <b class="text-primary">{{loyaltyProgram.criterias[0].pointsPercentage}}% {{'in cashbacks'|translate}}</b> {{'to spend in your next orders'|translate}}
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="discountList.length !== 0" class="discount-list pr-0 py-3 pl-3 overflow-auto d-flex">
+    <div  class="discount-item" *ngFor="let discount of discountList; let i= index">
+      <div class="discount-item__box" (click)="openDiscountModal(discountModal, discount)">
+        <div *ngIf="discount.node.applied" class="discount-item__box--checked">
+          <svg data-v-4e54e6b5="" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" class="checked-logo" style="width: 14px; height: 14px;"><path d="M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z"></path></svg>
+        </div>
+        <div class="pr-3">
+          <div class="discount-item__icon">
+            <svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+              <!-- Generator: Sketch 52.6 (67491) - http://www.bohemiancoding.com/sketch -->
+              <title>discount</title>
+              <desc>Created with Sketch.</desc>
+              <g id="settings" class="discount-logo" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" fill="#1B2A6A">
+                  <g id="Settings" transform="translate(-101.000000, -596.000000)" >
+                      <g id="discount" transform="translate(101.000000, 596.000000)">
+                          <path d="M14.6026953,5.39730469 C14.3706641,5.16527344 14.0060937,5.16527344 13.7740625,5.39730469 C13.5420313,5.62933594 13.5420313,5.99386719 13.7740625,6.2259375 C14.0060937,6.45796875 14.3706641,6.45796875 14.6026953,6.2259375 C14.8347266,5.99390625 14.8347266,5.62933594 14.6026953,5.39730469 Z" id="Path"></path>
+                          <path d="M8.80222656,7.88320312 C8.57019531,7.65117188 8.205625,7.65117188 7.97359375,7.88320312 C7.74160156,8.11519531 7.7415625,8.47980469 7.97359375,8.71183594 C8.205625,8.94390625 8.57023438,8.94382812 8.80222656,8.71183594 C9.03425781,8.47980469 9.03425781,8.11523438 8.80222656,7.88320312 Z" id="Path"></path>
+                          <path d="M9.63085938,13.6837109 C9.39882812,13.4516797 9.03425781,13.4516797 8.80222656,13.6837109 C8.57023438,13.9157031 8.57019531,14.2803125 8.80222656,14.5123437 C9.03425781,14.744375 9.39886719,14.7443359 9.63085938,14.5123437 C9.86292969,14.2802734 9.86292969,13.9157422 9.63085938,13.6837109 Z" id="Path"></path>
+                          <path d="M19.56625,8.33898438 L18.2404687,3.03566406 C18.2073047,2.91964844 18.1659375,2.81191406 18.1161719,2.7125 L15.7710937,5.05757813 C16.0777344,5.7121875 15.97,6.5159375 15.4313672,7.05457031 C14.7436328,7.74230469 13.6332422,7.74234375 12.9454297,7.05457031 C12.2576562,6.36679688 12.2576953,5.25636719 12.9454297,4.56863281 C13.4840625,4.03 14.2878125,3.92226563 14.9424219,4.22890625 L17.2875,1.88382813 C17.1880859,1.8340625 17.0803516,1.79269531 16.9643359,1.75953125 L11.6610156,0.43375 C11.0644531,0.284609375 10.4264062,0.45859375 9.9871875,0.897773438 L0.515820312,10.3691406 C-0.171914063,11.056875 -0.171953125,12.1672656 0.515820312,12.8550781 L7.14496094,19.4842188 C7.83273437,20.1719922 8.94316406,20.1719531 9.63089844,19.4842188 L19.1022266,10.0128125 C19.5414453,9.57359375 19.7154297,8.93554688 19.56625,8.33898438 Z M7.14496094,7.05457031 C7.83273438,6.36679688 8.94308594,6.36679688 9.63089844,7.05457031 C10.3187109,7.74234375 10.3186719,8.85269531 9.63089844,9.54050781 C8.94316406,10.2282422 7.83277344,10.2282813 7.14496094,9.54050781 C6.45714844,8.85273438 6.45722656,7.74230469 7.14496094,7.05457031 Z M10.4595312,15.3409766 C9.77175781,16.0287109 8.66136719,16.02875 7.97359375,15.3409766 C7.28582031,14.6532031 7.28585938,13.5427734 7.97359375,12.8550391 C8.66136719,12.1672656 9.77171875,12.1672656 10.4595312,12.8550391 C11.1473047,13.5428125 11.1473047,14.6531641 10.4595312,15.3409766 Z M12.5958594,11.3660938 L5.13808594,12.1947266 C4.95398438,12.2145703 4.78039063,12.1478125 4.65863281,12.0260156 C4.56800781,11.9353906 4.50609375,11.8144141 4.49070313,11.6768359 C4.45550781,11.3551953 4.68695313,11.0654687 5.00859375,11.0294531 L12.4663672,10.2008203 C12.7876172,10.1668359 13.0777344,10.3970703 13.11375,10.7187109 C13.1489453,11.0403906 12.9175391,11.3300781 12.5958594,11.3660938 Z" id="Shape" fill-rule="nonzero"></path>
+                          <path d="M19.8259766,0.174023437 C19.5939453,-0.0580078125 19.229375,-0.0580078125 18.9973437,0.174023437 L17.2875,1.88386719 C17.6603906,2.05789062 17.9503906,2.34789062 18.1161328,2.7125 L19.8259766,1.00265625 C20.0580078,0.770625 20.0580078,0.406054687 19.8259766,0.174023437 Z" id="Path"></path>
+                      </g>
+                  </g>
+              </g>
+            </svg>
+          </div>
+        </div>
+        <div>
+          <div class="discount-item__title">{{discount.node.name}}</div>
+          <div class="discount-item__description">
+            <span *ngIf="discount.node.type === 'PERCENTAGE'">{{'get-percentage'|translate}} {{discount.node.discountValue}}</span>
+            <span *ngIf="discount.node.type === 'FIXED_VALUE'">{{'get-fixed'|translate}} {{discount.node.discountValue}}</span>
+            <span *ngIf="discount.node.type === 'PERCENTAGE'">%</span>
+            <span *ngIf="discount.node.type === 'FIXED_VALUE'"> {{currency}}</span>
+            <span> {{'off for your'|translate}} </span>
+            <span *ngIf="discount.node.maxUsageCountByCustomer > 1">{{'next'|translate}} {{discount.node.maxUsageCountByCustomer | number}} {{'orders'|translate}}</span>
+            <span *ngIf="discount.node.maxUsageCountByCustomer === 1">{{'next order'|translate}}</span>
+          </div>
+          <div class="discount-item__terms">{{'*T&C applies'|translate}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="categories-nav">
+
+    <ng-container *ngFor="let cat of categoryNamesListForFiltering; let i= index">
+      <span class="categories-nav__link" [ngClass]="{'categories-nav__link--active': i == catInView}" (click)="scrollTo($event, i)">{{cat.node.name}}</span>
+    </ng-container>
+
+  </div>
+
+  <ng-container *ngFor="let category of categoryList">
+    <ng-container *ngIf="category.node.availableProductLength > 0">
+
+      <div class="category-section">
+        <div class="category-name">{{category.node.name}}</div>
+        <div *ngIf="category.node.description && category.node.description.longContent && category.node.description.longContent.length <= descriptionWordsLimit" class="category-description">{{category.node.description.longContent}}</div>
+        <div *ngIf="category.node.description && category.node.description.longContent && category.node.description.longContent.length > descriptionWordsLimit" class="category-description">{{formatDescriptionContent(category.node.description.longContent)}}<a href="#" (click)="readMoreDescription(viewCategoryDescriptionModal, category)" i18n>Read More</a></div>
+      </div>
+
+      <div *ngFor="let product of category.node.productConnection.edges">
+
+        <div *ngIf="parentPath">
+
+          <div *ngIf="product.node.availability && product.node.availability[0].value" class="product-list-item" [ngClass]="{'product-item--selected': checkProductIsAddedToCart(product)}" (click)="openProductDetailModal(product.node.id)" [routerLink]="['/', parentPath, slug, 'product', product.node.id]" [queryParams]="sourceInfluencer?{utm_source:sourceInfluencer}:{}" queryParamsHandling="merge">
+            <div class="product-list-item__info">
+              <div class="item-title"><span *ngIf="getNumberOfProductsAddedToCart(product) && getNumberOfProductsAddedToCart(product) !== 0" class="text-primary" style="font-size: 15px;">{{getNumberOfProductsAddedToCart(product)}}x </span>{{product.node.name}}</div>
+              <div *ngIf="product.node.description && product.node.description.longContent && product.node.description.longContent.length <= descriptionWordsLimit" class="item-hint product-description">{{product.node.description.longContent}}</div>
+              <div *ngIf="product.node.description && product.node.description.longContent && product.node.description.longContent.length > descriptionWordsLimit" class="item-hint product-description">{{formatDescriptionContent(product.node.description.longContent)}}</div>
+              <div class="item-price">{{currency}}
+                {{product.node.price | number:'1.2-2'}}</div>
+            </div>
+            <div *ngIf="product.node.image" class="product-list-item__image" style="background-image:
+              url({{product.node.image}})"></div>
+            <div *ngIf="!product.node.image" class="product-list-item__empty-image"></div>
+          </div>
+
+          <div *ngIf="!product.node.availability" class="product-list-item" (click)="openProductDetailModal(product.node.id)" [routerLink]="['/', parentPath, slug, 'product', product.node.id]" [queryParams]="sourceInfluencer?{utm_source:sourceInfluencer}:{}" queryParamsHandling="merge">
+            <div class="product-list-item__info">
+              <div class="item-title"><span *ngIf="getNumberOfProductsAddedToCart(product) && getNumberOfProductsAddedToCart(product) !== 0" class="text-primary" style="font-size: 15px;">{{getNumberOfProductsAddedToCart(product)}}x </span>{{product.node.name}}</div>
+              <div *ngIf="product.node.description && product.node.description.longContent && product.node.description.longContent.length <= descriptionWordsLimit" class="item-hint product-description">{{product.node.description.longContent}}</div>
+              <div *ngIf="product.node.description && product.node.description.longContent && product.node.description.longContent.length > descriptionWordsLimit" class="item-hint product-description">{{formatDescriptionContent(product.node.description.longContent)}}</div>
+              <div class="item-price">{{currency}}
+                {{product.node.price | number:'1.2-2'}}</div>
+            </div>
+            <div *ngIf="product.node.image" class="product-list-item__image" style="background-image:
+              url({{product.node.image}})"></div>
+            <div *ngIf="!product.node.image" class="product-list-item__image"></div>
+          </div>
+        </div>
+
+        <div *ngIf="!parentPath">
+          <div *ngIf="product.node.availability && product.node.availability[0].value" class="product-list-item" [ngClass]="{'product-item--selected': checkProductIsAddedToCart(product)}" (click)="openProductDetailModal(product.node.id)" [routerLink]="['/', slug, 'product', product.node.id]" [queryParams]="sourceInfluencer?{utm_source:sourceInfluencer}:{}" queryParamsHandling="merge">
+            <div class="product-list-item__info">
+              <div class="item-title"><span *ngIf="getNumberOfProductsAddedToCart(product) && getNumberOfProductsAddedToCart(product) !== 0" class="text-primary" style="font-size: 15px;">{{getNumberOfProductsAddedToCart(product)}}x </span>{{product.node.name}}</div>
+              <div *ngIf="product.node.description && product.node.description.longContent && product.node.description.longContent.length <= descriptionWordsLimit" class="item-hint product-description">{{product.node.description.longContent}}</div>
+              <div *ngIf="product.node.description && product.node.description.longContent && product.node.description.longContent.length > descriptionWordsLimit" class="item-hint product-description">{{formatDescriptionContent(product.node.description.longContent)}}</div>
+              <div class="item-price">{{currency}}
+                {{product.node.price | number:'1.2-2'}}</div>
+            </div>
+            <div *ngIf="product.node.image" class="product-list-item__image" style="background-image:
+              url({{product.node.image}})"></div>
+            <div *ngIf="!product.node.image" class="product-list-item__empty-image"></div>
+          </div>
+
+          <div *ngIf="!product.node.availability" class="product-list-item" (click)="openProductDetailModal(product.node.id)" [routerLink]="['/', slug, 'product', product.node.id]" [queryParams]="sourceInfluencer?{utm_source:sourceInfluencer}:{}" queryParamsHandling="merge">
+            <div class="product-list-item__info">
+              <div class="item-title"><span *ngIf="getNumberOfProductsAddedToCart(product) && getNumberOfProductsAddedToCart(product) !== 0" class="text-primary" style="font-size: 15px;">{{getNumberOfProductsAddedToCart(product)}}x </span>{{product.node.name}}</div>
+              <div *ngIf="product.node.description && product.node.description.longContent && product.node.description.longContent.length <= descriptionWordsLimit" class="item-hint product-description">{{product.node.description.longContent}}</div>
+              <div *ngIf="product.node.description && product.node.description.longContent && product.node.description.longContent.length > descriptionWordsLimit" class="item-hint product-description">{{formatDescriptionContent(product.node.description.longContent)}}</div>
+              <div class="item-price">{{currency}}
+                {{product.node.price | number:'1.2-2'}}</div>
+            </div>
+            <div *ngIf="product.node.image" class="product-list-item__image" style="background-image:
+              url({{product.node.image}})"></div>
+            <div *ngIf="!product.node.image" class="product-list-item__image"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+    </ng-container>
+  </ng-container>
+
+  <div *ngIf="catalog && cart && cart.products.length > 0" class="view-cart" [ngClass]="{'btn--disabled': !isEnableOrdering || isAddingDiscountToCart}">
+    <button class="btn btn-primary btn-primary--focus view-cart__btn w-100
+      d-flex" (click)="goToViewBasket()" [disabled]="!isEnableOrdering || isAddingDiscountToCart">
+      <span class="view-cart__quantity">{{cart.products.length}}</span>
+      <div class="d-flex align-items-center">
+        <span *ngIf="isAddingDiscountToCart" class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>
+        <span>{{'View Basket'|translate}}</span>
+      </div>
+      <span>{{currency}} {{cart.totalPrice | number:'1.2-2'}}</span>
+    </button>
+  </div>
+</div>
+
+<ng-template #content let-modal>
+  <div class="modal-body">
+
+    <ng-container *ngIf="mode == ''">
+      <div *ngIf="orderType === 'delivery'">
+        <div class="card-list__item pl-4 pt-4">
+          <div class="item-title font-weight-normal">{{'DELIVERING TO'|translate}}</div>
+          <a *ngIf="!parentPath" [routerLink]="['/', slug, 'delivery']" [queryParams]="sourceInfluencer?{utm_source:sourceInfluencer}:{}" queryParamsHandling="merge" class="small font-weight-bold"
+            (click)="closeModal()">{{'Change'|translate}}</a>
+
+          <a *ngIf="parentPath" [routerLink]="['/', parentPath, slug, 'delivery']" [queryParams]="sourceInfluencer?{utm_source:sourceInfluencer}:{}" queryParamsHandling="merge" class="small font-weight-bold"
+            (click)="closeModal()">{{'Change'|translate}}</a>
+        </div>
+        <div *ngIf="!parentPath" class="card-list__item card-list__item--bordered pl-4 pb-4" [routerLink]="['/', slug, 'delivery']" [queryParams]="sourceInfluencer?{utm_source:sourceInfluencer}:{}" queryParamsHandling="merge" (click)="closeModal()">
+          <div *ngIf="deliveryAddress !== '' && deliveryAddress !== null" class="item-subtitle"><i class="fas fa-map-marker-alt list-icon"></i>{{deliveryAddress}}</div>
+          <div *ngIf="deliveryAddress === '' || deliveryAddress === null" class="item-subtitle"><i class="fas fa-map-marker-alt list-icon"></i>{{addressNotification|translate}}</div>
+        </div>
+
+        <div *ngIf="parentPath" class="card-list__item card-list__item--bordered pl-4 pb-4" [routerLink]="['/', parentPath, slug, 'delivery']" [queryParams]="sourceInfluencer?{utm_source:sourceInfluencer}:{}" queryParamsHandling="merge" (click)="closeModal()">
+          <div *ngIf="deliveryAddress !== '' && deliveryAddress !== null" class="item-subtitle"><i class="fas fa-map-marker-alt list-icon"></i>{{deliveryAddress}}</div>
+          <div *ngIf="deliveryAddress === '' || deliveryAddress === null" class="item-subtitle"><i class="fas fa-map-marker-alt list-icon"></i>{{addressNotification|translate}}</div>
+        </div>
+
+        <div *ngIf="isEnableOrdering">
+          <div class="card-list__item pl-4 pt-4">
+            <div class="item-title font-weight-normal">{{'DELIVERY TIME'|translate}}</div>
+            <a *ngIf="store.preOrderEnabled" [routerLink]="null" class="small font-weight-bold"
+              (click)="mode='time'">{{'Change'|translate}}</a>
+          </div>
+          <div class="card-list__item pl-4 pb-4">
+            <div class="item-subtitle"><i class="fas fa-clock list-icon"></i> {{orderTiming}}</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div *ngIf="orderType === 'pickup'">
+        <div class="card-list__item pl-4 pt-4">
+          <div class="item-title font-weight-normal">{{'PICKINGUP FROM'|translate}}</div>
+          <a [routerLink]="['delivery/pickup']" [queryParams]="sourceInfluencer?{utm_source:sourceInfluencer}:{}" queryParamsHandling="merge" class="small font-weight-bold"
+            (click)="closeModal()">{{'Change'|translate}}</a>
+        </div>
+        <div class="card-list__item card-list__item--bordered pl-4 pb-4" [routerLink]="['delivery/pickup']" [queryParams]="sourceInfluencer?{utm_source:sourceInfluencer}:{}" queryParamsHandling="merge" (click)="closeModal()">
+          <div *ngIf="deliveryAddress !== ''" class="item-subtitle"><i class="fas fa-map-marker-alt list-icon"></i>{{deliveryAddress}}</div>
+          <div *ngIf="deliveryAddress === ''" class="item-subtitle"><i class="fas fa-map-marker-alt list-icon"></i>{{addressNotification|translate}}</div>
+        </div>
+
+        <div *ngIf="isEnableOrdering">
+          <div class="card-list__item pl-4 pt-4">
+            <div class="item-title font-weight-normal">{{'PICKUP TIME'|translate}}</div>
+            <a *ngIf="store.preOrderEnabled" [routerLink]="null" class="small font-weight-bold"
+              (click)="mode='time'">{{'Change'|translate}}</a>
+          </div>
+          <div class="card-list__item pl-4 pb-4">
+            <div class="item-subtitle"><i class="fas fa-clock list-icon"></i> {{orderTiming}}</div>
+          </div>
+        </div>
+      </div>
+
+    </ng-container>
+
+    <ng-container *ngIf="mode == 'time'">
+      <nav ngbNav #nav="ngbNav" [(activeId)]="modeTimeWhen" class="nav-justified">
+        <ng-container [ngbNavItem]="'today'">
+          <a ngbNavLink [routerLink]="null" [ngClass]="{'nav-item--active': modeTimeWhen == 'today'}" style="padding: 0.7rem 1rem;">{{'TODAY'|translate}}</a>
+          <ng-template ngbNavContent>
+            <a class="py-2 d-block text-center" *ngFor="let item of todayPreOrderTimes" [routerLink]="null" (click)="selectPreOrderTime(item.value, 'today')">{{item.time}}</a>
+            <div class="text-center" *ngIf="todayPreOrderTimes.length === 0 && orderType === 'pickup'" style="padding-top: 100px;">{{'The store is closed for Pickup'|translate}}</div>
+            <div class="text-center" *ngIf="todayPreOrderTimes.length === 0 && orderType === 'delivery'" style="padding-top: 100px;">{{'The store is closed for Delivery'|translate}}</div>
+          </ng-template>
+        </ng-container>
+
+        <ng-container [ngbNavItem]="'tomorrow'">
+          <a ngbNavLink [routerLink]="null" [ngClass]="{'nav-item--active': modeTimeWhen == 'tomorrow'}" style="padding: 0.7rem 1rem;">{{'TOMORROW'|translate}}</a>
+          <ng-template ngbNavContent>
+            <a class="py-2 d-block text-center" *ngFor="let item of tomorrowPreOrderTimes" [routerLink]="null" (click)="selectPreOrderTime(item.value, 'tomorrow')">{{item.time}}</a>
+            <div class="text-center" *ngIf="tomorrowPreOrderTimes.length === 0 && orderType === 'pickup'" style="padding-top: 100px;">{{'The store is closed for Pickup'|translate}}</div>
+            <div class="text-center" *ngIf="tomorrowPreOrderTimes.length === 0 && orderType === 'delivery'" style="padding-top: 100px;">{{'The store is closed for Delivery'|translate}}</div>
+          </ng-template>
+        </ng-container>
+      </nav>
+
+      <div [ngbNavOutlet]="nav" class="mt-2 overflow-auto"></div>
+    </ng-container>
+  </div>
+</ng-template>
+
+<ng-template #discountModal let-modal>
+  <div class="modal-body">
+    <h6 class="my-2 pl-4 pr-4 pt-4">
+      <span *ngIf="selectedDiscount.node.type === 'PERCENTAGE'">{{'get-percentage'|translate}} {{selectedDiscount.node.discountValue}}</span>
+      <span *ngIf="selectedDiscount.node.type === 'FIXED_VALUE'">{{'get-fixed'|translate}} {{selectedDiscount.node.discountValue}}</span>
+      <span *ngIf="selectedDiscount.node.type === 'PERCENTAGE'">%</span>
+      <span *ngIf="selectedDiscount.node.type === 'FIXED_VALUE'"> {{currency}}</span>
+      <span> {{'off for your'|translate}} </span>
+      <span *ngIf="selectedDiscount.node.maxUsageCountByCustomer > 1">{{'next'|translate}} {{selectedDiscount.node.maxUsageCountByCustomer | number}} {{'orders'|translate}}</span>
+      <span *ngIf="selectedDiscount.node.maxUsageCountByCustomer === 1">{{'next order'|translate}}</span>
+    </h6>
+    <div class="item-hint pl-4">
+      {{'Maximum discount'|translate}} {{currency}} {{selectedDiscount.node.maxDiscountAmount | number}}
+    </div>
+    <hr class="my-4 p-0" style="border-color: #e7e8ec;">
+    <div class="expiration pl-4 pr-4">
+      <span>{{'Expiration'|translate}}</span>
+      <div *ngIf="selectedDiscount.node.endDateTime" class="item-hint mt-2">{{'Valid until'|translate}} {{selectedDiscount.node.endDateTime | date:'EEEE, MMMM d, y, h:mm a'}}</div>
+      <div *ngIf="!selectedDiscount.node.endDateTime" class="item-hint mt-2">{{'Never expires'|translate}}</div>
+    </div>
+    <hr class="my-4 p-0" style="border-color: #e7e8ec;">
+    <div class="discount-code pl-4 pr-4 mb-4">
+      <span>{{'Discount Code'|translate}}</span>
+      <div class="d-flex justify-content-between align-items-center">
+        <h5>{{selectedDiscount.node.code}}</h5>
+        <span *ngIf="selectedDiscount.node.applied" style="color:#1d2c6f; font-size: 14px;">{{'Applied'|translate}}</span>
+        <a *ngIf="!selectedDiscount.node.applied" (click)="applyDiscount(selectedDiscount)" style="color:#1d2c6f; font-size: 14px; cursor: pointer;">{{'Apply'|translate}}</a>
+      </div>
+    </div>
+    <div class="pl-4 pr-4 pb-4">
+      <button class="btn btn-primary btn-primary--focus w-100" (click)="closeModal()" >
+        <span>{{'Got it'|translate}}</span>
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #viewCategoryDescriptionModal let-modal>
+  <div class="modal-header justify-content-center category-section">
+    <h4 class="modal-title category-name" id="modal-basic-title">{{selectedCategory.node.name}}</h4>
+  </div>
+  <div class="modal-body text-center">
+    <div class="category-description">{{selectedCategory.node.description.longContent}}</div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary w-100" (click)="modal.close()">close</button>
+  </div>
+</ng-template>
+
+<ng-template #loyaltyProgramModal let-modal>
+  <div class="modal-body loyalty-modal-body">
+    <button type="button" class="close" style="float: left; font-size: 45px; outline: none;" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <div>
+      <div class="text-center" style="padding-top: 60px; padding-bottom: 60px; font-size: 3rem;">🎉</div>
+      <h2 style="font-size: 1.875rem;">{{'Loyalty Program'|translate}}</h2>
+      <div class="mt-4 mb-4" style="color: #8c8c8c; line-height: 140%;">
+        {{'Collect points on every order you complete. Use them to get discounts on your next orders.'|translate}}
+      </div>
+      <div class="pt-4 pb-4">
+        <span class="active-points">{{'You have'|translate}} {{currency}} {{activeLoyaltyProgramPoints ? activeLoyaltyProgramPoints : '0.00'}} {{'in your wallet'|translate}}</span>
+      </div>
+      <div class="mt-4">
+        <h3 class="mb-4" style="font-size: 1.125rem;">{{'How it works'|translate}}</h3>
+        <div>
+          <div class="d-flex align-items-start mb-4">
+            <img src="assets/images/check-symbol.svg" style="width: 8px; margin-top: 4px;"/>
+            <div class="ml-2">{{'Get'|translate}} {{loyaltyProgram.criterias[0].pointsPercentage}}% {{'in credit as loyalty points.'|translate}}</div>
+          </div>
+          <div class="d-flex align-items-start mb-4">
+            <img src="assets/images/check-symbol.svg" style="width: 8px; margin-top: 4px;"/>
+            <div class="ml-2">{{'Redeem your points to get up to'|translate}} {{loyaltyProgram.criterias[0].redemptionPercentage}}% {{'off on your next order.'|translate}}</div>
+          </div>
+          <div class="d-flex align-items-start mb-4">
+            <img src="assets/images/check-symbol.svg" style="width: 8px; margin-top: 4px;"/>
+            <div class="ml-2">{{'Limited to maximum AED'|translate}} {{loyaltyProgram.criterias[0].redemptionMaxAmount}} {{'per order.'|translate}}</div>
+          </div>
+          <div class="d-flex align-items-start mb-4">
+            <img src="assets/images/check-symbol.svg" style="width: 8px; margin-top: 4px;"/>
+            <div class="ml-2">{{'Each loyalty point is valid for'|translate}} {{loyaltyProgram.criterias[0].pointsExpiryDays}} {{'days.'|translate}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+
+<ng-template #productDetailModal let-modal>
+  <div class="modal-body product-modal-body">
+    <div *ngIf="product" class="product-container">
+
+      <div *ngIf="!parentPath" class="nav-back nav-back--primary" (click)="closeModal()" [routerLink]="['/', slug]" [queryParams]="sourceInfluencer?{utm_source:sourceInfluencer}:{}" queryParamsHandling="merge"><i class="fas fa-times"></i></div>
+      <div *ngIf="parentPath" class="nav-back nav-back--primary" (click)="closeModal()" [routerLink]="['/', parentPath, slug]" [queryParams]="sourceInfluencer?{utm_source:sourceInfluencer}:{}" queryParamsHandling="merge"><i class="fas fa-times"></i></div>
+
+      <div class="pb-3">
+        <div *ngIf="product.image" class="product-container__image" style="background-image: url({{product.image}})"></div>
+        <div class="pt-5" *ngIf="!product.image"></div>
+        <div class="product-container__title">{{product.name}}</div>
+
+        <div class="product-container__price">{{currency}}
+          {{product.price | number:'1.2-2'}}</div>
+        <pre *ngIf="product.description && product.description.longContent && product.description.longContent.length <= descriptionWordsLimit" class="product-container__description">{{product.description.longContent}}</pre>
+        <pre *ngIf="product.description && product.description.longContent && product.description.longContent.length > descriptionWordsLimit" class="product-container__description">{{formatProductDescriptionContent(product.description.longContent)}}<a href="#" (click)="readMoreProductDescription()">{{ (showProductShortDesciption ? 'view more': 'view less')|translate }}</a></pre>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="catalog-modifiers-container">
+        <div class="catalog-modifier" *ngFor="let modifier of product.modifierConnection.edges;">
+          <div class="d-block pt-3 pb-2 pl-3 pr-3">
+            <!-- mandatory modifier -->
+            <div class="d-flex justify-content-between mb-2">
+              <div class="item-title">{{modifier.node.name}}</div>
+              <span *ngIf="modifier.node.minQuantity !== 0" class="mandatory-field" [ngClass]="{'mandatory-field--invalid': modifier.node.isInvalidMandatoryModifiers}">{{'Required'|translate}}</span>
+            </div>
+
+            <div *ngIf="modifier.node.minQuantity !== 0" class="mandatory-field" [ngClass]="{'mandatory-field--invalid': modifier.node.isInvalidMandatoryModifiers}">
+              <span *ngIf="modifier.node.minQuantity !== modifier.node.maxQuantity">{{'Choose upto at least'|translate}}{{modifier.node.minQuantity}}, max {{modifier.node.maxQuantity}}</span>
+              <span *ngIf="modifier.node.minQuantity === modifier.node.maxQuantity">{{'Choose upto at least'|translate}} {{modifier.node.minQuantity}}</span>
+            </div>
+          </div>
+          <div class="modifier-items pb-2">
+            <div *ngIf="modifier.node.minQuantity >= 1 && modifier.node.maxQuantity > 1">
+              <label class="card-list__item_child align-items-center" *ngFor="let item of modifier.node.optionConnection.edges;">
+                <!-- mandatory modifier -->
+                <div class="d-flex justify-content-between align-items-center w-100" *ngIf="!modifier.node.multiple && modifier.node.minQuantity >= 1 && modifier.node.maxQuantity > 1">
+                  <div class="d-flex align-items-center">
+                    <span class="item-pre"><mat-checkbox color="primary" [disabled]="item.node.isDisabled" [(ngModel)]="item.node.checked" (change)="checkModifierItemValue(item.node.checked, modifier, item)"></mat-checkbox></span>
+                    <div class="item-title" style="word-break: break-word;">{{item.node.name}}</div>
+                  </div>
+                  <div *ngIf="item.node.price !== 0" class="item-hint" style="white-space: nowrap;">+{{item.node.price | number}} {{currency}}</div>
+                </div>
+                <!-- mandatory modifier -->
+                <div class="d-flex justify-content-between align-items-center w-100" *ngIf="modifier.node.multiple && modifier.node.minQuantity >= 1 && modifier.node.maxQuantity > 1">
+                  <div class="d-flex align-items-center">
+                    <span *ngIf="item.node.quantity !== 0" class="item-pre">{{item.node.quantity}}x</span>
+                    <div class="item-title" style="word-break: break-word;">{{item.node.name}}</div>
+                  </div>
+                  <div class="d-flex align-items-center">
+                    <div *ngIf="item.node.quantity !== 0 && item.node.price !== 0" class="item-hint" style="white-space: nowrap;">+{{item.node.price * item.node.quantity | number}} {{currency}}</div>
+                    <div *ngIf="item.node.quantity === 0 && item.node.price !== 0" class="item-hint" style="white-space: nowrap;">+{{item.node.price | number}} {{currency}}</div>
+                    <div class="btn-group btn-group-sm ml-2">
+                      <button class="btn btn-outline-primary btn-group__btn btn-primary--focus" (click)="decrementModifierItem(item)"><i class="fas fa-minus"></i></button>
+                      <button class="btn btn-outline-primary btn-group__btn btn-primary--focus" (click)="incrementModifierItem(item)"><i class="fas fa-plus"></i></button>
+                    </div>
+                  </div>
+                </div>
+              </label>
+            </div>
+
+            <div *ngIf="modifier.node.minQuantity === 0">
+              <label class="card-list__item_child align-items-center" *ngFor="let item of modifier.node.optionConnection.edges;">
+                <!-- optional modifier -->
+
+                <div class="d-flex justify-content-between align-items-center w-100" *ngIf="!modifier.node.multiple">
+                  <div class="d-flex align-items-center">
+                    <span class="item-pre"><mat-checkbox color="primary" [(ngModel)]="item.node.checked" (change)="checkModifierItemValue(item.node.checked, modifier, item)"></mat-checkbox></span>
+                    <div class="item-title" style="word-break: break-word;">{{item.node.name}}</div>
+                  </div>
+                  <div *ngIf="item.node.price !== 0" class="item-hint" style="white-space: nowrap;">+{{item.node.price | number}} {{currency}}</div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center w-100" *ngIf="modifier.node.multiple">
+                  <div class="d-flex align-items-center">
+                    <span *ngIf="item.node.quantity !== 0" class="item-pre">{{item.node.quantity}}x</span>
+                    <div class="item-title" style="word-break: break-word;">{{item.node.name}}</div>
+                  </div>
+                  <div class="d-flex align-items-center">
+                    <div *ngIf="item.node.quantity !== 0 && item.node.price !== 0" class="item-hint" style="white-space: nowrap;">+{{item.node.price * item.node.quantity | number}} {{currency}}</div>
+                    <div *ngIf="item.node.quantity === 0 && item.node.price !== 0" class="item-hint" style="white-space: nowrap;">+{{item.node.price | number}} {{currency}}</div>
+                    <div class="btn-group btn-group-sm ml-2">
+                      <button class="btn btn-outline-primary btn-group__btn btn-primary--focus" (click)="decrementModifierItem(item)"><i class="fas fa-minus"></i></button>
+                      <button class="btn btn-outline-primary btn-group__btn btn-primary--focus" (click)="incrementModifierItem(item)"><i class="fas fa-plus"></i></button>
+                    </div>
+                  </div>
+                </div>
+              </label>
+            </div>
+
+            <!-- mandatory modifier -->
+            <mat-radio-group class="modifierItems-radio-group" *ngIf="modifier.node.minQuantity === 1 && modifier.node.maxQuantity === 1">
+              <mat-radio-button class="modifierItems-radio-button" color="primary" *ngFor="let item of modifier.node.optionConnection.edges;" [value]="item" (change)="radioChange($event, modifier)" [checked]="item.node.checked">
+                <span>{{item.node.name}}</span>
+                <div *ngIf="item.node.price !== 0" class="item-hint" style="white-space: nowrap;">+{{item.node.price | number}} {{currency}}</div>
+              </mat-radio-button>
+            </mat-radio-group>
+          </div>
+          <div class="divider"></div>
+        </div>
+      </div>
+
+      <div class="product-quantity">
+        <div class="item-title mb-4">{{'Quantity'|translate}}</div>
+        <div class="d-flex justify-content-center align-items-center">
+          <button type="button" class="btn btn-outline-primary btn-primary--focus btn-group__btn flex-grow-0" (click)="decrement()"><i class="fas fa-minus"></i></button>
+          <span class="ml-4 mr-4" style="font-size: 25px; font-weight: 700;">{{itemQuantity}}</span>
+          <button type="button" class="btn btn-outline-primary btn-primary--focus btn-group__btn flex-grow-0" (click)="increment()"><i class="fas fa-plus"></i></button>
+        </div>
+
+      </div>
+
+      <div class="product-container__quantity">
+        <div class="btn-group w-100" role="group">
+          <button class="btn btn-primary btn-primary--focus btn-group__btn flex-grow-1 d-flex align-items-center justify-content-center" (click)="createCartOrAddToCart()">
+            <span *ngIf="isCreatingCart" class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>
+            <span>{{'Add'|translate}} {{itemQuantity}} {{'item to Cart'|translate}}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

@@ -1,0 +1,240 @@
+query Catalog($slug: String) {
+  catalog(slug: $slug) {
+    id
+    name
+    description {
+      longContent
+      shortContent
+    }
+    currency {
+      code
+      displayName
+      symbol
+    }
+    business {
+      id
+      name
+      description {
+        longContent
+        shortContent
+      }
+    }
+    loyaltyProgram {
+      id
+      name
+      business {
+        id
+      }
+      criterias {
+        id
+        pointsPercentage
+        pointsExpiryDays
+        redemptionPercentage
+        redemptionMaxAmount
+      }
+      enabled
+    }
+  }
+}
+
+query CatalogProductsWithAvailability($slug: String, $store: ID!) {
+  catalog(slug: $slug) {
+    id
+    categoryConnection {
+      edges {
+        node {
+          id
+          name
+          position
+          description {
+            longContent
+            shortContent
+          }
+          productConnection {
+            edges {
+              node {
+                id
+                name
+                description {
+                  longContent
+                  shortContent
+                }
+                price
+                position
+                image
+                availability(stores: [$store]) {
+                  id
+                  store {
+                    id
+                  }
+                  value
+                }
+              }
+            }
+            totalCount
+          }
+        }
+      }
+      totalCount
+    }
+  }
+}
+
+query CatalogProductsWithoutAvailability($slug: String) {
+  catalog(slug: $slug) {
+    id
+    categoryConnection {
+      edges {
+        node {
+          id
+          name
+          position
+          description {
+            longContent
+            shortContent
+          }
+          productConnection {
+            edges {
+              node {
+                id
+                name
+                description {
+                  longContent
+                  shortContent
+                }
+                price
+                position
+                image
+              }
+            }
+            totalCount
+          }
+        }
+      }
+      totalCount
+    }
+  }
+}
+
+query CatalogDiscounts(
+  $slug: String
+  $customer: ID
+) {
+  catalog(slug: $slug) {
+    id
+    discountConnection(customer: $customer) {
+      edges {
+        node {
+          id
+          name
+          code
+          type
+          discountValue
+          minOrderAmount
+          maxDiscountAmount
+          applicationType
+          customerType
+          maxUsageCountByCustomer
+          endDateTime
+        }
+      }
+    }
+  }
+}
+
+query CatalogProduct($id: ID!) {
+  catalogProduct(id: $id) {
+    id
+    name
+    description {
+      longContent
+      shortContent
+    }
+    modifierConnection {
+      edges {
+        node {
+          id
+          name
+          minQuantity
+          maxQuantity
+          multiple
+          optionConnection {
+            edges {
+              node {
+                id
+                name
+                price
+                quantity
+              }
+            }
+          }
+        }
+      }
+    }
+    price
+    image
+  }
+}
+
+query CatalogDetailByProduct($id: ID!) {
+  catalogProduct(id: $id) {
+    id
+    catalog {
+      id
+      slug
+      currency {
+        code
+        displayName
+        symbol
+      }
+      buttonColor
+      buttonTextColor
+      widgetBackgroundColor
+      widgetTextColor
+    }
+  }
+}
+
+query CatalogDeliveryZones(
+  $catalog: ID!
+  $latitude: BigFloat!
+  $longitude: BigFloat!
+) {
+  catalogDeliveryZones(
+    catalog: $catalog,
+    latLng: {
+      latitude: $latitude,
+      longitude: $longitude
+    }
+  ) {
+    id
+    store {
+      id
+    }
+    fee
+    minimalAmount
+    freeDeliveryAmount
+  }
+}
+
+query CatalogTrackingPixels($slug: String) {
+  catalog(slug: $slug) {
+    id
+    trackingPixels {
+      id
+      type
+      data
+    }
+  }
+}
+
+query CatalogWidgetTheme($slug: String) {
+  catalog(slug: $slug) {
+    id
+    name
+    buttonColor
+    buttonTextColor
+    widgetBackgroundColor
+    widgetTextColor
+  }
+}

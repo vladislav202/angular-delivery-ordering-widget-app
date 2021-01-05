@@ -1,0 +1,12 @@
+.form-control {
+  border-color: var(--theme-background-color);
+}
+
+.form-control:focus {
+  border-color: var(--theme-background-color);
+  box-shadow: none;
+}
+
+.input-group-text {
+  border-color: var(--theme-background-color);
+}

@@ -1,0 +1,200 @@
+mutation CreateCart(
+    $catalog: ID!
+    $products: [IncludeCartProductInput!]
+    $discounts: [ID!]
+) {
+    createCart(
+        input: {
+          catalog: $catalog,
+          products: $products,
+          discounts: $discounts
+        }
+    ) {
+        id
+        productConnection {
+          edges {
+            node {
+              id
+            }
+          }
+        }
+    }
+}
+
+mutation DeleteCart(
+    $id: ID!
+) {
+    deleteCart(
+        input: {
+          id: $id
+        }
+    )
+}
+
+mutation AddCartProduct(
+    $cart: ID!
+    $catalogProduct: ID!
+    $quantity: PositiveInt
+    $modifiers: [IncludeCartModifierInput!]
+) {
+    addCartProduct(
+        input: {
+            cart: $cart,
+            catalogProduct: $catalogProduct,
+            quantity: $quantity,
+            modifiers: $modifiers
+        }
+    ) {
+        id
+    }
+}
+
+mutation UpdateCartProduct(
+    $id: ID!
+    $quantity: PositiveInt
+    $modifiers: [IncludeCartModifierInput!]
+) {
+    updateCartProduct(
+        input: {
+            id: $id,
+            quantity: $quantity,
+            modifiers: $modifiers
+        }
+    ) {
+        id
+    }
+}
+
+mutation DropCartProduct(
+  $id: ID!
+) {
+  dropCartProduct(
+    input: {
+      id: $id
+    }
+  )
+}
+
+mutation AddDiscountsToCart(
+    $cart: ID!
+    $discounts: [ID!]!
+) {
+    addDiscountsToCart(
+        input: {
+          cart: $cart,
+          discounts: $discounts
+        }
+    ) {
+        id
+        discountValue
+    }
+}
+
+mutation RemoveDiscountsFromCart(
+    $cart: ID!
+    $discounts: [ID!]!
+) {
+    removeDiscountsFromCart(
+        input: {
+          cart: $cart,
+          discounts: $discounts
+        }
+    ) {
+        id
+    }
+}
+
+mutation ApplyDiscountCodeToCart(
+    $cart: ID!
+    $code: String!
+) {
+    applyDiscountCodeToCart(
+        input: {
+          cart: $cart,
+          code: $code
+        }
+    ) {
+        id
+        totalPrice
+        discountConnection {
+          edges {
+            node {
+              id
+              name
+              discountValue
+              minOrderAmount
+            }
+          }
+        }
+    }
+}
+
+mutation RequestPhoneAccessToken(
+    $phoneNumber: PhoneNumber!
+    $locale: LocaleTag
+) {
+    requestPhoneAccessToken(
+        input: {
+            phoneNumber: $phoneNumber,
+            locale: $locale
+        }
+    )
+}
+
+mutation VerifyOtpCode(
+    $phoneNumber: PhoneNumber!
+    $code: String!
+) {
+    fetchPhoneAccessToken(
+        input: {
+            phoneNumber: $phoneNumber,
+            code: $code
+        }
+    )
+}
+
+mutation DeleteCard(
+  $customerId: ID!
+  $firstSixDigits: String!
+  $lastFourDigits: String!
+) {
+  deleteCard(
+    input: {
+      customerId: $customerId,
+      firstSixDigits: $firstSixDigits,
+      lastFourDigits: $lastFourDigits
+    }
+  )
+}
+
+mutation ValidateDiscountsBeforeCheckout(
+    $cart: ID!
+    $customer: ID!
+) {
+    validateDiscountsBeforeCheckout(
+        input: {
+            cart: $cart,
+            customer: $customer
+        }
+    ) {
+      id
+      discountValue
+    }
+}
+
+mutation UpdateCustomer(
+    $id: ID!
+    $locale: LocaleTag
+) {
+    updateCustomer(
+        input: {
+            id: $id,
+            locale: $locale
+        }
+    ) {
+      id
+      locale
+    }
+}
+
+

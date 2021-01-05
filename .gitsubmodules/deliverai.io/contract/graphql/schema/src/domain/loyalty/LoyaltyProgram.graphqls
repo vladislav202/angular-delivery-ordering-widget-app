@@ -1,0 +1,343 @@
+################################################################################
+##                                                                            ##
+##                                   QUERY                                    ##
+##                                                                            ##
+################################################################################
+
+extend type Query {
+    """Find loyalty program by ID."""
+    loyaltyProgram(id: ID!): LoyaltyProgram
+
+    """Loyalty program connection"""
+    loyaltyProgramConnection(
+        """Business ID."""
+        business: ID
+
+        """Catalog ID."""
+        catalog: ID
+
+        # Using forward cursor pagination
+        """Find `first` items next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` items previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): LoyaltyProgramConnection!
+
+    activeLoyaltyPoints(input: ActiveLoyaltyPointsInput): BigFloat!
+
+    maximumRedemptionLoyaltyPoints(input: MaximumRedemptionLoyaltyPointsInput): BigFloat!
+}
+
+################################################################################
+##                                                                            ##
+##                                  MUTATION                                  ##
+##                                                                            ##
+################################################################################
+
+extend type Mutation {
+    """Create loyalty program."""
+    createLoyaltyProgram(input: CreateLoyaltyProgramInput!): LoyaltyProgram!
+
+    """Update loyalty program."""
+    updateLoyaltyProgram(input: UpdateLoyaltyProgramInput!): LoyaltyProgram!
+
+    """Delete loyalty program."""
+    deleteLoyaltyProgram(input: DeleteLoyaltyProgramInput!): Boolean!
+
+    """Create loyalty program riteriacriteria."""
+    createLoyaltyProgramCriteria(input: CreateLoyaltyProgramCriteriaInput!): LoyaltyProgramCriteria!
+
+    """Create loyalty program riteriacriteria."""
+    updateLoyaltyProgramCriteria(input: UpdateLoyaltyProgramCriteriaInput!): LoyaltyProgramCriteria!
+
+    """Create loyalty program riteriacriteria."""
+    deleteLoyaltyProgramCriteria(input: DeleteLoyaltyProgramCriteriaInput!): Boolean!
+
+    """Redeem loyalty points."""
+    redeemLoyaltyPoints(input: RedeemLoyaltyPointsInput): Boolean!
+}
+
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Loyalty program."""
+type LoyaltyProgram implements Node & Audited
+{
+    """ID."""
+    id: ID!
+
+    """Business."""
+    business: Business!
+
+    """Catalog connection"""
+    catalogConnection(
+        # Using forward cursor pagination
+        """Find `first` items next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` items previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): CatalogConnection!
+
+    """Name."""
+    name: String!
+
+    """Description."""
+    description: String
+
+    """Status."""
+    enabled: Boolean!
+
+    """Code."""
+    newCustomerBonusPoints: BigFloat
+
+    """Loyalty program criterias"""
+    criterias: [LoyaltyProgramCriteria!]
+
+    """User that created this entity."""
+    createdBy: User
+
+    """Date and time when this entity was created."""
+    createdAt: DateTime!
+
+    """User that last modified this entity."""
+    lastModifiedBy: User
+
+    """Date and time when this entity'es last modification was made."""
+    lastModifiedAt: DateTime
+}
+
+"""Loyalty program criteria."""
+type LoyaltyProgramCriteria implements Node {
+
+    """ID."""
+    id: ID!
+
+    """Type."""
+    type: LoyaltyProgramCriteriaType!
+
+    """Earned points percentage."""
+    pointsPercentage: BigFloat!
+
+    """Minimal order amount."""
+    pointsExpiryDays: Int
+
+    """Maximal discount amount."""
+    redemptionPercentage: BigFloat!
+
+    """Application type."""
+    redemptionMaxAmount: Int
+}
+
+enum LoyaltyProgramCriteriaType {
+    BASIC
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Create loyalty program input."""
+input CreateLoyaltyProgramInput {
+    """Business ID."""
+    business: ID!
+
+    """Catalogs IDs."""
+    catalogs: [ID!]
+
+    """Name."""
+    name: String!
+
+    """Description."""
+    description: String
+
+    """Code."""
+    newCustomerBonusPoints: BigFloat
+}
+
+"""Update loyalty program input."""
+input UpdateLoyaltyProgramInput {
+    """Loyalty program ID."""
+    id: ID!
+
+    """Status."""
+    enabled: Boolean!
+
+    """Catalogs IDs."""
+    catalogs: [ID!]
+
+    """Name."""
+    name: String!
+
+    """Description."""
+    description: String
+
+    """Code."""
+    newCustomerBonusPoints: BigFloat
+}
+
+"""Delete loyalty program input."""
+input DeleteLoyaltyProgramInput {
+    """Loyalty program ID."""
+    id: ID!
+}
+
+"""Create loyalty program criteria input."""
+input CreateLoyaltyProgramCriteriaInput {
+    """Loyalty program ID."""
+    loyaltyProgram: ID!
+
+    """Type."""
+    type: LoyaltyProgramCriteriaType!
+
+    """Earned points percentage."""
+    pointsPercentage: BigFloat!
+
+    """Minimal order amount."""
+    pointsExpiryDays: Int
+
+    """Maximal discount amount."""
+    redemptionPercentage: BigFloat!
+
+    """Application type."""
+    redemptionMaxAmount: Long
+}
+
+"""Update loyalty program criteria input."""
+input UpdateLoyaltyProgramCriteriaInput {
+    """ID"""
+    id: ID!
+
+    """Type."""
+    type: LoyaltyProgramCriteriaType!
+
+    """Earned points percentage."""
+    pointsPercentage: BigFloat!
+
+    """Minimal order amount."""
+    pointsExpiryDays: Int
+
+    """Maximal discount amount."""
+    redemptionPercentage: BigFloat!
+
+    """Application type."""
+    redemptionMaxAmount: Long
+}
+
+"""Delete loyalty program criteria input."""
+input DeleteLoyaltyProgramCriteriaInput {
+    """Loyalty program criteria ID."""
+    id: ID!
+}
+
+"""Redeem loyalty points input."""
+input RedeemLoyaltyPointsInput {
+    """Cart ID."""
+    cart: ID!
+
+    """Customer ID."""
+    customer: ID!
+
+    """Loyalty points amount."""
+    points: BigFloat!
+}
+
+"""Redeem loyalty points input."""
+input ActiveLoyaltyPointsInput {
+    """Loyalty program ID."""
+    loyaltyProgram: ID!
+
+    """Customer ID."""
+    customer: ID!
+}
+
+"""Redeem loyalty points input."""
+input MaximumRedemptionLoyaltyPointsInput {
+    """Cart ID."""
+    cart: ID!
+
+    """Customer ID."""
+    customer: ID!
+}
+################################################################################
+##                                                                            ##
+##                                   RELAY                                    ##
+##                                                                            ##
+################################################################################
+
+"""
+Loyalty program connection.
+[Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types).
+"""
+type LoyaltyProgramConnection {
+    """
+    A list of edges.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Edges).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Edges
+    edges: [LoyaltyProgramConnectionEdge]
+
+    """
+    A list of nodes.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Node).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Node
+    nodes: [LoyaltyProgram]
+
+    """
+    Information to aid in pagination.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types.Fields.PageInfo).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types.Fields.PageInfo
+    pageInfo: PageInfo!
+
+    """
+    Identifies the total count of items in the connection.
+    """
+    totalCount: Int!
+}
+
+"""Discount connection's edge."""
+type LoyaltyProgramConnectionEdge {
+    """
+    A cursor for use in pagination.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor
+    cursor: RelayCursor!
+
+    """
+    The item at the end of the edge.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Node).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Node
+    node: LoyaltyProgram
+}

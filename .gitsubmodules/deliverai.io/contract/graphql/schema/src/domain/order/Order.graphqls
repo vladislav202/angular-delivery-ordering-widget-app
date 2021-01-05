@@ -1,0 +1,337 @@
+################################################################################
+##                                                                            ##
+##                                   QUERY                                    ##
+##                                                                            ##
+################################################################################
+
+extend type Query {
+    """Find an order by the ID."""
+    order(id: ID!): Order!
+
+    """Find an order by the unique link."""
+    orderByLink(uniqueLink: String!): Order!
+
+    """Order connection."""
+    orderConnection(
+        """Business ID."""
+        business: ID
+
+        """Store ID."""
+        store: ID
+
+        """Catalog ID."""
+        catalog: ID
+
+        """Order source channel."""
+        sourceChannel: OrderSourceChannel
+
+        """Order fulfilment state."""
+        state: OrderFulfillmentState
+
+        """Order flow ID."""
+        orderFlow: ID
+
+        """Order queue ID."""
+        orderQueue: ID
+
+        """Order queue IDs."""
+        orderQueues: [ID!]
+
+        """Customer ID."""
+        customer: ID
+
+        """Sorting in '$FIELD_NAME$ $SORT_DIRECTION$' format. E.g. 'catalog desc'"""
+        sorting: String
+
+        # Using forward cursor pagination
+        """Find `first` items next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` items previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): OrderConnection!
+}
+
+################################################################################
+##                                                                            ##
+##                                  MUTATION                                  ##
+##                                                                            ##
+################################################################################
+
+extend type Mutation {
+    """Checkout order."""
+    checkoutOrder(input: CheckoutOrderInput!): Order!
+
+    """Move order to the queue."""
+    moveOrder(input: MoveOrderInput!): Order!
+
+    """Cancel order."""
+    cancelOrder(input: CancelOrderInput!): Order!
+
+    """Restore order."""
+    restoreOrder(input: RestoreOrderInput!): Order!
+
+    """Cancel courier delivery"""
+    cancelOrderCourierDelivery(input: CancelCourierDeliveryInput!): Boolean!
+
+    changeOrder(input: ChangeOrderInput!): Order!
+}
+
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Order."""
+type Order implements Node & Audited {
+    """ID."""
+    id: ID!
+
+    """Catalog."""
+    catalog: Catalog!
+
+    """Customer."""
+    customer: Customer!
+
+    """A name of the customer."""
+    customerName: String!
+
+    """Delivery."""
+    delivery: OrderDelivery!
+
+    """Payment."""
+    payment: OrderPayment!
+
+    """Source channel."""
+    source: OrderSourceChannel!
+
+    """Pre-order readiness time."""
+    preOrderBy: DateTime
+
+    """Product Connection."""
+    productConnection(
+        # Using forward cursor pagination
+        """Find `first` items next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` items previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): OrderProductConnection!
+
+    """Discount Connection."""
+    discountConnection(
+        # Using forward cursor pagination
+        """Find `first` items next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` items previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): DiscountConnection!
+
+    """Store related comment."""
+    storeComment: String
+
+    """Delivery related comment."""
+    deliveryComment: String
+
+    """Fulfillment."""
+    fulfillment: OrderFulfillment!
+
+    """Loyalty points."""
+    loyaltyPoints: BigFloat!
+
+    """Unique link."""
+    uniqueLink: String
+
+    sourceInfluencer: String
+
+    """User that created this entity."""
+    createdBy: User
+
+    """Date and time when this entity was created."""
+    createdAt: DateTime!
+
+    """User that last modified this entity."""
+    lastModifiedBy: User
+
+    """Date and time when this entity'es last modification was made."""
+    lastModifiedAt: DateTime
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Checkout order input."""
+input CheckoutOrderInput {
+    """Customer token."""
+    customerToken: ID!
+
+    """Customer name."""
+    customerName: String!
+
+    """Cart ID."""
+    cart: ID!
+
+    """Order delivery."""
+    delivery: SetOrderDelivery!
+
+    """Order payment."""
+    payment: SetOrderPayment!
+
+    """Source channel."""
+    source: OrderSourceChannel
+
+    sourceInfluencer: String
+
+    """Pre-order readiness time."""
+    preOrderBy: DateTime
+
+    """Store related comment."""
+    storeComment: String
+
+    """Delivery related comment."""
+    deliveryComment: String
+}
+
+"""Move order input."""
+input MoveOrderInput {
+    """ID."""
+    id: ID!
+
+    """Target queue."""
+    targetQueue: ID!
+
+    """Optional extensions to apply."""
+    appliedExtensions: [ID!]
+}
+
+"""Cancel order input."""
+input CancelOrderInput {
+    """ID."""
+    id: ID!
+
+    """Reason of the order cancellation."""
+    storeComment: String!
+}
+
+"""Restore order input."""
+input RestoreOrderInput {
+    """ID."""
+    id: ID!
+
+    """Target store."""
+    store: ID
+}
+
+"""Cancel courier delivery."""
+input CancelCourierDeliveryInput {
+    """Order ID."""
+    id: ID!
+}
+
+"""Change order."""
+input ChangeOrderInput {
+    """Order ID."""
+    id: ID!
+
+    """Order preparation time."""
+    preparationEta: PositiveInt!
+
+    """Order delivery time."""
+    deliveryEta: PositiveInt
+
+    """Order delivery time unit (minutes by default)."""
+    etaTimeUnit: TimeUnit
+}
+
+################################################################################
+##                                                                            ##
+##                                   RELAY                                    ##
+##                                                                            ##
+################################################################################
+
+"""
+Order connection.
+[Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types).
+"""
+type OrderConnection {
+    """
+    A list of edges.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Edges).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Edges
+    edges: [OrderConnectionEdge]
+
+    """
+    A list of nodes.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Node).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Node
+    nodes: [Order]
+
+    """
+    Information to aid in pagination.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types.Fields.PageInfo).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types.Fields.PageInfo
+    pageInfo: PageInfo!
+
+    """
+    Identifies the total count of items in the connection.
+    """
+    totalCount: Int!
+}
+
+"""Order connection's edge."""
+type OrderConnectionEdge {
+    """
+    A cursor for use in pagination.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor
+    cursor: RelayCursor!
+
+    """
+    The item at the end of the edge.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Node).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Node
+    node: Order
+}

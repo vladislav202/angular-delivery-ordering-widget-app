@@ -1,0 +1,78 @@
+################################################################################
+##                                                                            ##
+##                                  MUTATION                                  ##
+##                                                                            ##
+################################################################################
+
+extend type Mutation {
+
+    """Update order offline payment."""
+    updateOrderOfflinePayment(input: UpdateOrderOfflinePaymentInput!): OrderOfflinePayment!
+}
+
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Order offline payment."""
+type OrderOfflinePayment implements Node & OrderPayment {
+    """ID."""
+    id: ID!
+
+    """Order."""
+    order: Order!
+
+    """Amount."""
+    amount: BigFloat!
+
+    """Currency."""
+    currency: CurrencyDetails!
+
+    """Type."""
+    type: OrderOfflinePaymentType!
+
+    """State."""
+    state: OrderOfflinePaymentState!
+
+    """Receipt."""
+    receipt: String
+}
+
+enum OrderOfflinePaymentType {
+    CASH
+    CARD
+}
+
+enum OrderOfflinePaymentState {
+    NOT_PAID
+    PAID
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Set order offline payment input."""
+input SetOrderOfflinePayment {
+    """Type."""
+    type: OrderOfflinePaymentType!
+}
+
+"""Update order offline payment input."""
+input UpdateOrderOfflinePaymentInput {
+    """ID."""
+    id: ID!
+
+    """Type."""
+    type: OrderOfflinePaymentType
+
+    """State."""
+    state: OrderOfflinePaymentState
+
+    """Receipt."""
+    receipt: String
+}

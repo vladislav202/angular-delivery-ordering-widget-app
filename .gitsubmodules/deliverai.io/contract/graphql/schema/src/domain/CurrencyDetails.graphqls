@@ -1,0 +1,37 @@
+################################################################################
+##                                                                            ##
+##                                   QUERY                                    ##
+##                                                                            ##
+################################################################################
+
+extend type Query {
+    """Fetch all currencies' details."""
+    currencies: [CurrencyDetails!]!
+
+    """Fetch currency's details by its' locale."""
+    currency(
+        """Currency code."""
+        code: CurrencyCode
+
+        """Locale tag."""
+        locale: LocaleTag
+    ): CurrencyDetails
+}
+
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Currency details."""
+type CurrencyDetails {
+    """Currency code."""
+    code: CurrencyCode!
+
+    """Display name."""
+    displayName(locale: LocaleTag): String!
+
+    """Symbol."""
+    symbol(locale: LocaleTag): String!
+}

@@ -1,0 +1,97 @@
+################################################################################
+##                                                                            ##
+##                                  MUTATION                                  ##
+##                                                                            ##
+################################################################################
+
+extend type Mutation {
+    """Create business phone contact."""
+    createBusinessPhoneContact(input: CreateBusinessPhoneContactInput!): PhoneContact!
+
+    """Create store phone contact."""
+    createStorePhoneContact(input: CreateStorePhoneContactInput!): PhoneContact!
+
+    """Update phone contact."""
+    updatePhoneContact(input: UpdatePhoneContactInput!): PhoneContact!
+
+    """Delete phone contact."""
+    deletePhoneContact(input: DeletePhoneContactInput!): Boolean!
+}
+
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Phone contact."""
+type PhoneContact implements Node & Contact {
+    """ID."""
+    id: ID!
+
+    """Phone details."""
+    phoneNumberDetails: PhoneNumberDetails!
+
+    """Name."""
+    name: String
+
+    """Description."""
+    description: String
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Create phone contact input."""
+input CreatePhoneContactInput {
+    """Phone number."""
+    phoneNumber: PhoneNumber!
+
+    """Name."""
+    name: String
+
+    """Description."""
+    description: String
+}
+
+"""Create business phone contact input."""
+input CreateBusinessPhoneContactInput {
+    """Business."""
+    business: ID!
+
+    """Contact."""
+    contact: CreatePhoneContactInput!
+}
+
+"""Create store phone contact input."""
+input CreateStorePhoneContactInput {
+    """Store."""
+    store: ID!
+
+    """Contact."""
+    contact: CreatePhoneContactInput!
+}
+
+"""Update phone contact input."""
+input UpdatePhoneContactInput {
+    """ID."""
+    id: ID!
+
+    """Phone number."""
+    phoneNumber: PhoneNumber
+
+    """Name."""
+    name: String
+
+    """Description."""
+    description: String
+}
+
+"""Delete phone contact input."""
+input DeletePhoneContactInput {
+    """ID."""
+    id: ID!
+}

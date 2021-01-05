@@ -1,0 +1,64 @@
+################################################################################
+##                                                                            ##
+##                                   QUERY                                    ##
+##                                                                            ##
+################################################################################
+
+extend type Query {
+    reportSales(
+        """Business Ids."""
+        businesses: [ID!]!
+
+        """Store Ids."""
+        stores: [ID!]
+
+        """From datetime."""
+        from: DateTime!
+
+        """To datetime."""
+        to: DateTime
+
+        """Step."""
+        step: Duration
+    ): SalesReport!
+
+    reportNewCustomers(
+        """Business Ids."""
+        businesses: [ID!]!
+
+        """From datetime."""
+        from: DateTime!
+
+        """To datetime."""
+        to: DateTime
+
+        """Step."""
+        step: Duration
+    ): [Metric!]!
+}
+
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Sales report."""
+type SalesReport {
+
+    totalOrders: [Metric!]!
+
+    totalSales: [Metric!]!
+
+    averageSales: [Metric!]!
+
+    uniqueCustomers: [Metric!]!
+
+    totalOrdersCount: BigFloat!
+
+    totalSalesValue: BigFloat!
+
+    averageSalesValue: BigFloat!
+
+    uniqueCustomersCount: BigFloat!
+}

@@ -1,0 +1,44 @@
+"""
+Object with an ID.
+[Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Node).
+"""
+# Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Node
+interface Node {
+    """Identifier."""
+    id: ID!
+}
+
+"""
+Information about pagination in a connection.
+[Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo).
+"""
+# Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo
+type PageInfo {
+    """
+    When paginating forwards, the cursor to continue.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo.Fields).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo.Fields
+    startCursor: RelayCursor
+
+    """
+    When paginating forwards, are there more items?
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo.Fields).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo.Fields
+    hasNextPage: Boolean!
+
+    """
+    When paginating backwards, the cursor to continue.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo.Fields).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo.Fields
+    endCursor: RelayCursor
+
+    """
+    When paginating backwards, are there more items?
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo.Fields).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo.Fields
+    hasPreviousPage: Boolean!
+}

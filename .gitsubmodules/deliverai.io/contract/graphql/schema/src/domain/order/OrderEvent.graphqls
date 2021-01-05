@@ -1,0 +1,152 @@
+################################################################################
+##                                                                            ##
+##                                SUBSCRIPTION                                ##
+##                                                                            ##
+################################################################################
+
+extend type Subscription {
+
+    """Subscribe for orders."""
+    order(
+        """Subscribe for orders by the store ID."""
+        store: ID
+
+        """Subscribe for orders by the queue ID."""
+        queue: ID
+    ): OrderEvent
+
+    """Subscribe for fulfillment updates."""
+    orderFulfillment(
+        """Subscribe for fulfillment updates by the order link."""
+        order: String!
+    ): OrderEvent
+
+    """Subscribe for orders."""
+    orders(
+        """Subscribe for orders by the store IDs."""
+        stores: [ID!]
+
+        """Subscribe for orders by the queue IDs."""
+        queues: [ID!]
+    ): OrderEvent
+}
+
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Order event."""
+interface OrderEvent {
+    """Order ID."""
+    orderId: ID!
+
+    """Order."""
+    order: Order!
+}
+
+type OrderCreatedEvent implements OrderEvent {
+    """Order ID."""
+    orderId: ID!
+
+    """Order."""
+    order: Order!
+
+    """Store ID."""
+    storeId: ID!
+
+    """Store."""
+    store: Store!
+
+    """Queue ID."""
+    queueId: ID!
+
+    """Queue."""
+    queue: OrderQueue
+}
+
+type OrderMovedEvent implements OrderEvent {
+    """Order ID."""
+    orderId: ID!
+
+    """Order."""
+    order: Order!
+
+    """Source queue ID."""
+    sourceQueueId: ID!
+
+    """Source queue."""
+    sourceQueue: OrderQueue
+
+    """Target queue ID."""
+    targetQueueId: ID!
+
+    """Target queue."""
+    targetQueue: OrderQueue
+}
+
+type OrderTransferredEvent implements OrderEvent {
+    """Order ID."""
+    orderId: ID!
+
+    """Order."""
+    order: Order!
+
+    """Source store ID."""
+    sourceStoreId: ID!
+
+    """Source store."""
+    sourceStore: Store!
+
+    """Source queue ID."""
+    sourceQueueId: ID!
+
+    """Source queue."""
+    sourceQueue: OrderQueue
+
+    """Target store ID."""
+    targetStoreId: ID!
+
+    """Target store."""
+    targetStore: Store!
+
+    """Target queue ID."""
+    targetQueueId: ID!
+
+    """Target queue."""
+    targetQueue: OrderQueue
+}
+
+type OrderCancelledEvent implements OrderEvent {
+    """Order ID."""
+    orderId: ID!
+
+    """Order."""
+    order: Order!
+
+    """Comment."""
+    comment: String
+}
+
+type OrderRestoredEvent implements OrderEvent {
+    """Order ID."""
+    orderId: ID!
+
+    """Order."""
+    order: Order!
+}
+
+type OrderFulfillmentChangedEvent implements OrderEvent {
+    """Order ID."""
+    orderId: ID!
+
+    """Order."""
+    order: Order!
+
+    """Order fulfillment ID."""
+    fulfillmentId: ID!
+
+    """Order fulfillment."""
+    fulfillment: OrderFulfillment!
+}

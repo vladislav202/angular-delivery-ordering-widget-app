@@ -1,0 +1,29 @@
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Catalog description."""
+type CatalogDescription {
+    """Long content."""
+    longContent: String
+
+    """Short content."""
+    shortContent: String
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Set catalog description input."""
+input SetCatalogDescriptionInput {
+    """Long content."""
+    longContent: String
+
+    """Short content."""
+    shortContent: String
+}

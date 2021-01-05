@@ -1,0 +1,23 @@
+query ActiveLoyaltyPoints(
+    $loyaltyProgram: ID!
+    $customer: ID!
+) {
+    activeLoyaltyPoints(
+      input: {
+        loyaltyProgram: $loyaltyProgram,
+        customer: $customer
+      }
+    )
+}
+
+query MaximumRedemptionLoyaltyPoints(
+    $cart: ID!
+    $customer: ID!
+) {
+    maximumRedemptionLoyaltyPoints(
+      input: {
+        cart: $cart,
+        customer: $customer
+      }
+    )
+}

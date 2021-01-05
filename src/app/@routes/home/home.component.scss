@@ -1,0 +1,345 @@
+:host {
+  .product-item--selected {
+    border-left: 5px solid var(--theme-background-color);
+  }
+
+  .discount-list {
+    background-color: #f6f7f9;
+
+    &::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background-color: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      /* Visual */
+      background-color: #dfe2e7;
+      border-radius: 3px;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background-color: #ccc;
+    }
+  }
+
+  .discount-item {
+    flex-basis: 68%;
+    flex-shrink: 0;
+    padding-right: 1rem;
+
+    svg .discount-logo {
+      fill: var(--theme-background-color);
+    }
+
+    &__icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.25rem;
+      height: 2.25rem;
+      background-color: #e4e4e4;
+      border-radius: 50%;
+    }
+
+    &__title {
+      color: #000;
+      font-weight: 600;
+      font-size: 15px;
+      line-height: 20px;
+    }
+
+    &__description {
+      color: #9b9b9b;
+      font-size: 13px;
+    }
+
+    &__terms {
+      color: #c4c2c2;
+      font-size: 13px;
+      line-height: 20px;
+    }
+  }
+
+  .discount-item__box {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 1rem;
+
+    background-color: #ffffff;
+    border-radius: 1rem;
+
+    &--checked {
+      position: absolute;
+      top: 0;
+      right: 0;
+
+      padding-top: 0.5rem;
+      padding-right: 0.75rem;
+    }
+
+    &:hover {
+      box-shadow: 0 4px 6px -1px rgba(0 ,0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      cursor: pointer;
+    }
+
+    svg.checked-logo {
+      fill: var(--theme-background-color);
+    }
+  }
+
+  .order-timing {
+    position: relative;
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 1rem;
+    color: #ffffff;
+    background-color: #f29b38;
+    border-color: #f29b38;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+  }
+
+  .product-description {
+    word-break: break-word;
+    line-height: 150%;
+  }
+
+  ol, ul {
+    margin: 0;
+    padding: 0;
+    font-size: 100%;
+    vertical-align: baseline;
+    border: 0;
+    list-style: none;
+  }
+
+  .loyalty-program {
+    .title {
+      font-size: 16px;
+      font-weight: 600;
+    }
+  }
+
+
+  ul.country-flags {
+    height: 40px;
+    width: auto;
+    color: #fff;
+    letter-spacing: 0em;
+    font-size: 14px;
+    line-height: 2.4;
+    float: left;
+    list-style: none;
+    margin: 0;
+  }
+
+  ul.country-flags li.init {
+    cursor: pointer;
+    border: 1px #fff solid;
+  }
+
+  ul.country-flags li {
+    z-index: 2;
+    height: 40px;
+    cursor: pointer;
+    width: 100%;
+  }
+
+  ul.country-flags li:not(.init) {
+    width: 100%;
+    display: none;
+    background: transparent;
+    border-left: 1px #fff solid;
+    border-right: 1px #fff solid;
+    border-bottom: 1px #fff solid;
+    margin: 0px;
+  }
+
+  .widget-container {
+    &--disabled {
+      pointer-events: none;
+      opacity: 0.5;
+    }
+  }
+}
+
+::ng-deep {
+  .modal-content{
+    animation-name: modalFadeIn;
+    animation-duration: 0.5s;
+  }
+
+  @keyframes modalFadeIn {
+    from {
+      bottom: -200px;
+      opacity: 0;
+    }
+
+    to {
+      bottom: 0;
+      opacity: 1;
+    }
+  }
+
+  .tab-content {
+    height: 50vh;
+
+    &::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background-color: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      /* Visual */
+      background-color: #dfe2e7;
+      border-radius: 3px;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background-color: #ccc;
+    }
+  }
+
+  .category-description-modal {
+    .modal-dialog-centered {
+      width: 350px;
+    }
+  }
+
+  .loyalty-modal-body {
+    height: 100vh;
+    overflow: scroll;
+
+    &::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background-color: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      /* Visual */
+      background-color: #dfe2e7;
+      border-radius: 3px;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background-color: #ccc;
+    }
+
+    .active-points {
+      padding: 10px 20px;
+      border-radius: 25px;
+      border: 1px solid#008000;
+      color: #008000;
+      font-weight: 600;
+    }
+  }
+
+  img.flag {
+    vertical-align: text-bottom;
+    width: 24px;
+    display: inline-block;
+    margin-right: 4px;
+  }
+
+  .product-modal-body {
+    .product-quantity {
+      padding: 24px 12px;
+    }
+
+    .mandatory-field {
+      color: #848484;
+      font-size: 13px;
+
+      &--invalid {
+        color: #f44336;
+      }
+    }
+
+    .catalog-modifier-item {
+      display: flex;
+      padding: 14px;
+      font-size: 14px;
+    }
+
+    .modifierItems-radio-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modifierItems-radio-button {
+      padding: 14px;
+      font-size: 14px;
+    }
+
+    .mat-radio-label-content {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    .mat-radio-label {
+      white-space: normal;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .category-description-modal {
+      .modal-dialog-centered {
+        width: 100%;
+        margin: 0px;
+      }
+    }
+  }
+
+  @media (max-width: 570px) {
+    .modal-dialog {
+      max-width: 500px;
+      margin: 1.75rem auto;
+    }
+  }
+}
+
+::ng-deep snack-bar-container.custom-class {
+  background: var(--theme-background-color);
+  margin-left: 37px;
+  max-width: 384px !important;
+  width: 384px;
+}
+
+::ng-deep .custom-class .mat-simple-snackbar {
+  color: var(--theme-color);
+}
+
+::ng-deep .custom-class .mat-simple-snackbar-action {
+  color: var(--theme-color);
+}
+
+::ng-deep .mat-snack-bar-handset .mat-snack-bar-container {
+  margin: 24px !important;
+}
+
+::ng-deep .cdk-overlay-container {
+  z-index: 1051;
+}
+
+@media (min-width: 460px) {
+  ::ng-deep .mat-snack-bar-handset .mat-snack-bar-container {
+    margin-left: 37px !important;
+  }
+}
+

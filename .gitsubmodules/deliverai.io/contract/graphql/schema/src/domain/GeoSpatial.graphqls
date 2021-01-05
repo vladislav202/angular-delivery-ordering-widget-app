@@ -1,0 +1,43 @@
+################################################################################
+##                                                                            ##
+##                                   QUERY                                    ##
+##                                                                            ##
+################################################################################
+
+extend type Query {
+    """Fetch geospatial places by its' address."""
+    geoSpatialCode(address: String!): [GeoSpatialPlaceDetails!]!
+
+    """Fetch geospatial places by its' latitude and longitude coordinates."""
+    geoSpatialReverseCode(input: SetLatLngInput!): [GeoSpatialPlaceDetails!]!
+}
+
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Geospatial bounding box latitude and longitude coordinates."""
+type GeoSpatialBoundingBox {
+    """Northeast latitude and longitude coordinates."""
+    northeast: LatLng!
+
+    """Southwest latitude and longitude coordinates."""
+    southwest: LatLng!
+}
+
+"""Geospatial place details."""
+type GeoSpatialPlaceDetails {
+    """ID."""
+    id: ID!
+
+    """Latitude and Longitude coordinates."""
+    latLng: LatLng
+
+    """Bounding box."""
+    boundingBox: GeoSpatialBoundingBox
+
+    """Address."""
+    address: String!
+}

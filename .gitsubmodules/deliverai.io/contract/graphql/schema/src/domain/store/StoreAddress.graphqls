@@ -1,0 +1,187 @@
+################################################################################
+##                                                                            ##
+##                                   QUERY                                    ##
+##                                                                            ##
+################################################################################
+
+extend type Query {
+    """Find store address by the ID."""
+    storeAddress(id: ID!): StoreAddress
+
+    """Store address connection."""
+    storeAddressConnection(
+        """Find store addresses by the business'es indentifier."""
+        business: ID
+
+        # Using forward cursor pagination
+        """Find `first` items next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` items previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): StoreAddressConnection!
+}
+
+################################################################################
+##                                                                            ##
+##                                  MUTATION                                  ##
+##                                                                            ##
+################################################################################
+
+extend type Mutation {
+    """Create store address."""
+    createStoreAddress(input: CreateStoreAddressInput!): StoreAddress!
+
+    """Update store address."""
+    updateStoreAddress(input: UpdateStoreAddressInput!): StoreAddress!
+
+    """Delete store address."""
+    deleteStoreAddress(input: DeleteStoreAddressInput!): Boolean!
+}
+
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Store address."""
+type StoreAddress {
+    """ID."""
+    id: ID!
+
+    """Store ID."""
+    store: Store!
+
+    """Country."""
+    country: String!
+
+    """City."""
+    city: String!
+
+    """Address line 1"""
+    addressLine1: String!
+
+    """Address line 2."""
+    addressLine2: String
+
+    """Geospatial latitude and lonitude."""
+    latLng: LatLng
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Create store address input."""
+input CreateStoreAddressInput {
+    """Store ID."""
+    store: ID!
+
+    """Country."""
+    country: String!
+
+    """City."""
+    city: String!
+
+    """Address line 1."""
+    addressLine1: String!
+
+    """Address line 2."""
+    addressLine2: String
+
+    """Geospatial latitude and lonitude."""
+    latLng: SetLatLngInput
+}
+
+"""Update store address input."""
+input UpdateStoreAddressInput {
+    """ID."""
+    id: ID!
+
+    """Country."""
+    country: String!
+
+    """City."""
+    city: String!
+
+    """Address line 1."""
+    addressLine1: String!
+
+    """Address line 2."""
+    addressLine2: String
+
+    """Geospatial latitude and lonitude."""
+    latLng: SetLatLngInput
+}
+
+"""Delete store address input."""
+input DeleteStoreAddressInput {
+    """ID."""
+    id: ID!
+}
+
+################################################################################
+##                                                                            ##
+##                                   RELAY                                    ##
+##                                                                            ##
+################################################################################
+
+"""Store address connection."""
+type StoreAddressConnection {
+    """
+    List of edges.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Edges).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Edges
+    edges: [StoreAddressConnectionEdge]
+
+    """
+    List of nodes.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Node).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Node
+    nodes: [StoreAddress]
+
+    """
+    Information to aid in pagination.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types.Fields.PageInfo).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types.Fields.PageInfo
+    pageInfo: PageInfo!
+
+    """
+    Identifies the total count of items in the connection.
+    """
+    totalCount: Int!
+}
+
+"""Store address connection's edge."""
+type StoreAddressConnectionEdge {
+    """
+    Cursor for use in pagination.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor
+    cursor: RelayCursor!
+
+    """
+    The item at the end of the edge.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Node).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Node
+    node: StoreAddress
+}

@@ -1,0 +1,318 @@
+################################################################################
+##                                                                            ##
+##                                   QUERY                                    ##
+##                                                                            ##
+################################################################################
+
+extend type Query {
+    """Find catalog modifier."""
+    catalogModifier(
+        """ID."""
+        id: ID
+    ): CatalogModifier
+
+    """Catalog modifier connection."""
+    catalogModifierConnection(
+        """Business ID."""
+        business: ID
+
+        """Catalog ID."""
+        catalog: ID
+
+        """Hidden."""
+        hidden: Boolean
+
+        # Using forward cursor pagination
+        """Find `first` options next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` options previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): CatalogModifierConnection!
+}
+
+################################################################################
+##                                                                            ##
+##                                  MUTATION                                  ##
+##                                                                            ##
+################################################################################
+
+extend type Mutation {
+    """Create linked catalog modifier."""
+    createLinkedCatalogModifier(input: CreateLinkedCatalogModifierInput!): CatalogModifier!
+
+    """Create shared catalog modifier."""
+    createSharedCatalogModifier(input: CreateSharedCatalogModifierInput!): CatalogModifier!
+
+    """Update catalog modifier."""
+    updateCatalogModifier(input: UpdateCatalogModifierInput!): CatalogModifier!
+
+    """Link catalog modifier."""
+    linkCatalogModifier(input: LinkCatalogModifierInput!): Boolean!
+
+    """Unlink catalog modifier."""
+    unlinkCatalogModifier(input: UnlinkCatalogModifierInput!): Boolean!
+
+    """Delete catalog modifier."""
+    deleteCatalogModifier(input: DeleteCatalogModifierInput!): Boolean!
+}
+
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Catalog modifier."""
+type CatalogModifier implements Node & Audited {
+    """ID."""
+    id: ID!
+
+    """Version."""
+    version: NonNegativeInt!
+
+    """Catalog."""
+    catalog: Catalog!
+
+    """Name."""
+    name: String!
+
+    """Description."""
+    description: String
+
+    """Shared."""
+    shared: Boolean!
+
+    """Hidden."""
+    hidden: Boolean!
+
+    """Min quantity."""
+    minQuantity: NonNegativeInt!
+
+    """Max quantity."""
+    maxQuantity: PositiveInt
+
+    """Multiple selection."""
+    multiple: Boolean!
+
+    """Catalog modifier option connection."""
+    optionConnection(
+        """Hidden."""
+        hidden: Boolean
+
+        # Using forward cursor pagination
+        """Find `first` options next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` options previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): CatalogModifierOptionConnection!
+
+    """Catalog product option connection."""
+    productConnection(
+        """Hidden."""
+        hidden: Boolean
+
+        # Using forward cursor pagination
+        """Find `first` options next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` options previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): CatalogProductConnection!
+
+    """User that created this catalog modifier."""
+    createdBy: User
+
+    """Date and time when this catalog modifier was created."""
+    createdAt: DateTime!
+
+    """User that last modified this catalog modifier."""
+    lastModifiedBy: User
+
+    """Date and time when this catalog modifier's last modification was made."""
+    lastModifiedAt: DateTime
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Create linked catalog modifier input."""
+input CreateLinkedCatalogModifierInput {
+    """Catalog product ID."""
+    product: ID!
+
+    """Name."""
+    name: String!
+
+    """Description."""
+    description: String
+
+    """Min quantity."""
+    minQuantity: NonNegativeInt
+
+    """Max quantity."""
+    maxQuantity: PositiveInt
+
+    """Multiple selection."""
+    multiple: Boolean
+}
+
+"""Create shared catalog modifier input."""
+input CreateSharedCatalogModifierInput {
+    """Catalog ID."""
+    catalog: ID!
+
+    """Name."""
+    name: String!
+
+    """Description."""
+    description: String
+
+    """Min quantity."""
+    minQuantity: NonNegativeInt
+
+    """Max quantity."""
+    maxQuantity: PositiveInt
+
+    """Multiple selection."""
+    multiple: Boolean
+}
+
+"""Update catalog modifier input."""
+input UpdateCatalogModifierInput {
+    """ID."""
+    id: ID!
+
+    """Name."""
+    name: String
+
+    """Description."""
+    description: String
+
+    """Hidden."""
+    hidden: Boolean
+
+    """Min quantity."""
+    minQuantity: NonNegativeInt
+
+    """Max quantity."""
+    maxQuantity: PositiveInt
+
+    """Multiple selection."""
+    multiple: Boolean
+}
+
+
+input LinkCatalogModifierInput {
+    """Modifier ID."""
+    modifier: ID!
+
+    """Catalog product ID."""
+    product: ID!
+}
+
+input UnlinkCatalogModifierInput {
+    """Modifier ID."""
+    modifier: ID!
+
+    """Catalog product ID."""
+    product: ID!
+}
+
+"""Delete catalog modifier input."""
+input DeleteCatalogModifierInput {
+    """ID."""
+    id: ID!
+}
+
+################################################################################
+##                                                                            ##
+##                                   RELAY                                    ##
+##                                                                            ##
+################################################################################
+
+"""
+Catalog modifier connection.
+[Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types).
+"""
+type CatalogModifierConnection {
+    """
+    A list of edges.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Edges).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Edges
+    edges: [CatalogModifierConnectionEdge]
+
+    """
+    A list of nodes.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Node).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Node
+    nodes: [CatalogModifier]
+
+    """
+    Information to aid in pagination.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types.Fields.PageInfo).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types.Fields.PageInfo
+    pageInfo: PageInfo!
+
+    """
+    Identifies the total count of catalog modifiers in the connection.
+    """
+    totalCount: Int!
+}
+
+"""Catalog modifier connection's edge."""
+type CatalogModifierConnectionEdge {
+    """
+    A cursor for use in pagination.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor
+    cursor: RelayCursor!
+
+    """
+    The catalog modifier at the end of the edge.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Node).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Node
+    node: CatalogModifier
+}

@@ -1,0 +1,43 @@
+overwrite: true
+
+schema:
+    - ./.gitsubmodules/deliverai.io/contract/graphql/schema/**/*.graphqls
+
+documents: ./src/app/@core/graphql/operations/**/*.graphql
+
+generates:
+    ./src/app/@core/graphql/graphql.types.g.ts:
+        hooks:
+            afterOneFileWrite:
+                - prettier --write
+                - tslint --fix
+        plugins:
+            - typescript
+
+    ./src/app/@core/graphql/graphql.fragments.g.ts:
+        hooks:
+            afterOneFileWrite:
+                - prettier --write
+                - tslint --fix
+        plugins:
+            - fragment-matcher
+
+    ./src/app/@core/graphql/:
+        preset: near-operation-file
+        presetConfig:
+            extension: .ops.g.ts
+            baseTypesPath: graphql.types.g.ts
+        hooks:
+            afterOneFileWrite:
+                - prettier --write
+                - tslint --fix
+        config:
+            namingConvention:
+                typeNames: change-case#pascalCase
+                enumValues: change-case#upperCase
+            transformUnderscore: true
+            nonOptionalTypename: true
+            ngModule: "@app/@core/graphql/graphql.module#GraphqlModule"
+        plugins:
+            - typescript-operations
+            - typescript-apollo-angular

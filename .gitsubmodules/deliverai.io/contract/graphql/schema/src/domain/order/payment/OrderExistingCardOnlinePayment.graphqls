@@ -1,0 +1,35 @@
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Order online payment."""
+type OrderExistingCardOnlinePayment implements Node & OrderPayment {
+    """ID."""
+    id: ID!
+
+    """Order."""
+    order: Order!
+
+    """Amount."""
+    amount: BigFloat!
+
+    """Currency."""
+    currency: CurrencyDetails!
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Set order online payment with existing card input."""
+input SetOrderExistingCardOnlinePayment {
+    """First card's 6 digits."""
+    firstSixDigits: String!
+
+    """Last card's 4 digits."""
+    lastFourDigits: String!
+}

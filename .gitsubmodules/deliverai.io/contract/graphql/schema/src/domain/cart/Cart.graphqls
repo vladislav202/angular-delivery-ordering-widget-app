@@ -1,0 +1,238 @@
+################################################################################
+##                                                                            ##
+##                                   QUERY                                    ##
+##                                                                            ##
+################################################################################
+
+extend type Query {
+    """Find cart by ID."""
+    cart(id: ID!): Cart
+
+    """Cart connection."""
+    cartConnection(
+        # Using forward cursor pagination
+        """Find `first` items next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` items previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): CartConnection!
+}
+
+################################################################################
+##                                                                            ##
+##                                  MUTATION                                  ##
+##                                                                            ##
+################################################################################
+
+extend type Mutation {
+    """Create cart."""
+    createCart(input: CreateCartInput!): Cart!
+
+    """Drop cart."""
+    deleteCart(input: DeleteCartInput!): Boolean!
+
+    """Add discounts to cart."""
+    addDiscountsToCart(input: DiscountsToCartInput): Cart!
+
+    """Remove discounts from cart."""
+    removeDiscountsFromCart(input: DiscountsToCartInput): Cart!
+
+    """Apply discount by code to cart."""
+    applyDiscountCodeToCart(input: ApplyDiscountCodeToCartInput): Cart!
+
+    """Validate all discounts applied to cart with customer."""
+    validateDiscountsBeforeCheckout(input: ValidateDiscountsBeforeCheckoutInput): Cart!
+}
+
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Cart."""
+type Cart implements Node & Audited {
+    """ID."""
+    id: ID!
+
+    """Total price."""
+    totalPrice: BigFloat!
+
+    """Calculated discount value."""
+    discountValue: BigFloat!
+
+    """Used loyalty points."""
+    loyaltyPointsRedeemed: Int
+
+    """Cart product connection."""
+    productConnection(
+        # Using forward cursor pagination
+        """Find `first` items next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` items previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): CartProductConnection!
+
+    """Discount connection."""
+    discountConnection(
+        # Using forward cursor pagination
+        """Find `first` items next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` items previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): DiscountConnection!
+
+    """User that created this cart."""
+    createdBy: User
+
+    """Date and time when this cart was created."""
+    createdAt: DateTime!
+
+    """User that last modified this cart."""
+    lastModifiedBy: User
+
+    """Date and time when this cart's last modification was made."""
+    lastModifiedAt: DateTime
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+"""Create cart input."""
+input CreateCartInput {
+    """Catalog ID."""
+    catalog: ID!
+
+    """Products."""
+    products: [IncludeCartProductInput!]
+
+    """Discounts."""
+    discounts: [ID!]
+}
+
+"""Delete cart input."""
+input DeleteCartInput {
+    """Cart ID."""
+    id: ID!
+}
+
+"""Discounts to cart input."""
+input DiscountsToCartInput {
+    """Cart ID."""
+    cart: ID!
+
+    """Discounts."""
+    discounts: [ID!]!
+}
+
+"""Apply discount by code to cart input."""
+input ApplyDiscountCodeToCartInput {
+    """Cart ID."""
+    cart: ID!
+
+    """Discount code."""
+    code: String!
+}
+
+"""Validate discounts before checkout input."""
+input ValidateDiscountsBeforeCheckoutInput {
+    """Cart ID."""
+    cart: ID!
+
+    """Customer ID."""
+    customer: ID!
+}
+
+################################################################################
+##                                                                            ##
+##                                   RELAY                                    ##
+##                                                                            ##
+################################################################################
+
+"""
+Cart connection.
+[Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types).
+"""
+type CartConnection {
+    """
+    A list of edges.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Edges).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Edges
+    edges: [CartConnectionEdge]
+
+    """
+    A list of nodes.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Node).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Node
+    nodes: [Cart]
+
+    """
+    Information to aid in pagination.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types.Fields.PageInfo).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types.Fields.PageInfo
+    pageInfo: PageInfo!
+
+    """
+    Identifies the total count of carts in the connection.
+    """
+    totalCount: Int!
+}
+
+"""Cart connection's edge."""
+type CartConnectionEdge {
+    """
+    A cursor for use in pagination.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor
+    cursor: RelayCursor!
+
+    """
+    The cart at the end of the edge.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Node).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Node
+    node: Cart
+}

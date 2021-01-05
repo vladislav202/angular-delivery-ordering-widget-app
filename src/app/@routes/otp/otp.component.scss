@@ -1,0 +1,60 @@
+::ng-deep {
+  .iti.iti--allow-dropdown {
+    width: 100%;
+  }
+
+  .iti__selected-flag {
+    background-color: #f5f5f5;
+    border-bottom-left-radius: 0.25rem;
+    border-top-left-radius: 0.25rem;
+  }
+
+  .country-dropdown {
+    width: 390px !important;
+
+    input {
+      width: 100%;
+      height: calc(1.5em + 0.75rem + 2px);
+      font-size: 1rem;
+      font-weight: 400;
+      color: #495057;
+      border: 1px solid #a3a3a3;
+      border-radius: 0.25rem;
+      outline: none;
+    }
+
+    .iti__country-list {
+      max-height: 300px;
+
+      &::-webkit-scrollbar {
+        width: 4px;
+        height: 4px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background-color: transparent;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        /* Visual */
+        background-color: #dfe2e7;
+        border-radius: 3px;
+      }
+
+      &::-webkit-scrollbar-thumb:hover {
+        background-color: #ccc;
+      }
+    }
+  }
+
+  .custom {
+    width: 100%;
+    height: calc(1.5em + 0.75rem + 10px);
+    font-size: 1rem;
+    font-weight: 400;
+    color: #495057;
+    border: 1px solid #a3a3a3;
+    border-radius: 0.25rem;
+    outline: none;
+  }
+}

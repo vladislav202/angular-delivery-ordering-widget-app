@@ -1,0 +1,94 @@
+@charset "utf-8";
+
+.btn-outline-primary {
+  color: var(--theme-background-color);
+  border-color: var(--theme-background-color);
+
+  &:hover,
+  &:active,
+  &:active:focus {
+    /* Typography */
+    color: var(--theme-background-color) !important;
+
+    /* Visual */
+    background-color: $lightgray !important;
+    border-color: var(--theme-background-color);
+  }
+
+  &:focus {
+    /* Typography */
+    color: $primary !important;
+
+    /* Visual */
+    background-color: #fff !important;
+  }
+}
+
+.btn-outline-primary:not(:disabled):not(.disabled):active, .btn-outline-primary:not(:disabled):not(.disabled).active, .show > .btn-outline-primary.dropdown-toggle {
+  color: var(--theme-color);
+  background-color: var(--theme-background-color);
+  border-color: var(--theme-background-color);
+}
+
+.btn-primary {
+  color: var(--theme-color);
+  background-color: var(--theme-background-color);
+  border-color: var(--theme-background-color);
+
+  &--focus {
+    outline: 0 !important;
+    box-shadow: none !important;
+  }
+
+  &:hover {
+    color: var(--theme-color);
+    background-color: var(--theme-background-color);
+    border-color: var(--theme-background-color);
+  }
+
+  &:disabled, &.disabled {
+    color: var(--theme-color);
+    background-color: var(--theme-background-color);
+    border-color: var(--theme-background-color);
+  }
+
+  &:focus, &.focus {
+    color: var(--theme-color);
+    background-color: var(--theme-background-color);
+    border-color: var(--theme-background-color);
+  }
+}
+
+.btn-primary:not(:disabled):not(.disabled):active {
+  color: var(--theme-color);
+  background-color: var(--theme-background-color);
+  border-color: var(--theme-background-color);
+}
+
+.mat-checkbox-frame {
+  border-color: var(--theme-background-color);
+}
+
+.mat-checkbox-checked.mat-primary .mat-checkbox-background {
+  background-color: var(--theme-background-color);
+}
+
+.mat-radio-outer-circle {
+  border-color: var(--theme-background-color);
+}
+
+.mat-radio-button.mat-primary.mat-radio-checked .mat-radio-outer-circle {
+  border-color: var(--theme-background-color);
+}
+
+.mat-radio-button.mat-primary .mat-radio-inner-circle, .mat-radio-button.mat-primary .mat-radio-ripple .mat-ripple-element:not(.mat-radio-persistent-ripple), .mat-radio-button.mat-primary.mat-radio-checked .mat-radio-persistent-ripple, .mat-radio-button.mat-primary:active .mat-radio-persistent-ripple {
+  background-color: var(--theme-background-color);
+}
+
+.btn--disabled {
+  background-color: #ffffff !important;
+}
+
+.btn:focus, .btn.focus {
+  box-shadow: none;
+}

@@ -1,0 +1,203 @@
+################################################################################
+##                                                                            ##
+##                                   QUERY                                    ##
+##                                                                            ##
+################################################################################
+
+extend type Query {
+    """Find catalog modifier option."""
+    catalogModifierOption(
+        """ID."""
+        id: ID
+    ): CatalogModifierOption
+
+    """Catalog modifier option connection."""
+    catalogModifierOptionConnection(
+        """Hidden."""
+        hidden: Boolean
+
+        # Using forward cursor pagination
+        """Find `first` options next to `after` cursor."""
+        first: PositiveInt
+        """Forward cursor."""
+        after: RelayCursor
+
+        # Using backward cursor pagination
+        """Find `last` options previous to `before` cursor."""
+        last: PositiveInt
+        """Backward cursor."""
+        before: RelayCursor
+
+        # Using offset pagination
+        """Find starting from the `offset`."""
+        offset: NonNegativeInt
+        """Limit objects returned (works only with `offset`)."""
+        limit: PositiveInt
+    ): CatalogModifierOptionConnection!
+}
+
+################################################################################
+##                                                                            ##
+##                                  MUTATION                                  ##
+##                                                                            ##
+################################################################################
+
+extend type Mutation {
+    """Create catalog modifier option."""
+    createCatalogModifierOption(input: CreateCatalogModifierOptionInput!): CatalogModifierOption!
+
+    """Update catalog modifier option."""
+    updateCatalogModifierOption(input: UpdateCatalogModifierOptionInput!): CatalogModifierOption!
+
+    """Delete catalog modifier option."""
+    deleteCatalogModifierOption(input: DeleteCatalogModifierOptionInput!): Boolean!
+}
+
+################################################################################
+##                                                                            ##
+##                                   TYPES                                    ##
+##                                                                            ##
+################################################################################
+
+"""Catalog modifier option."""
+type CatalogModifierOption implements Node & Audited {
+    """ID."""
+    id: ID!
+
+    """Version."""
+    version: NonNegativeInt!
+
+    """Name."""
+    name: String!
+
+    """Description."""
+    description: String
+
+    """Price."""
+    price: BigFloat!
+
+    """Quantity."""
+    quantity: Int
+
+    """Hidden."""
+    hidden: Boolean!
+
+    """User that created this catalog modifier option."""
+    createdBy: User
+
+    """Date and time when this catalog modifier option was created."""
+    createdAt: DateTime!
+
+    """User that last modified this catalog modifier option."""
+    lastModifiedBy: User
+
+    """Date and time when this catalog modifier option's last modification was made."""
+    lastModifiedAt: DateTime
+}
+
+################################################################################
+##                                                                            ##
+##                                   INPUTS                                   ##
+##                                                                            ##
+################################################################################
+
+
+"""Create catalog modifier option input."""
+input CreateCatalogModifierOptionInput {
+    """Modifier ID."""
+    modifier: ID!
+
+    """Name."""
+    name: String!
+
+    """Description."""
+    description: String
+
+    """Price."""
+    price: BigFloat!
+
+    """Quantity."""
+    quantity: Int
+}
+
+"""Update catalog modifier option input."""
+input UpdateCatalogModifierOptionInput {
+    """ID."""
+    id: ID!
+
+    """Name."""
+    name: String
+
+    """Description."""
+    description: String
+
+    """Price."""
+    price: BigFloat
+
+    """Quantity."""
+    quantity: Int
+
+    """Hidden."""
+    hidden: Boolean
+}
+
+"""Delete catalog modifier option input."""
+input DeleteCatalogModifierOptionInput {
+    """ID."""
+    id: ID!
+}
+
+################################################################################
+##                                                                            ##
+##                                   RELAY                                    ##
+##                                                                            ##
+################################################################################
+
+"""
+Catalog modifier connection.
+[Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types).
+"""
+type CatalogModifierOptionConnection {
+    """
+    A list of edges.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Edges).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Edges
+    edges: [CatalogModifierOptionConnectionEdge]
+
+    """
+    A list of nodes.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Node).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Node
+    nodes: [CatalogModifierOption]
+
+    """
+    Information to aid in pagination.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types.Fields.PageInfo).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Connection-Types.Fields.PageInfo
+    pageInfo: PageInfo!
+
+    """
+    Identifies the total count of catalog modifier options in the connection.
+    """
+    totalCount: Int!
+}
+
+"""Catalog modifier connection's edge."""
+type CatalogModifierOptionConnectionEdge {
+    """
+    A cursor for use in pagination.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor
+    cursor: RelayCursor!
+
+    """
+    The catalog modifier option at the end of the edge.
+    [Read more](https://facebook.github.io/relay/graphql/connections.htm#sec-Node).
+    """
+    # Read more: https://facebook.github.io/relay/graphql/connections.htm#sec-Node
+    node: CatalogModifierOption
+}
